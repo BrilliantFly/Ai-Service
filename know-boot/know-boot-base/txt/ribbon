@@ -1,0 +1,54 @@
+1、java.lang.IllegalStateException：No instances available for localhost
+    既然是负载均衡，那必然是多台服务器的负载均衡，用IP访问就没有意义了，因此用负载均衡的注解时，不能用IP或者localhost，而应该用服务名。
+   注销@LoadBalanced
+       @Bean
+   //    @LoadBalanced
+       RestTemplate restTemplate() {
+           return new RestTemplate();
+       }
+    或者在配置类配置RestTemplate时，分别配置负载均衡与默认优先选择，即写两个RestTemplate方法
+    @LoadBalanced
+    @Bean
+    public RestTemplate loadBalanced1() {
+        return new RestTemplate();
+    }
+
+    @Primary
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+2、用法
+        ResponseEntity<List> responseEntity = restTemplate.getForEntity("http://localhost/getAll", List.class);
+        HttpHeaders headers = responseEntity.getHeaders();
+        HttpStatus statusCode = responseEntity.getStatusCode();
+        int code = statusCode.value();
+        List<UserEntity> list = responseEntity.getBody();
+
+        ResponseEntity<UserEntity> responseEntity = restTemplate.getForEntity("http://localhost/get/{id}", UserEntity.class, id);
+        UserEntity userEntity = responseEntity.getBody();
+
+        HashMap<String, String> map = new HashMap<>();
+        map.put("id",id);
+        ResponseEntity<UserEntity> responseEntity = restTemplate.getForEntity("http://localhost/get/{id}", UserEntity.class, map);
+        UserEntity userEntity = responseEntity.getBody();
+
+        List<UserEntity> list = restTemplate.getForObject("http://localhost/getAll", List.class);
+
+        UserEntity userEntity = restTemplate.getForObject("http://localhost/get/{id}", UserEntity.class, id);
+
+        HashMap<String, String> map = new HashMap<>();
+        map.put("id",id);
+        UserEntity userEntity = restTemplate.getForObject("http://localhost/get/{id}", UserEntity.class, map);
+
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity("http://localhost/save", userEntity, String.class);
+        String body = responseEntity.getBody();
+
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity("http://localhost/saveByType/{type}", userEntity, String.class, type);
+        String body = responseEntity.getBody();
+
+        HashMap<String, String> map = new HashMap<>();
+        map.put("type", type);
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity("http://localhost/saveByType/{type}", userEntity, String.class,map);
+        String body = responseEntity.getBody();

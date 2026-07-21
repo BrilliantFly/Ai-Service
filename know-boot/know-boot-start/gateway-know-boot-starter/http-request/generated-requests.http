@@ -1,0 +1,16 @@
+### gateway获取客户信息
+GET http://192.168.2.169:9001/plan/base/customer/list
+
+### gateway新增客户信息
+POST http://127.0.0.1:9001/plan/base/customer/add
+Content-Type: application/json
+
+{
+  "nickname": "zhangsan11",
+  "position": "111",
+  "characterInfo": "11111",
+  "hobby": "11111",
+  "communicate": "11111",
+  "description": "111111"
+}
+

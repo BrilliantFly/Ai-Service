@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <!--声明依赖的父工程-->
+    <parent>
+        <groupId>com.know</groupId>
+        <artifactId>know-boot-accumulate</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <!--默认我们不用写<relativePath>，那默认值就是 ../pom.xml，会从本地路径中获取parent的pom，我们建多模块的项目就是这个情况。-->
+        <!--<relativePath/>这样写，也就是说我指定了relativePath，但值是空的，设定一个空值将始终从仓库中获取，不从本地路径获取。很常见的场景就是使用 springboot 的时候-->
+        <!--<relativePath> 路径 <relativePath/>这种也很显然，指定一个本地的路径，从本地路径获取 parent 的 pom。-->
+        <!--        <relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;-->
+    </parent>
+
+    <artifactId>know-boot-fundamental</artifactId>
+
+    <dependencies>
+
+        <!-- 算法 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.6</version>
+        </dependency>
+        <dependency>
+            <groupId>me.xdrop</groupId>
+            <artifactId>fuzzywuzzy</artifactId>
+            <version>1.1.10</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>3.0.5</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

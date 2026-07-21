@@ -1,0 +1,19 @@
+1、Factory method 'redisConnectionFactory' threw exception
+   java.lang.ClassNotFoundException: org.apache.commons.pool2.impl.GenericObjectPoolConfig
+   添加：maven
+   <dependency>
+               <groupId>org.apache.commons</groupId>
+               <artifactId>commons-pool2</artifactId>
+   </dependency>
+
+2、required a bean of type 'org.springframework.data.redis.core.RedisTemplate' that could not be found
+   解决RedisTemplate找不到
+   注解使用Resource
+
+3、解决RedisTemplate找不到
+   两种方式
+    @Resource
+   private RedisTemplate<Object, Object> redisTemplate;
+
+   @Autowired
+    private RedisTemplate redisTemplate;

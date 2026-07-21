@@ -1,0 +1,16 @@
+1、同文件读取：application.properties
+    know.boot.info=config
+    know.boot.document=application
+    know.boot.all=${know.boot.info}-${know.boot.document}
+
+2、使用Environment类获取配置文件,可以读取任何文件
+  @Autowired
+  Environment env;
+
+   // 获取author.properties
+   log.info("author -> {}",env.getProperty("author.name"));
+   //获取application.properties
+   log.info("application -> {}",env.getProperty("know.boot.all"));
+
+   //获取application.yml配置
+   log.info("端口 - server.port ->{}",env.getProperty("server.port"));

@@ -1,0 +1,9 @@
+1、cas校验流程：
+   1、用户访问业务系统（client）
+      http://localhost:9003/sso
+      1、无权限时跳转到cas（服务端），并且携带参数为service=${客户端url}，所以我们看到登录页时浏览器路径为 http://localhost:8080/login?service=http%3A%2F%2Flocalhost%3A8123%2Flogin
+   2、登录
+      1、当用户在cas处登录完后，会颁发一个ticket带回client端，如http://localhost:8123/login/cas?ticket=xxxxx
+         casuser/Mellon
+      2、业务系统获取到ticket后，拿这个ticket请求cas获取对应的登录用户
+      3、cas返回对应的用户信息，业务系统再对该用户进行身份映射再次认证，则完成本次登录

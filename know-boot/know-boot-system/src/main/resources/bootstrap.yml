@@ -1,0 +1,10 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: system
+  profiles:
+    active: dev
+    # 包含 microservice 配置（当使用 -P microservice 时生效）
+    # include: microservice

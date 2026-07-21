@@ -1,0 +1,8 @@
+控制台启动
+    java -jar -Dserver.port=9081 sentinel-dashboard-1.8.0.jar
+    访问地址：
+        http://127.0.0.1:9081/#/login
+        sentinel/sentinel
+
+注意：
+    必须同一个局域网才能访问的到请求链路等,即部署的sentinel也可以访问到服务

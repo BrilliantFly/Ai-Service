@@ -1,0 +1,9 @@
+1、guava：缓存、令牌桶
+2、自定义拦截器必须注册，否则不起作用。另外，注册需拦截到请求，不然也不起作用。
+3、bucket4j
+  <!-- 令牌桶 -->
+        <!--        <dependency>-->
+        <!--            <groupId>com.github.vladimir-bukhtoyarov</groupId>-->
+        <!--            <artifactId>bucket4j-core</artifactId>-->
+        <!--            <version>4.0.0</version>-->
+        <!--        </dependency>-->

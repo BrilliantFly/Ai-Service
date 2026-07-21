@@ -1,0 +1,35 @@
+server:
+  port: 9002
+
+#是否将自己注册到Eureka Server上，默认为true
+eureka:
+  client:
+    register-with-eureka: false
+    #是否从Eureka Server上获取注册信息，默认为true
+    fetch-registry: false
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          # 是否与服务发现组件结合，通过serviceId转发到具体的实例。默认为false,设为true开始根据serviceId创建路由功能
+          enabled: true
+          # 是将请求路径上的服务名配置为小写（因为服务注册的时候，向注册中心注册时将服务名转成大写的了）
+          lowerCaseServiceId: true
+      routes:
+        - id: get_route
+#          uri: http://httpbin.org1
+          uri: http://localhost:9001
+          predicates:
+            - Method=GET
+          filters:
+            # 重试
+            - name: Retry
+              args:
+                # 重试次数
+                retries: 5
+                # SERVER_ERROR，下游服务报5XX系列的错误触发重试机制
+                series: SERVER_ERROR
+                # 重试的HTTP方法
+                methods: GET,POST

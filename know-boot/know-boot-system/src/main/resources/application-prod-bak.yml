@@ -1,0 +1,69 @@
+#server:
+#  port: 9001
+#  servlet:
+#    context-path: /system
+#
+#spring:
+#  mvc:
+#    pathmatch:
+#      matching-strategy: ant_path_matcher
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://39.98.108.121:3306/know_boot?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+#    username: root
+#    password: Mysql@135269
+#
+#  # 数据库自动同步
+#  flyway:
+#    # 是否启用flyway
+#    enabled: true
+#    # 编码格式，默认UTF-8
+#    encoding: UTF-8
+#    # 迁移sql脚本文件存放路径，默认db/migration
+#    locations: classpath:db/migration
+#    # 迁移sql脚本文件名称的前缀，默认V
+#    sql-migration-prefix: V
+#    # 迁移sql脚本文件名称的分隔符，默认2个下划线__
+#    sql-migration-separator: __
+#    # 迁移sql脚本文件名称的后缀
+#    sql-migration-suffixes: .sql
+#    # 迁移时是否进行校验，默认true
+#    validate-on-migrate: true
+#    # 当迁移发现数据库非空且存在没有元数据的表时，自动执行基准迁移，新建schema_version表
+#    baseline-on-migrate: true
+#
+#logging:
+#  logback-spring:
+#    path: D:\var\logs\mybatis
+#    filename: zlxj
+#    max-history: 100
+#  level:
+#    com.flyedt.mapper: debug
+#
+## mybatis plus 设置
+#mybatis-plus:
+#  mapper-locations: classpath:/mapper/**.xml
+##  global-config:
+##    banner: false
+##    db-config:
+##      logic-delete-value: 1 #删除后的状态 默认值1
+##      logic-not-delete-value: 0 #逻辑前的值 默认值0
+#  configuration:
+#    # 控制台打印sql
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    # 返回类型为Map,显示null对应的字段
+#    call-setters-on-nulls: true
+#
+## 自动以starter
+#know:
+#  generator:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    jdbc-url: jdbc:mysql://192.168.1.28:3306/data_test?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+#    user-name: root
+#    password: Flyedt@2021
+#    ignore-table: test
+#    ignore-table-prefix: test_
+#    ignore-table-suffix: _test
+#    save-path: D:/DatabaseDocument/
+#    version: 1.0.0
+#    description: 自动生成SQL库文档

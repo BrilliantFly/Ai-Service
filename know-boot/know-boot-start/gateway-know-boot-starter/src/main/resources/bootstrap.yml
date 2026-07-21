@@ -1,0 +1,124 @@
+server:
+  port: 9001
+  max-http-header-size: 2MB
+
+spring:
+  main:
+    web-application-type: reactive
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+  application:
+    name: geteway
+  profiles:
+    # 当前激活环境
+    active: @profile.name@
+  cloud:
+    nacos:
+      # 注册中心
+      discovery:
+        # 指定nacos server的地址
+        server-addr: @discovery.server-addr@
+      config:
+        # 如果不设置false，nacos自动访问localhost：8848
+        enabled: false
+    gateway:
+      # 跨域配置
+#      globalcors:
+#        cors-configurations:
+#          '[/**]': # 匹配所有请求
+#            allowedOrigins: "*" #跨域处理 允许所有的域
+#            allowedMethods: # 支持的方法
+#              - GET
+#              - POST
+#              - PUT
+#              - DELETE
+#      discovery:
+#        locator:
+#          #开放服务名访问方式true，访问方式：http：//ip:port/服务名/路由
+#          #开放服务名访问方式false，访问方式：http：//ip:port/路由
+#          #路由=前缀+端口
+#          #是否与服务发现组件结合，通过serviceId转发到具体的实例。默认为false,设为true开始根据serviceId创建路由功能
+#          enabled: true
+#          #是将请求路径上的服务名配置为小写（因为服务注册的时候，向注册中心注册时将服务名转成大写的了）
+#          lower-case-service-id: true #服务名小写
+      routes:
+        # 将/plan/**开头的请求，代理到lb://plan
+        - id: plan-service
+          #匹配后提供服务的路由地址
+          uri: lb://plan
+          #断言，路径相匹配的进行路由
+          predicates:
+            - Path=/plan/**
+          filters:
+            - name: RequestRateLimiter #请求数限流 名字不能随便写
+              args:
+                key-resolver: "#{@ipKeyResolver}"
+                # 令牌桶每秒填充平均速率
+                redis-rate-limiter.replenishRate: 1
+                # 令牌桶总容量
+                redis-rate-limiter.burstCapacity: 66
+        - id: system-service
+          #匹配后提供服务的路由地址
+          uri: lb://system
+          #断言，路径相匹配的进行路由
+          predicates:
+            - Path=/system/**
+        # Python服务路由
+        - id: python-service
+          #匹配后提供服务的路由地址
+          uri: http://localhost:5000
+          #断言，路径相匹配的进行路由
+          predicates:
+            - Path=/python/**
+          filters:
+            - StripPrefix=1
+        # Camera服务路由
+        - id: camera-service
+          #匹配后提供服务的路由地址
+          uri: http://localhost:8083
+          #断言，路径相匹配的进行路由
+          predicates:
+            - Path=/camera/**
+    sentinel:
+      #服务启动后，直接注册到dashboard
+#      eager: true
+      transport:
+        # 控制台地址(将信息推送到控制台)
+        dashboard: 127.0.0.1:10008
+#      scg:
+#        fallback:
+#          #两种模式，一种是response返回文字提示信息，
+#          #一种是redirect，重定向跳转，需要同时配置redirect(跳转的uri)
+#          mode: response
+#          response-status: 426
+#          response-body: error request
+  #  配置Redis 127.0.0.1可以省略配置（gateway redis限流，redis配置不正确，限流不会）
+  redis:
+    host: 39.98.108.121
+    port: 10001
+    #redis连接密码
+    password: 123456789
+
+seata:
+  enabled: true
+  # 事务的分组名（/opt/seata/script/config-center/config.txt）
+  # ${spring.application.name}_tx_group 可以在nacos自定义配置
+  #  tx-service-group: ${spring.application.name}_tx_group
+  tx-service-group: my_test_tx_group
+  service:
+    vgroupMapping:
+      my_test_tx_group: default # 使用default就好
+    disable-global-transaction: false
+  registry:
+    type: nacos  # 注册中心类型，需与registry.conf配置文件中一致
+    nacos:
+      application: seata-server # 服务名，需与registry.conf配置文件中一致
+      server-addr: @config.server-addr@ # 注册中心的地址，需与registry.conf配置文件中一致
+      group: SEATA_GROUP
+      namespace: 35f21db9-107d-4ecf-93f7-e5165847232e # nacos的命名空间ID，需与registry.conf配置文件中一致
+  config:
+    type: nacos
+    nacos:
+      serverAddr: @config.server-addr@
+      group: SEATA_GROUP
+      namespace: 35f21db9-107d-4ecf-93f7-e5165847232e

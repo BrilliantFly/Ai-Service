@@ -1,0 +1,41 @@
+server:
+  port: 9003
+  servlet:
+    context-path: /sso
+
+spring:
+  #easypoi启用覆盖,否则一下错误（nacos中单独配置，配置nacos中会启动报错）
+  # A bean with that name has already been defined in class path resource
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+
+# Mybaits日志打印（mybatisplus日志、logging日志可以选择一个）
+logging:
+  level:
+    com.know.knowboot.mapper: debug
+
+#cas配置
+cas:
+  server:
+    #cas服务端地址 这是我的cas服务端地址 需要修改成你们的cas服务端地址
+    host: http://192.168.2.169:8080/cas
+    #cas服务端登录地址
+    login_url: ${cas.server.host}/login
+    #cas服务端登出地址 service参数后面跟就是需要跳转的页面/接口 这里指定的是cas客户端登录接口
+    logout_url: ${cas.server.host}/logout?service=${app.server.url}${app.server.login_url}
+# 应用访问地址
+app:
+  # 开启cas
+  caseEnable: false
+  #秘钥
+  key: 123
+  server:
+    #cas客户端地址
+    url: http://localhost:9003/sso
+    #cas客户端地址登录地址
+    login_url: /login
+    #cas客户端地址登出地址
+    logout_url: /logout
+    #前端地址
+    web_url: /hello

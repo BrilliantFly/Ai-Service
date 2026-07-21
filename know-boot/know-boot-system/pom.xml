@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!--声明依赖的父工程-->
+    <parent>
+        <groupId>com.know</groupId>
+        <artifactId>know-boot</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <!--默认我们不用写<relativePath>，那默认值就是 ../pom.xml，会从本地路径中获取parent的pom，我们建多模块的项目就是这个情况。-->
+        <!--<relativePath/>这样写，也就是说我指定了relativePath，但值是空的，设定一个空值将始终从仓库中获取，不从本地路径获取。很常见的场景就是使用 springboot 的时候-->
+        <!--<relativePath> 路径 <relativePath/>这种也很显然，指定一个本地的路径，从本地路径获取 parent 的 pom。-->
+        <!--        <relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;-->
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>know-boot-system</artifactId>
+
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.baomidou</groupId>-->
+<!--            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>-->
+<!--        </dependency>-->
+
+        <!--flywaydb数据库同步，必须增加数据库连接pom依赖-->
+        <!--spring-boot-starter-jdbc放入know-boot全局依赖，会报错Failed to configure a DataSource: 'url' attribute is not specified and no embedded-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.flywaydb</groupId>-->
+<!--            <artifactId>flyway-core</artifactId>-->
+<!--            <version>${flyway-core.version}</version>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>com.know</groupId>
+            <artifactId>know-boot-common</artifactId>
+            <version>${knowboot.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.know</groupId>
+            <artifactId>know-boot-api</artifactId>
+            <version>${knowboot.version}</version>
+        </dependency>
+
+        <!-- 代码生成 -->
+        <!--
+        <dependency>
+            <groupId>com.know</groupId>
+            <artifactId>know-boot-generator</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        -->
+
+        <!-- 验证码 -->
+        <dependency>
+            <groupId>com.github.penggle</groupId>
+            <artifactId>kaptcha</artifactId>
+        </dependency>
+
+        <!-- SaToken -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-spring-boot-starter</artifactId>
+        </dependency>
+
+        <!-- SaToken-Redis -->
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-dao-redis-jackson</artifactId>
+        </dependency>
+
+        <!-- Quartz-Scheduler -->
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+        </dependency>
+
+        <!-- 微信支付 -->
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-pay</artifactId>
+        </dependency>
+
+        <!-- 基础模块 -->
+        <dependency>
+            <groupId>com.know</groupId>
+            <artifactId>know-boot-base</artifactId>
+        </dependency>
+
+        <!-- Plan 模块 - 单机模式使用 -->
+        <dependency>
+            <groupId>com.know</groupId>
+            <artifactId>know-boot-plan</artifactId>
+            <version>${knowboot.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.baomidou</groupId>
+                    <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.know</groupId>
+                    <artifactId>cloud-know-boot-starter</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework.cloud</groupId>
+                    <artifactId>spring-cloud-commons</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Swagger3 -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- Actuator for Swagger -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!-- WebSocket -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
+        <!-- API 模块 -->
+        <dependency>
+            <groupId>com.know</groupId>
+            <artifactId>know-boot-api</artifactId>
+            <version>${knowboot.version}</version>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.know</groupId>-->
+<!--            <artifactId>know-boot-common</artifactId>-->
+<!--            <version>${knowboot.version}</version>-->
+<!--        </dependency>-->
+
+
+        <!-- 升级微服务（需要添加bootstrap.yml、屏蔽logback本地日志（Springcloud配置springProfile失效获取不到路径等，只能用property）） -->
+<!--        <dependency>-->
+<!--            <groupId>com.know</groupId>-->
+<!--            <artifactId>cloud-know-boot-starter</artifactId>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>com.know</groupId>-->
+<!--            <artifactId>elasticsearch-know-boot-starter</artifactId>-->
+<!--            <version>0.0.1-SNAPSHOT</version>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>com.know</groupId>-->
+<!--            <artifactId>rabbitmq-know-boot-starter</artifactId>-->
+<!--            <version>0.0.1-SNAPSHOT</version>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>io.seata</groupId>
+            <artifactId>seata-spring-boot-starter</artifactId>
+            <version>1.7.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-lang</groupId>
+                    <artifactId>commons-lang</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.seata</groupId>
+                    <artifactId>seata-spring-boot-starter</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!--设置为true，以便把本地的system的jar也包括进来-->
+                    <includeSystemScope>true</includeSystemScope>
+                    <mainClass>com.know.knowboot.KnowBootSystemApplication</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.yml</include>
+                    <include>**/*.xml</include>
+                    <include>**/*.conf</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>standalone</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <profile.name>standalone</profile.name>
+            </properties>
+        </profile>
+        <profile>
+            <id>microservice</id>
+            <properties>
+                <profile.name>microservice</profile.name>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>com.know</groupId>
+                    <artifactId>cloud-know-boot-starter</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+</project>

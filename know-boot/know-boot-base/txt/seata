@@ -1,0 +1,91 @@
+1、spring cloud alibaba +seata 实战中Error processing condition on io.seata.spring.boot.autoconfigure
+    seata 版本问题， spring-cloud-alibaba 依赖下的seata-spring-boot-starter 版本是1.1.0，而我用的seata是 1.3.0 版本 。
+    1.3.0 版本SeataAutoConfiguration.class 没有seataDataSourceBeanPostProcessor bean ,而是用SeataAutoDataSourceProxyCreator代替。
+
+    解决方案：
+    去掉spring-cloud-starter-alibaba-seata 下seata-spring-boot-starter 依赖
+
+    <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-seata</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>seata-all</artifactId>
+                    <groupId>io.seata</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>io.seata</groupId>
+                    <artifactId>seata-spring-boot-starter</artifactId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>spring-boot-starter</artifactId>
+                    <groupId>org.springframework.boot</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+           <dependency>
+            <groupId>io.seata</groupId>
+            <artifactId>seata-all</artifactId>
+            <version>${spring-alibaba-seata.version}</version>
+           <exclusions>
+               <exclusion>
+                   <artifactId>fastjson</artifactId>
+                   <groupId>com.alibaba</groupId>
+               </exclusion>
+           </exclusions>
+    </dependency>
+
+2、java.lang.ClassNotFoundException: io.seata.spring.annotation.datasource.SeataAutoDataSourceProxyCreator
+    导包集成完毕以后启动报错
+    发现没有指定版本使用到了 最高版本
+    Maven中引入spring-cloud-starter-alibaba-seata的时候不要引入2.1.1.RELEASE以上的就可以
+    使用的版本过高 建议使用2.1.1.RELEASE以下
+
+3、io.seata.common.exception.NotSupportYetException: not support register type: null
+    spring-cloud-starter-alibaba-seata版本不兼容
+
+4、 applicationId: null, txServiceGroup: my_test_group
+    解决：增加配置 sping.application.name=XXX，yml配置为：
+    spring:
+      application:
+        name: XXX
+
+5、can not get cluster name in registry config 'service.vgroupMapping.my_test_group', please make sure registry config correct
+    可能是seata版本的问题，seata导入的配置有下划线
+    报错的是：
+    service.vgroupMapping.my_test_group
+    导入的是：
+    service.vgroup_mapping.my_test_group=default
+
+6、no available service found in cluster 'default', please make sure registry config correct and keep your seata server running
+   yml的配置文件与seata下的register.conf配置不一致，可以参考下面内容
+
+   registry:
+     type: nacos  # 注册中心类型，需与registry.conf配置文件中一致
+     nacos:
+       application: serverAddr # 服务名，需与registry.conf配置文件中一致
+       server-addr: 182.92.116.199:9999 # 注册中心的地址，需与registry.conf配置文件中一致
+       group: DEFAULT_GROUP # 服务的分组名，需与registry.conf配置文件中一致
+       namespace: 5e22d16b-da6c-4f3f-8f3a-41cb501f18e5 # nacos的命名空间ID，需与registry.conf配置文件中一致
+
+
+   type = "nacos"
+   nacos {
+     serverAddr = "182.92.116.199:9999"
+     namespace = "5e22d16b-da6c-4f3f-8f3a-41cb501f18e5"
+     cluster = "default"
+   }
+
+7、no available service ‘null‘ found, please make sure registry config correct
+   1、seata配置文件不对
+   2、yml配置文件与seata registry.conf不对应
+   3、springboot、seata版本不一致
+
+8、事务回滚方式
+   1、手动回滚
+       GlobalTransactionContext.reload(RootContext.getXID()).rollback();
+   2、FallBack+Aspect回滚
+
+9、异常不回滚
+   1、全局异常，统一返回Result（需要手动回滚）
+   2、FallBack服务降级，统一返回Result （需要手动回滚）

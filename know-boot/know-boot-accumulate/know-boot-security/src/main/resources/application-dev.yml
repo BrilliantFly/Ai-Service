@@ -1,0 +1,50 @@
+server:
+  port: 9003
+  servlet:
+    context-path: /security
+
+spring:
+  #easypoi启用覆盖,否则一下错误（nacos中单独配置，配置nacos中会启动报错）
+  # A bean with that name has already been defined in class path resource
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+  #  Failed to start bean 'documentationPluginsBootstrapper'; nested exception is java.lang.NullPointerE
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  #redis 配置
+  redis:
+    database: 0
+    host: 121.41.107.198
+    port: 10001
+    password: 123456789
+
+# Mybaits日志打印（mybatisplus日志、logging日志可以选择一个）
+logging:
+  level:
+    com.know.knowboot.mapper: debug
+
+know:
+  # 忽略鉴权url
+  ignore:
+    urls:
+      - /authority/login
+  jwt:
+    secret: qnAqsQa7600vrTBcr1WB8P8dg4cbgS5i8LZGjWnpREL # 密钥
+    expiration: 30 # token 有效期（S)
+    #限流器QPS设置
+  rateLimiter:
+    all:
+      #每秒生成令牌个数
+      permitsPerSecond: 1
+      #在warmupPeriod时间内RateLimiter会增加它的速率，在抵达它的稳定速率或者最大速率之前
+      warmupPeriod: 1
+    resource:
+      permitsPerSecond: 1
+      warmupPeriod: 1
+    interface:
+      permitsPerSecond: 1
+      warmupPeriod: 1
+  redisson:
+    address: redis://${spring.redis.host}:${spring.redis.port}

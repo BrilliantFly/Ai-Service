@@ -1,0 +1,13 @@
+package com.know.knowboot;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class GatewayKnowBootStarterApplicationTests {
+
+    @Test
+    void contextLoads() {
+    }
+
+}

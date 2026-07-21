@@ -1,0 +1,55 @@
+server:
+  port: 9001
+  servlet:
+    context-path: /system
+
+spring:
+  application:
+    name: system
+  main:
+    allow-circular-references: true
+  profiles:
+    # 当前激活环境
+    active: @profile.name@
+  cloud:
+    nacos:
+      # 注册中心
+      discovery:
+        # 指定nacos server的地址
+        server-addr: @discovery.server-addr@
+      config:
+        # 配置中心的地址(配置nacos服务地址)
+        server-addr: @config.server-addr@
+        # 配置命名空间（命名空间ID）
+        # 常用场景之一是不同环境的配置的区分隔离，例如开发测试环境和生产环境的资源（如配置、服务）隔离等
+        namespace: @config.namespace@
+        # 配置文件的环境（分配组）
+        group: @config.group@
+        # 配置文件后缀，用于拼接配置文件名称
+        file-extension: yaml
+        # 配置文件prefix前缀
+        prefix: ${spring.application.name}-${spring.profiles.active}
+        # 配置自动刷新
+        refresh: true
+
+seata:
+  enabled: true
+  # 事务的分组名（/opt/seata/script/config-center/config.txt）
+  tx-service-group: my_test_tx_group
+  service:
+    vgroupMapping:
+      my_test_tx_group: default # 使用default就好
+    disable-global-transaction: false
+  registry:
+    type: nacos  # 注册中心类型，需与registry.conf配置文件中一致
+    nacos:
+      application: seata-server # 服务名，需与registry.conf配置文件中一致
+      server-addr: @config.server-addr@ # 注册中心的地址，需与registry.conf配置文件中一致
+      group: SEATA_GROUP
+      namespace: 35f21db9-107d-4ecf-93f7-e5165847232e # nacos的命名空间ID，需与registry.conf配置文件中一致
+  config:
+    type: nacos
+    nacos:
+      serverAddr: @config.server-addr@
+      group: SEATA_GROUP
+      namespace: 35f21db9-107d-4ecf-93f7-e5165847232e

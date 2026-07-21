@@ -1,0 +1,50 @@
+1、com.sun.jersey.api.client.ClientHandlerException: java.net.ConnectException
+    #是否将自己注册到Eureka Server上，默认为true
+    eureka:
+      client:
+        register-with-eureka: false
+    #是否从Eureka Server上获取注册信息，默认为true
+        fetch-registry: false
+
+    原因：在默认设置下，Eureka服务注册中心也会将自己作为客户端来尝试注册它自己，所以我们需要禁用它的客户端注册行为。
+
+2、fallback method wasn't found: hystrixFail([])
+
+    @HystrixCommand(fallbackMethod = "fallbackHi")
+    public String getHi(String x) {
+        String msg = restTemplate.getForObject("http://jack/hi", String.class);
+        return msg;
+    }
+
+    public String fallbackHi(){
+        return "can't say hi";
+    }
+   这是因为指定的 备用方法 和 原方法 的参数个数，类型不同造成的；
+   即：参数与返回值一样
+   @HystrixCommand(fallbackMethod = "fallbackHi")
+   public String getHi(String x) {
+       String msg = restTemplate.getForObject("http://jack/hi", String.class);
+       return msg;
+   }
+
+   public String fallbackHi(String x){
+       return "can't say hi, and get: " + x;
+   }
+
+3、http://localhost:9002/hystrix
+    404，dashboard版本的原因
+    <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
+                <version>2.2.2.RELEASE</version>
+            </dependency>
+
+4、http://localhost:9002/actuator/hystrix.stream
+    Hystrix Dashboard界面一直loading的解决
+    可能没有访问数据，调用一次接口就可以了
+
+5、http://localhost:9002/turbine.stream
+  汇总监控turbine
+  能够使用turbine的前提条件时，
+  所有的服务必须在同一个服务注册中心（同一个eureka），
+  每个待监控的服务都必须有监控路径（/actuator/hystrix.stream）

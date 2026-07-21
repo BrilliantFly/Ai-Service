@@ -1,0 +1,7 @@
+1、详解
+    corn表达式在linux使用广泛，具体可以参考cron表达式详解以及在线Cron表达式生成器
+    initialDelay：启动后多久开始执行，单位时毫秒
+    fixedRate：下次执行时间，任务开始运行的时候就计时。
+    fixedDelay：下次执行时间，fixedDelay等任务进行完了才开始计时
+
+2、如果定时任务不执行，在application中开启定时任务

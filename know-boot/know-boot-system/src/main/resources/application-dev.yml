@@ -1,0 +1,161 @@
+# 项目配置
+like:
+  upload-directory: /opt/project/knowboot/data/  # 上传目录
+  unique-identification: know_boot_salt_v1  # 密码加密盐
+  # 验证码配置
+  captcha:
+    # 是否开启验证码
+    status: false
+    # 验证码有效时长
+    expire: 120
+    # 验证码缓存键名
+    token: "captcha:key:"
+  # Swagger配置
+  swagger:
+    # 是否开启swagger
+    enabled: true
+    # 请求前缀
+    pathMapping: /dev-api
+
+# 服务配置
+server:
+  port: 8082
+  servlet:
+    context-path: /
+
+# 框架配置
+spring:
+  mvc:
+    static-path-pattern: /adminapi/static/**
+    throw-exception-if-no-handler-found: true
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  # 数据源配置
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/know_boot_v1?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai
+    type: com.zaxxer.hikari.HikariDataSource # 数据源类型
+    driver-class-name: com.mysql.jdbc.Driver # MySql的驱动
+    username: root # 数据库账号
+    password: 123456aA@ # 数据库密码
+    hikari:
+      connection-timeout: 30000     # 等待连接分配连接的最大时长(毫秒),超出时长还没可用连接则发送SQLException,默认30秒
+      minimum-idle: 5               # 最小连接数
+      maximum-pool-size: 20         # 最大连接数
+      auto-commit: true             # 自动提交
+      idle-timeout: 600000          # 连接超时的最大时长(毫秒),超时则被释放(retired),默认10分钟
+      keepalive-time: 30000
+      pool-name: DateSourceHikariCP # 连接池名称
+      max-lifetime: 1800000         # 连接的生命时长(毫秒),超时而且没被使用则被释放,默认30分钟(1800000ms)
+      connection-init-sql: SELECT 1 # 连接时发起SQL测试脚本
+  # 限制配置
+  servlet:
+    multipart:
+      max-file-size: 100MB    # 文件上传大小限制
+      max-request-size: 100MB # 文件最大请求限制
+      enabled: true
+  # Redis配置
+  redis:
+    host: 127.0.0.1   # Redis服务地址
+    port: 6379        # Redis端口
+    password:         # Redis密码
+    database: 6       # 数据库索引
+    timeout: 5000     # 连接超时
+    lettuce:
+      pool:
+        max-wait: 30000 # 连接池最大阻塞等待时间(使用负数表示没有限制,默认-1)
+        max-active: 100 # 连接池最大连接数(使用负数表示没有限制,默认8)
+        max-idle: 20    # 连接池中的最大空闲连接(默认8)
+        min-idle: 0     # 连接池中的最小空闲连接(默认0)
+  main:
+    allow-circular-references: true
+    allow-bean-definition-overriding: true
+  autoconfigure:
+    exclude:
+      - com.alibaba.cloud.seata.feign.SeataFeignAutoConfiguration
+      - com.alibaba.cloud.seata.feign.SeataFeignClientAutoConfiguration
+# Mybatis-plus配置 (已包含内置分页插件)
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**Mapper.xml
+  typeAliasesPackage: com.know.**.mapper
+  global-config:
+    banner: false
+
+logging:
+  config:
+    classpath: logback-spring.xml
+  logback-spring:
+    path: E:\Ai-Master\know-boot\know-boot-system\logs
+    filename: system
+    max-history: 100
+  # mybatis的sql语句是debug下打印（mybatisplus日志、logging日志可以选择一个）
+  level:
+    com.know.knowboot.system.mapper: debug
+
+# Sa-token配置
+sa-token:
+  token-name: token  # token的名称
+  timeout: 2592000        # token有效期单位s(默认30天,-1代表永不过期)
+  activity-timeout: -1    # token临时有效期(指定时间无操作掉线)
+  is-concurrent: true     # 是否允许同一账号并发登录
+  is-share: false         # 多人同登账号共用token
+  token-style: random-64  # token生成的风格
+  is-print: false         # 打印版本字符画
+  is-log: false           # 是否输出操作日志
+
+know:
+  mode: standalone  # standalone=单机模式, microservice=分布式模式
+  generator:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    jdbc-url: jdbc:mysql://127.0.0.1:3306/flyp_dev?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+    user-name: root
+    password: 123456aA@
+    ignore-table: test
+    ignore-table-prefix: test_
+    ignore-table-suffix: _test
+    save-path: D:/DatabaseDocument/
+    version: 1.0.0
+    description: 自动生成SQL库文档
+  jwt:
+    secret: qnAqsQa7600vrTBcr1WB8P8dg4cbgS5i8LZGjWnpREL # 密钥
+    expiration: 30 # token 有效期（S)
+  #限流器QPS设置
+  rateLimiter:
+    all:
+      #每秒生成令牌个数
+      permitsPerSecond: 1
+      #在warmupPeriod时间内RateLimiter会增加它的速率，在抵达它的稳定速率或者最大速率之前
+      warmupPeriod: 1
+    resource:
+      permitsPerSecond: 1
+      warmupPeriod: 1
+    interface:
+      permitsPerSecond: 1
+      warmupPeriod: 1
+  ignore:
+    urls:
+      - ${server.servlet.context-path}/sys/user/**
+      - /schedule/**
+      - /habit/**
+  redisson:
+    enabled: false  # 禁用Redisson，需要Redis时改为true并启动Redis
+    address: redis://${spring.redis.host}:${spring.redis.port}
+  # 初始化配置
+  init:
+    tenant-data-initializer-enabled: true  # 启用租户数据初始化（PageHelper已移除）
+
+seata:
+  enabled: false  # 禁用Seata分布式事务（单机模式）
+
+# CORS跨域配置
+cors:
+  allowed-origins: "*"
+  allowed-methods: "*"
+  allowed-headers: "*"
+  allow-credentials: true
+  max-age: 3600
+
+feign:
+  circuitbreaker:
+    enabled: false
+  loadbalancer:
+    enabled: false

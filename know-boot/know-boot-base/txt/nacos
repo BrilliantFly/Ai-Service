@@ -1,0 +1,26 @@
+1、Error creating bean with name ‘configurationPropertiesBeans‘ defined in class path resource
+    原因是boot版本高于了cloud的引入包的版本或pom.xml发现是spring-boot的版本与nacos版本不一致的导致
+
+2、Nacos配置中心,拉取配置报NACOS SocketTimeoutException httpGet] currentServerAddr:http://localhost:8848，error超时
+    bootstrap.yml（bootstrap.properties）用来在程序引导时执行，应用于更加早期配置信息读取，如可以使用来配置application.yml中使用到参数等；
+    application.yml（application.properties) 应用程序特有配置信息，可以用来配置后续各个模块中需使用的公共参数等。
+    bootstrap.yml 先于 application.yml 加载
+    处理方案:
+    application.yml 更改为bootstrap.yml即可
+
+3、Nacos注册中心
+    java.net.ConnectException: [NACOS HTTP-POST] The maximum number of tolerable server reconnection errors has been reached
+    配置：
+    config:
+       enabled: false
+    如下：
+    spring:
+      cloud:
+        nacos:
+          # 注册中心
+          discovery:
+            # 指定nacos server的地址
+            server-addr: 182.92.116.199:9999
+          # 单独启动注册中心，没有配置中心，需要配置下面
+          config:
+            enabled: false

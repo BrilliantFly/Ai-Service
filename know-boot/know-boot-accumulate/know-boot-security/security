@@ -1,0 +1,69 @@
+1、Spring Boot configuration annotation processor not found in classpath
+      <dependency>
+           <groupId>org.springframework.boot</groupId>
+           <artifactId>spring-boot-configuration-processor</artifactId>
+           <optional>true</optional>
+      </dependency>
+
+2、相关配置
+     http.headers().frameOptions().disable();//开启运行iframe嵌套页面
+
+            http//1、配置权限认证
+                    .authorizeRequests()
+                    //配置不拦截路由
+                    .antMatchers("/500").permitAll()
+                    .antMatchers("/403").permitAll()
+                    .antMatchers("/404").permitAll()
+                    .antMatchers("/login").permitAll()
+                    .anyRequest() //任何其它请求
+                    .authenticated() //都需要身份认证
+                    .and()
+                    //2、登录配置表单认证方式
+                    .formLogin()
+                    .loginPage("/login")//自定义登录页面的url
+                    .usernameParameter("username")//设置登录账号参数，与表单参数一致
+                    .passwordParameter("password")//设置登录密码参数，与表单参数一致
+                    // 告诉Spring Security在发送指定路径时处理提交的凭证，默认情况下，将用户重定向回用户来自的页面。登录表单form中action的地址，也就是处理认证请求的路径，
+                    // 只要保持表单中action和HttpSecurity里配置的loginProcessingUrl一致就可以了，也不用自己去处理，它不会将请求传递给Spring MVC和您的控制器，所以我们就不需要自己再去写一个/user/login的控制器接口了
+                    .loginProcessingUrl("/user/login")//配置默认登录入口
+                    .defaultSuccessUrl("/index")//登录成功后默认的跳转页面路径
+                    .failureUrl("/login?error=true")
+                    .successHandler(loginSuccessHandler)//使用自定义的成功结果处理器
+                    .failureHandler(loginFailureHandler)//使用自定义失败的结果处理器
+                    .and()
+                    //3、注销
+                    .logout()
+                    .logoutUrl("/logout")
+                    .logoutSuccessHandler(new CustomLogoutSuccessHandler())
+                    .permitAll()
+                    .and()
+                    //4、session管理
+                    .sessionManagement()
+                    .invalidSessionUrl("/login") //失效后跳转到登陆页面
+                    //单用户登录，如果有一个登录了，同一个用户在其他地方登录将前一个剔除下线
+                    //.maximumSessions(1).expiredSessionStrategy(expiredSessionStrategy())
+                    //单用户登录，如果有一个登录了，同一个用户在其他地方不能登录
+                    //.maximumSessions(1).maxSessionsPreventsLogin(true) ;
+                    .and()
+                    //5、禁用跨站csrf攻击防御
+                    .csrf()
+                    .disable();
+
+3、使用
+    1、基础配置
+        配置菜单（包括按钮），赋予相应角色的相应权限
+        按钮类参考：user:add
+    2、Security
+        1、登录
+            1、SecurityConfig（WebSecurityConfigurerAdapter）拦截，登录请求放行
+            2、登录
+        2、用户请求
+            1、SecurityConfig（WebSecurityConfigurerAdapter）拦截，登录请求放行
+                访问url是否需要权限
+                     1、不需要：放行
+                     2、需要：下一步
+            2、BasicAuthenticationFilter认证（用户）、鉴权（用户拥有资源）
+                1、通过token获取权限信息
+                2、根据访问信息（url）查看是否有权限
+            3、前端登录之后，获取权限，根据权限对菜单、按钮进行展示或隐藏（一般是指按钮）
+            4、后端控制层，根据用户是否拥有权限，控制接口是否访问

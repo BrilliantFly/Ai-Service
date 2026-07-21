@@ -1,0 +1,15 @@
+server:
+  port: 9002
+  servlet:
+    context-path: /api
+
+logging:
+  config:
+    classpath: logback-spring.xml
+  logback-spring:
+    path: D:\var\logs\system
+    filename: system
+    max-history: 100
+  # mybatis的sql语句是debug下打印（mybatisplus日志、logging日志可以选择一个）
+  level:
+    com.know.knowboot.system.mapper: debug

@@ -1,0 +1,87 @@
+server:
+  port: 9002
+
+#是否将自己注册到Eureka Server上，默认为true
+eureka:
+  client:
+    register-with-eureka: false
+    #是否从Eureka Server上获取注册信息，默认为true
+    fetch-registry: false
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
+      routes:
+        - id: get_route
+#          uri: http://127.0.0.1:9088
+          uri: http://localhost:9001
+          predicates:
+            - Method=GET
+          filters:
+            # 重试
+            - name: Retry
+              args:
+                # 重试次数
+                retries: 5
+                # SERVER_ERROR，下游服务报5XX系列的错误触发重试机制
+                # 哪些状态码才会进行重试，默认值是 SERVER_ERROR，可以配置多个，其他的取值是 INFORMATIONAL, SUCCESSFUL, REDIRECTION, CLIENT_ERROR
+                # NFORMATIONAL(1), SUCCESSFUL(2), REDIRECTION(3), CLIENT_ERROR(4), SERVER_ERROR(5)
+                series: SERVER_ERROR
+                # BAD_GATEWAY,INTERNAL_SERVER_ERROR,SERVICE_UNAVAILABLE #500，502状态重试
+                statuses: BAD_GATEWAY
+                # 重试的HTTP方法
+                # 哪些方法需要进行重试，默认值是 GET，就是 Http 的那些 Method，还有 HEAD, POST, PUT, PATCH, DELETE, OPTIONS 等
+                methods: GET,POST
+#                backoff:
+#                  # 开始重试的时间
+#                  firstBackoff: 10ms
+#                  # 最大重试的时间
+#                  maxBackoff: 50ms
+#                  # 重试因子
+#                  factor: 2
+#                  # 当设置为false时候 计算重试值变成： firstBackoff * (factor ^ n)
+#                  # 当设置为true时候 计算重试值变成： prevBackoff * factor
+#                  basedOnPreviousValue: false
+                # 指定哪些异常需要进行重试逻辑，默认值是 java.io.IOException
+                exceptions:
+                  - java.io.IOException
+
+            #熔断
+            - name: Hystrix
+              args:
+                name: localfallback
+                # 熔断调用的地址
+                fallbackUri: forward:/fallback
+
+            # 限流
+            - name: RequestRateLimiter
+              args:
+                # 允许用户每秒处理多少个请求（牌桶每秒填充平均速率）
+                redis-rate-limiter.replenishRate: 10
+                # 令牌桶的容量，允许在一秒钟内完成的最大请求数
+                redis-rate-limiter.burstCapacity: 20
+                # 使用SpEL按名称引用bean
+                key-resolver: "#{@apiKeyResolver}"
+
+  redis:
+    #redis数据库索引(默认为0)
+    database: 0
+    #redis服务器地址
+    host: 182.92.116.199
+    #redis服务器连接端口
+    port: 6379
+
+## 整合Rabbon负载均衡
+## 服务名
+#load-balanced-service:
+#  ribbon:
+#    # 负载地址
+#    listOfServers: http://localhost:8072, http://localhost:8073
+#    # 负载轮询策略
+#    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RoundRobinRule
+#    # 健康检查
+#    NFLoadBalancerPingClassName: com.modules.scistor.config.HealthExamination

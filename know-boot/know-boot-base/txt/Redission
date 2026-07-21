@@ -1,0 +1,30 @@
+1、限流框架
+    1、spring cloud gateway集成redis限流,但属于网关层限流
+    2、阿里Sentinel,功能强大、带监控平台
+    3、srping cloud hystrix，属于接口层限流，提供线程池与信号量两种方式
+    4、其他：redission
+
+2、redis连接错误：ERR Client sent AUTH, but no password is set解决方案２个
+    使用jedis或redisson连接redis时，如果redis没有密码，但在配置文件中写为
+    spring:
+    	redis:
+    	    database: 0
+    	    host: 127.0.0.1
+    	    password:
+    	    port: 6379
+    	    timeout: 10000
+    通常会报错：　ERR Client sent AUTH, but no password is set
+    原因分析：把上面的文字翻译其实就知道了，客户端设置了auth认证，但没设置密码。
+    解决方案－：
+    　　在redis配置文件中redis.conf加入：
+        requirePass: 你的密码
+    解决方案二：
+    　　把上面的配置中password一行去掉，既然没密码，就不要写。
+    spring:
+    	redis:
+    	    database: 0
+    	    host: 127.0.0.1
+    	    port: 6379
+    	    timeout: 10000
+
+3、Redission令牌桶

@@ -1,0 +1,56 @@
+server:
+  port: 8083
+
+spring:
+  main:
+    allow-circular-references: true
+  application:
+    name: know-boot-plan
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/know_boot_v1?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 123456aA@
+  redis:
+    host: localhost
+    port: 6379
+    database: 6
+    timeout: 5000
+    lettuce:
+      pool:
+        max-active: 100
+        max-idle: 20
+        min-idle: 0
+        max-wait: 30000
+
+# MyBatis Plus
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
+  type-aliases-package: com.know.knowboot.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# 日志配置
+logging:
+  level:
+    com.know.knowboot: debug
+
+# 限流配置
+know:
+  rateLimiter:
+    all:
+      permitsPerSecond: 100
+      warmupPeriod: 0
+      maxConcurrent: 1000
+    resource:
+      permitsPerSecond: 100
+      warmupPeriod: 0
+      maxConcurrent: 500
+    interface:
+      permitsPerSecond: 50
+      warmupPeriod: 0
+      maxConcurrent: 200

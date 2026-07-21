@@ -1,0 +1,684 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.know</groupId>
+    <artifactId>know-boot</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>know-boot</name>
+    <description>Demo project for Spring Boot</description>
+
+    <!--父工程必须声明-->
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.6.6</version>
+        <!--降低springboot版本-->
+        <!--        <version>2.3.5.RELEASE</version>-->
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <!--声明子模块-->
+    <modules>
+        <module>know-boot-base</module>
+        <module>know-boot-start</module>
+        <module>know-boot-system</module>
+        <module>know-boot-api</module>
+        <module>know-boot-accumulate</module>
+        <module>know-boot-common</module>
+        <module>know-boot-camera</module>
+        <module>know-boot-plan</module>
+    </modules>
+
+    <!--配置依赖-->
+    <properties>
+        <knowboot.version>0.0.1-SNAPSHOT</knowboot.version>
+        <java.version>1.8</java.version>
+
+        <!-- 微服务 -->
+        <spring-cloud.version>2021.0.1</spring-cloud.version>
+        <spring-cloud-alibaba.version>2021.1</spring-cloud-alibaba.version>
+        <xxl-job-core.version>2.2.0</xxl-job-core.version>
+
+        <!-- 数据库驱动 -->
+<!--        <mysql-connector-java.version>8.0.27</mysql-connector-java.version>-->
+        <!--降低版本，解决seata  Cannot construct instance of `java.time.LocalDateTime` 问题-->
+        <mysql-connector-java.version>8.0.22</mysql-connector-java.version>
+        <flyway-core.version>7.15.0</flyway-core.version>
+        <!--        <postgresql.version>42.2.25</postgresql.version>-->
+        <!--        <ojdbc6.version>11.2.0.3</ojdbc6.version>-->
+        <!--        <sqljdbc4.version>4.0</sqljdbc4.version>-->
+        <!--        <sqlite-jdbc.version>3.21.0.1</sqlite-jdbc.version>-->
+        <!--        <hutool.version>5.3.8</hutool.version>-->
+
+        <!-- 持久层 -->
+        <mybatis-plus.version>3.5.2</mybatis-plus.version>
+        <mybatis-plus-join.version>1.2.4</mybatis-plus-join.version>
+        <pagehelper.version>1.4.5</pagehelper.version>
+
+        <!-- 动态切换数据源 -->
+        <dynamic-datasource-spring-boot-starter.version>3.5.1</dynamic-datasource-spring-boot-starter.version>
+        <druid.version>1.1.22</druid.version>
+        <redisson.version>3.11.0</redisson.version>
+
+        <!-- 工具包 -->
+        <hutool-all.version>5.8.1</hutool-all.version>
+        <fastjson.version>1.2.44</fastjson.version>
+        <mapstruct-jdk8.version>1.3.0.Final</mapstruct-jdk8.version>
+        <mapstruct-processor.version>1.3.0.Final</mapstruct-processor.version>
+        <springfox-boot-starter.version>3.0.0</springfox-boot-starter.version>
+        <knife4j-spring-boot-starter.version>3.0.3</knife4j-spring-boot-starter.version>
+        <guava.version>21.0</guava.version>
+        <commons-collections4.version>4.3</commons-collections4.version>
+        <easypoi.version>4.0.0</easypoi.version>
+
+        <!-- jwt -->
+        <java-jwt.version>3.8.1</java-jwt.version>
+        <jjwt.version>0.11.2</jjwt.version>
+
+
+        <commons-lang3.version>3.4</commons-lang3.version>
+
+        <fastJson2.version>2.0.16</fastJson2.version>
+
+        <kaptcha.version>2.3.2</kaptcha.version>
+        <bitwalker.version>1.2.4</bitwalker.version>
+        <oshi-core.version>6.1.2</oshi-core.version>
+        <sa-token.version>1.32.0</sa-token.version>
+        <sa-token-redis.version>1.32.0</sa-token-redis.version>
+        <easyexcel.version>3.1.3</easyexcel.version>
+        <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
+
+        <qiniu.version>7.17.0</qiniu.version>
+        <qcloud-version>5.6.54</qcloud-version>
+        <tencentcloudapi.version>3.1.411</tencentcloudapi.version>
+        <aliyun-oss.version>3.10.2</aliyun-oss.version>
+        <aliyun-java.version>4.5.16</aliyun-java.version>
+
+        <weixin.version>4.4.0</weixin.version>
+
+        <fastJson2.version>2.0.16</fastJson2.version>
+        <commons-lang3.version>3.12.0</commons-lang3.version>
+        <commons.io.version>2.11.0</commons.io.version>
+        <commons-pool2.version>2.11.1</commons-pool2.version>
+        <google-gson.version>2.9.0</google-gson.version>
+        <!--        <lombok.version>1.18.10</lombok.version>-->
+        <!--        <gson.version>2.8.2</gson.version>-->
+    </properties>
+
+    <!--统一版本号管理-->
+    <!--dependencyManagement元素提供了一种管理依赖版本号的方式。
+    在dependencyManagement元素中声明所依赖的jar包的版本号等信息，那么所有子项目再次引入此依赖jar包时则无需显式的列出版本号。
+    Maven会沿着父子层级向上寻找拥有dependencyManagement 元素的项目，然后使用它指定的版本号。-->
+    <!--如果有多个子项目都引用同一样依赖，则可以避免在每个使用的子项目里都声明一个版本号。
+    当想升级或切换到另一个版本时，只需要在顶层父容器里更新，而不需要逐个修改子项目；
+    另外如果某个子项目需要另外的一个版本，只需要声明version即可。-->
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- spring-cloud-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- spring-cloud-alibaba -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!--Mybatis-Plus 注意版本-->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+                <version>${dynamic-datasource-spring-boot-starter.version}</version>
+            </dependency>
+
+
+            <!--数据库连接驱动-->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql-connector-java.version}</version>
+            </dependency>
+            <!-- druid -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>${flyway-core.version}</version>
+            </dependency>
+
+            <!-- swagger3 在 dependencyManagement 引入的原因是：swagger3 如果在dependencies，所有的下级模块如果不
+                 依赖base模块，因为版本不兼容问题，就会报错
+                 Failed to start bean 'documentationPluginsBootstrapper'; nested exception is java.lang.NullPointerException -->
+            <!--swagger3-->
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-boot-starter</artifactId>
+                <version>${springfox-boot-starter.version}</version>
+            </dependency>
+            <!--swagger文档增强工具knife4j使用详解-->
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-spring-boot-starter</artifactId>
+                <version>${knife4j-spring-boot-starter.version}</version>
+            </dependency>
+
+
+            <!-- Pool2 -->
+<!--            <dependency>-->
+<!--                <groupId>org.apache.commons</groupId>-->
+<!--                <artifactId>commons-pool2</artifactId>-->
+<!--                <version>${commons-pool2.version}</version>-->
+<!--            </dependency>-->
+
+            <!-- MyBatis-Plus-Join -->
+            <dependency>
+                <groupId>com.github.yulichang</groupId>
+                <artifactId>mybatis-plus-join</artifactId>
+                <version>${mybatis-plus-join.version}</version>
+            </dependency>
+            <!-- MyBatis-PageHelper (已移除，使用MyBatis-Plus内置分页插件) -->
+            <!-- <dependency> -->
+            <!--     <groupId>com.github.pagehelper</groupId> -->
+            <!--     <artifactId>pagehelper-spring-boot-starter</artifactId> -->
+            <!--     <version>${pagehelper.version}</version> -->
+            <!-- </dependency> -->
+
+            <!-- Pool2 -->
+<!--            <dependency>-->
+<!--                <groupId>org.apache.commons</groupId>-->
+<!--                <artifactId>commons-pool2</artifactId>-->
+<!--                <version>${commons-pool2.version}</version>-->
+<!--            </dependency>-->
+
+            <!-- Fastjson2 -->
+            <dependency>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>${fastJson2.version}</version>
+            </dependency>
+
+
+            <!-- kaptCha -->
+            <dependency>
+                <groupId>com.github.penggle</groupId>
+                <artifactId>kaptcha</artifactId>
+                <version>${kaptcha.version}</version>
+            </dependency>
+
+            <!-- SaToken -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-spring-boot-starter</artifactId>
+                <version>${sa-token.version}</version>
+            </dependency>
+
+            <!-- SaToken-Redis -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-dao-redis-jackson</artifactId>
+                <version>${sa-token-redis.version}</version>
+            </dependency>
+
+            <!-- Quartz-Scheduler -->
+            <dependency>
+                <groupId>org.quartz-scheduler</groupId>
+                <artifactId>quartz</artifactId>
+                <version>${quartz-scheduler.version}</version>
+            </dependency>
+
+            <!-- Gson工具 -->
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${google-gson.version}</version>
+            </dependency>
+
+            <!-- UA工具 -->
+            <dependency>
+                <groupId>nl.bitwalker</groupId>
+                <artifactId>UserAgentUtils</artifactId>
+                <version>${bitwalker.version}</version>
+            </dependency>
+
+            <!-- Str工具 -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
+            </dependency>
+
+            <!-- IO工具 -->
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons.io.version}</version>
+            </dependency>
+
+            <!-- 七牛云OSS -->
+            <dependency>
+                <groupId>com.qiniu</groupId>
+                <artifactId>qiniu-java-sdk</artifactId>
+                <version>${qiniu.version}</version>
+            </dependency>
+
+            <!-- 腾讯云COS -->
+            <dependency>
+                <groupId>com.qcloud</groupId>
+                <artifactId>cos_api</artifactId>
+                <version>${qcloud-version}</version>
+            </dependency>
+
+            <!-- 阿里云OSS -->
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>${aliyun-oss.version}</version>
+            </dependency>
+
+            <!-- 腾讯云短信 -->
+            <dependency>
+                <groupId>com.tencentcloudapi</groupId>
+                <artifactId>tencentcloud-sdk-java</artifactId>
+                <version>${tencentcloudapi.version}</version>
+            </dependency>
+
+            <!-- 阿里云短信 -->
+            <dependency>
+                <groupId>com.aliyun</groupId>
+                <artifactId>aliyun-java-sdk-core</artifactId>
+                <version>${aliyun-java.version}</version>
+            </dependency>
+
+            <!-- EasyExcel -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>${easyexcel.version}</version>
+            </dependency>
+
+            <!-- 系统监控 -->
+            <dependency>
+                <groupId>com.github.oshi</groupId>
+                <artifactId>oshi-core</artifactId>
+                <version>${oshi-core.version}</version>
+            </dependency>
+
+            <!-- Swagger3 -->
+<!--            <dependency>-->
+<!--                <groupId>io.springfox</groupId>-->
+<!--                <artifactId>springfox-boot-starter</artifactId>-->
+<!--                <version>3.0.0</version>-->
+<!--            </dependency>-->
+
+            <!-- 微信小程序 -->
+            <dependency>
+                <groupId>com.github.binarywang</groupId>
+                <artifactId>weixin-java-miniapp</artifactId>
+                <version>${weixin.version}</version>
+            </dependency>
+
+            <!-- 微信公众号 -->
+            <dependency>
+                <groupId>com.github.binarywang</groupId>
+                <artifactId>weixin-java-mp</artifactId>
+                <version>${weixin.version}</version>
+            </dependency>
+
+            <!-- 微信支付 -->
+            <dependency>
+                <groupId>com.github.binarywang</groupId>
+                <artifactId>weixin-java-pay</artifactId>
+                <version>${weixin.version}</version>
+            </dependency>
+
+            <!--            &lt;!&ndash;sqlite&ndash;&gt;-->
+            <!--            <dependency>-->
+            <!--                <groupId>org.xerial</groupId>-->
+            <!--                <artifactId>sqlite-jdbc</artifactId>-->
+            <!--                <version>${sqlite-jdbc.version}</version>-->
+            <!--            </dependency>-->
+
+            <!-- 模块统一版本控制 -->
+            <dependency>
+                <groupId>com.know</groupId>
+                <artifactId>know-boot-base</artifactId>
+                <version>${knowboot.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.know</groupId>
+                <artifactId>know-boot-common</artifactId>
+                <version>${knowboot.version}</version>
+            </dependency>
+
+            <!-- 模块统一版本控制 -->
+            <dependency>
+                <groupId>com.know</groupId>
+                <artifactId>know-boot-core</artifactId>
+                <version>${knowboot.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.know</groupId>
+                <artifactId>cloud-know-boot-starter</artifactId>
+                <version>${knowboot.version}</version>
+            </dependency>
+
+<!--            <dependency>-->
+<!--                <groupId>com.know</groupId>-->
+<!--                <artifactId>generator-know-boot-starter</artifactId>-->
+<!--                <version>${knowboot.version}</version>-->
+<!--            </dependency>-->
+
+            <dependency>
+                <groupId>com.know</groupId>
+                <artifactId>utils-know-boot-starter</artifactId>
+                <version>${knowboot.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.know</groupId>
+                <artifactId>workflow-know-boot-starter</artifactId>
+                <version>${knowboot.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+
+        <!-- 基础依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Web 基本注解(包含了JsonFormat、http工具类等注解) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+
+        <!-- 工具包 -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool-all.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
+        </dependency>
+        <!-- CollectionUtils -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>${commons-collections4.version}</version>
+        </dependency>
+        <!-- 令牌桶 -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+        <!-- IOUtils、FileUtils -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
+        <!-- RandomStringUtils -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+        </dependency>
+
+        <!-- bean属性转换工具 -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-jdk8</artifactId>
+            <version>${mapstruct-jdk8.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>${mapstruct-processor.version}</version>
+        </dependency>
+
+        <!-- 校验框架 hibernate-validator -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- 切面 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+        <!-- 支持 @ConfigurationProperties 注解 读取properties或yml配置文件中的值 -->
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-configuration-processor</artifactId>-->
+        <!--            <optional>true</optional>-->
+        <!--        </dependency>-->
+
+        <!-- 缓存 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <!-- ehcache -->
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+        </dependency>
+
+        <!-- jwt -->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>${java-jwt.version}</version>
+        </dependency>
+
+        <!-- jjwt -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <!-- jackson序列化 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <!-- redis依赖commons-pool 这个依赖一定要添加 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+        </dependency>
+        <!-- redisson -->
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+            <version>${redisson.version}</version>
+        </dependency>
+        <!-- jetcache缓存框架 -->
+        <dependency>
+            <groupId>com.alicp.jetcache</groupId>
+            <artifactId>jetcache-starter-redis</artifactId>
+            <version>2.6.2</version>
+        </dependency>
+
+        <!-- Fastjson2 -->
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <version>${fastJson2.version}</version>
+        </dependency>
+
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
+    <!-- 环境 -->
+    <!--yml 使用方式 @profile.name@-->
+    <profiles>
+        <!-- 开发 -->
+        <profile>
+            <id>dev</id>
+            <activation>
+                <!--默认激活配置-->
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!--当前环境-->
+                <profile.name>dev</profile.name>
+                <!--配置文件前缀-->
+                <prefix.name>know</prefix.name>
+                <!--Nacos配置中心地址-->
+                <config.server-addr>39.98.108.121:10006</config.server-addr>
+                <!--Nacos配置中心命名空间,用于支持多环境.这里必须使用ID，不能使用名称,默认为空-->
+                <config.namespace>ab16776b-dae9-474e-8943-7bbbc627b637</config.namespace>
+                <!--Nacos用户名-->
+                <config.username>nacos</config.username>
+                <!--Nacos密码-->
+                <config.password>nacos</config.password>
+                <!--Nacos配置分组名称-->
+                <config.group>DEFAULT_GROUP</config.group>
+                <!--Nacos服务发现地址-->
+                <discovery.server-addr>39.98.108.121:10006</discovery.server-addr>
+            </properties>
+        </profile>
+        <!-- 测试 -->
+        <profile>
+            <id>test</id>
+            <properties>
+                <!--当前环境-->
+                <profile.name>test</profile.name>
+                <!--配置文件前缀-->
+                <prefix.name>know</prefix.name>
+                <!--Nacos配置中心地址-->
+                <config.server-addr>39.98.108.121:10006</config.server-addr>
+                <!--Nacos配置中心命名空间,用于支持多环境.这里必须使用ID，不能使用名称,默认为空-->
+                <config.namespace>a1b8a687-12bd-4f36-8b2f-c93cc521c5c5</config.namespace>
+                <!--Nacos用户名-->
+                <config.username>nacos</config.username>
+                <!--Nacos密码-->
+                <config.password>nacos</config.password>
+                <!--Nacos配置分组名称-->
+                <config.group>DEFAULT_GROUP</config.group>
+                <!--Nacos服务发现地址-->
+                <discovery.server-addr>39.98.108.121:10006</discovery.server-addr>
+            </properties>
+        </profile>
+        <!-- 生产 -->
+        <profile>
+            <id>prod</id>
+            <properties>
+                <!--当前环境,生产环境为空-->
+                <profile.name>prod</profile.name>
+                <!--配置文件前缀-->
+                <prefix.name>know</prefix.name>
+                <!--Nacos配置中心地址-->
+                <config.server-addr>39.98.108.121:10006</config.server-addr>
+                <!--Nacos配置中心命名空间,用于支持多环境.这里必须使用ID，不能使用名称,默认为空-->
+                <config.namespace>a1b8a687-12bd-4f36-8b2f-c93cc521c5c5</config.namespace>
+                <!--Nacos用户名-->
+                <config.username>nacos</config.username>
+                <!--Nacos密码-->
+                <config.password>nacos</config.password>
+                <!--Nacos配置分组名称-->
+                <config.group>DEFAULT_GROUP</config.group>
+                <!--Nacos服务发现地址-->
+                <discovery.server-addr>39.98.108.121:10006</discovery.server-addr>
+            </properties>
+        </profile>
+        <!-- SpringCloud运行环境 -->
+        <profile>
+            <id>SpringCloud</id>
+            <properties>
+                <!--微服务模式下修改为true, system模块跳过打包插件，否则微服务无法引用-->
+                <skip.springboot.maven>true</skip.springboot.maven>
+            </properties>
+            <modules>
+                <!-- 微服务模块 -->
+<!--                <module>jeecg-boot-starter</module>-->
+<!--                <module>jeecg-cloud-module</module>-->
+            </modules>
+        </profile>
+    </profiles>
+
+</project>

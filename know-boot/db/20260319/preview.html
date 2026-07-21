@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>底部导航配置 - 效果图</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ant-design-vue@4.2.5/dist/reset.css"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ant-design-vue@4.2.5/dist/antd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f2f5; min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+        .header { background: #fff; padding: 16px 24px; border-radius: 8px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .header h1 { font-size: 20px; color: #333; font-weight: 600; }
+        .content { display: grid; grid-template-columns: 1fr 400px; gap: 24px; }
+        .panel { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .panel-header { padding: 16px 24px; border-bottom: 1px solid #f0f0f0; }
+        .panel-title { font-size: 16px; font-weight: 500; color: #333; }
+        .panel-body { padding: 24px; }
+        .form-item { margin-bottom: 20px; }
+        .form-label { font-size: 14px; color: #666; margin-bottom: 8px; display: block; }
+        .color-picker { display: flex; align-items: center; gap: 12px; }
+        .color-box { width: 32px; height: 32px; border-radius: 4px; border: 1px solid #d9d9d9; cursor: pointer; }
+        .color-input { flex: 1; height: 32px; border: 1px solid #d9d9d9; border-radius: 4px; padding: 0 12px; font-size: 14px; }
+        .btn { padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+        .btn-primary { background: #1890ff; color: #fff; }
+        .btn-primary:hover { background: #40a9ff; }
+        .btn-default { background: #fff; border: 1px solid #d9d9d9; color: #333; }
+        .btn-default:hover { border-color: #1890ff; color: #1890ff; }
+        .btn-link { background: none; border: none; color: #1890ff; padding: 0; }
+        .btn-link:hover { color: #40a9ff; }
+        .btn-danger { color: #ff4d4f; }
+        .btn-danger:hover { color: #ff7875; }
+        .actions { display: flex; gap: 8px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px 8px; text-align: left; border-bottom: 1px solid #f0f0f0; }
+        th { font-size: 14px; color: #333; font-weight: 500; background: #fafafa; }
+        td { font-size: 14px; color: #666; }
+        .icon-preview { width: 32px; height: 32px; background: #f5f5f5; border-radius: 4px; display: flex; align-items: center; justify-content: center; }
+        .icon-preview img { width: 24px; height: 24px; }
+        .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+        .tag-default { background: #f5f5f5; color: #666; }
+        .tag-active { background: #e6f7ff; color: #1890ff; }
+        .phone-frame { background: #fff; border-radius: 40px; border: 8px solid #333; padding: 8px; max-width: 375px; margin: 0 auto; }
+        .phone-screen { background: #f5f5f5; border-radius: 24px; overflow: hidden; height: 667px; position: relative; }
+        .phone-header { background: #fff; height: 44px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #eee; font-size: 16px; font-weight: 500; }
+        .phone-content { height: calc(667px - 44px - 80px); overflow-y: auto; padding: 16px; }
+        .phone-tabbar { height: 80px; background: #fff; display: flex; justify-content: space-around; align-items: flex-end; padding-bottom: 16px; border-top: 1px solid #eee; }
+        .tabbar-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .tabbar-item img { width: 24px; height: 24px; margin-bottom: 4px; }
+        .tabbar-item span { font-size: 10px; color: #999; }
+        .tabbar-item.active span { color: #1890ff; }
+        .tabbar-big { width: 48px; height: 48px; background: #1890ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(24,144,255,0.4); }
+        .tabbar-big span { color: #fff; font-size: 20px; }
+        .mobile-preview { position: sticky; top: 24px; }
+        .tab-nav { display: flex; border-bottom: 1px solid #f0f0f0; }
+        .tab-item { padding: 12px 24px; font-size: 14px; color: #666; cursor: pointer; border-bottom: 2px solid transparent; }
+        .tab-item.active { color: #1890ff; border-bottom-color: #1890ff; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .modal { background: #fff; border-radius: 8px; width: 500px; max-height: 80vh; overflow-y: auto; }
+        .modal-header { padding: 16px 24px; border-bottom: 1px solid #f0f0f0; font-size: 16px; font-weight: 500; }
+        .modal-body { padding: 24px; }
+        .modal-footer { padding: 16px 24px; border-top: 1px solid #f0f0f0; display: flex; justify-content: flex-end; gap: 8px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .switch { width: 44px; height: 22px; background: #ccc; border-radius: 11px; position: relative; cursor: pointer; transition: background 0.2s; }
+        .switch.on { background: #1890ff; }
+        .switch::after { content: ''; position: absolute; width: 18px; height: 18px; background: #fff; border-radius: 50%; top: 2px; left: 2px; transition: left 0.2s; }
+        .switch.on::after { left: 24px; }
+        .select { height: 32px; border: 1px solid #d9d9d9; border-radius: 4px; padding: 0 12px; font-size: 14px; width: 100%; }
+        .input { height: 32px; border: 1px solid #d9d9d9; border-radius: 4px; padding: 0 12px; font-size: 14px; width: 100%; }
+        .space-between { display: flex; justify-content: space-between; align-items: center; }
+        .mt-4 { margin-top: 16px; }
+        .mb-2 { margin-bottom: 8px; }
+        .text-center { text-align: center; }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="container">
+            <div class="header">
+                <h1>系统设置 / 底部导航</h1>
+            </div>
+            
+            <div class="content">
+                <div class="main">
+                    <div class="panel">
+                        <div class="tab-nav">
+                            <div class="tab-item" :class="{active: activeTab === 'style'}" @click="activeTab = 'style'">样式配置</div>
+                            <div class="tab-item" :class="{active: activeTab === 'list'}" @click="activeTab = 'list'">导航管理</div>
+                        </div>
+                        
+                        <div class="panel-body" v-show="activeTab === 'style'">
+                            <div class="form-item">
+                                <label class="form-label">默认颜色</label>
+                                <div class="color-picker">
+                                    <div class="color-box" :style="{backgroundColor: styleConfig.defaultColor}"></div>
+                                    <input type="text" class="color-input" v-model="styleConfig.defaultColor">
+                                </div>
+                            </div>
+                            <div class="form-item">
+                                <label class="form-label">选中颜色</label>
+                                <div class="color-picker">
+                                    <div class="color-box" :style="{backgroundColor: styleConfig.selectedColor}"></div>
+                                    <input type="text" class="color-input" v-model="styleConfig.selectedColor">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" @click="saveStyle">保存样式</button>
+                        </div>
+                        
+                        <div class="panel-body" v-show="activeTab === 'list'">
+                            <div class="space-between mb-2">
+                                <button class="btn btn-primary" @click="openAddModal">添加导航</button>
+                                <button class="btn btn-default" @click="saveSort">保存排序</button>
+                            </div>
+                            
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width:60px">拖拽</th>
+                                        <th style="width:80px">图标</th>
+                                        <th>名称</th>
+                                        <th style="width:100px">类型</th>
+                                        <th style="width:100px">大按钮</th>
+                                        <th style="width:200px">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(item, index) in tabList" :key="item.id">
+                                        <td>
+                                            <span style="cursor:move;color:#999">≡</span>
+                                        </td>
+                                        <td>
+                                            <div class="icon-preview">
+                                                <img :src="item.selected" alt="">
+                                            </div>
+                                        </td>
+                                        <td>{{item.name}}</td>
+                                        <td><span class="tag" :class="item.link.type === 'shop' ? 'tag-active' : 'tag-default'">{{getTypeName(item.link.type)}}</span></td>
+                                        <td>
+                                            <span class="tag" :class="item.isBig === 1 ? 'tag-active' : 'tag-default'">
+                                                {{item.isBig === 1 ? '是(位置'+item.bigPosition+')' : '否'}}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="actions">
+                                                <button class="btn btn-link" @click="openEditModal(item)">编辑</button>
+                                                <button class="btn btn-link" v-if="item.isBig !== 1" @click="openBigModal(item)">大按钮</button>
+                                                <button class="btn btn-link btn-danger" v-else @click="cancelBig(item)">取消</button>
+                                                <button class="btn btn-link btn-danger" @click="deleteItem(index)">删除</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mobile-preview">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <div class="panel-title text-center">手机预览</div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="phone-frame">
+                                <div class="phone-screen">
+                                    <div class="phone-header">首页</div>
+                                    <div class="phone-content">
+                                        <div style="background:#e3e3e3;height:150px;border-radius:8px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;color:#999">
+                                            轮播图区域
+                                        </div>
+                                        <div style="background:#e3e3e3;height:100px;border-radius:8px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;color:#999">
+                                            内容区域
+                                        </div>
+                                    </div>
+                                    <div class="phone-tabbar">
+                                        <div class="tabbar-item" v-for="(item, index) in tabList" :key="item.id" :class="{active: currentTab === index}">
+                                            <template v-if="item.isBig === 1">
+                                                <div class="tabbar-big">
+                                                    <span>+</span>
+                                                </div>
+                                            </template>
+                                            <template v-else>
+                                                <img :src="currentTab === index ? item.selected : item.unselected" alt="">
+                                                <span>{{item.name}}</span>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 编辑弹窗 -->
+        <div class="modal-overlay" v-if="showModal" @click.self="showModal = false">
+            <div class="modal">
+                <div class="modal-header">{{editItem.id ? '编辑导航' : '添加导航'}}</div>
+                <div class="modal-body">
+                    <div class="form-item">
+                        <label class="form-label">名称</label>
+                        <input type="text" class="input" v-model="editItem.name" placeholder="导航名称">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-item">
+                            <label class="form-label">未选中图标</label>
+                            <input type="text" class="input" v-model="editItem.unselected" placeholder="图标URL">
+                        </div>
+                        <div class="form-item">
+                            <label class="form-label">选中图标</label>
+                            <input type="text" class="input" v-model="editItem.selected" placeholder="图标URL">
+                        </div>
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">跳转类型</label>
+                        <select class="select" v-model="editItem.link.type">
+                            <option value="shop">商城页面</option>
+                            <option value="custom">自定义链接</option>
+                            <option value="webview">H5外链</option>
+                            <option value="phone">拨打电话</option>
+                            <option value="copy">复制内容</option>
+                        </select>
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">跳转目标</label>
+                        <input type="text" class="input" v-model="editItem.link.path" placeholder="页面路径">
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">是否显示</label>
+                        <div class="switch" :class="{on: editItem.isShow}" @click="editItem.isShow = !editItem.isShow"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default" @click="showModal = false">取消</button>
+                    <button class="btn btn-primary" @click="saveItem">确定</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 大按钮配置弹窗 -->
+        <div class="modal-overlay" v-if="showBigModal" @click.self="showBigModal = false">
+            <div class="modal">
+                <div class="modal-header">大按钮配置</div>
+                <div class="modal-body">
+                    <div class="form-item">
+                        <label class="form-label">大按钮图标</label>
+                        <input type="text" class="input" v-model="bigConfig.bigIcon" placeholder="图标URL">
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">点击行为</label>
+                        <div style="display:flex;gap:16px">
+                            <label style="display:flex;align-items:center;gap:4px">
+                                <input type="radio" value="jump" v-model="bigConfig.bigType"> 跳转页面
+                            </label>
+                            <label style="display:flex;align-items:center;gap:4px">
+                                <input type="radio" value="popup" v-model="bigConfig.bigType"> 弹出更多
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label">显示位置</label>
+                        <select class="select" v-model="bigConfig.bigPosition" style="width:200px">
+                            <option :value="1">第1个位置</option>
+                            <option :value="2">第2个位置</option>
+                            <option :value="3">第3个位置</option>
+                            <option :value="4">第4个位置</option>
+                            <option :value="5">第5个位置</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default" @click="showBigModal = false">取消</button>
+                    <button class="btn btn-primary" @click="saveBig">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const { createApp, ref, reactive } = Vue;
+        
+        createApp({
+            setup() {
+                const activeTab = ref('style');
+                const currentTab = ref(0);
+                const showModal = ref(false);
+                const showBigModal = ref(false);
+                const editingBigItem = ref(null);
+                
+                const styleConfig = reactive({
+                    defaultColor: '#999999',
+                    selectedColor: '#1890ff'
+                });
+                
+                const tabList = ref([
+                    { id: 1, name: '首页', selected: 'https://cdn-icons-png.flaticon.com/24/1946/1946436.png', unselected: 'https://cdn-icons-png.flaticon.com/24/1946/1946436.png', link: {type: 'shop', path: '/pages/index/index'}, isShow: true, isBig: 0, bigPosition: 2 },
+                    { id: 2, name: '文章', selected: 'https://cdn-icons-png.flaticon.com/24/2965/2965567.png', unselected: 'https://cdn-icons-png.flaticon.com/24/2965/2965567.png', link: {type: 'custom', path: '/pages/news/news'}, isShow: true, isBig: 0, bigPosition: 2 },
+                    { id: 3, name: '我的', selected: 'https://cdn-icons-png.flaticon.com/24/1077/1077114.png', unselected: 'https://cdn-icons-png.flaticon.com/24/1077/1077114.png', link: {type: 'shop', path: '/pages/user/user'}, isShow: true, isBig: 0, bigPosition: 2 }
+                ]);
+                
+                const editItem = reactive({
+                    id: null, name: '', selected: '', unselected: '', link: {type: 'shop', path: ''}, isShow: true
+                });
+                
+                const bigConfig = reactive({
+                    bigIcon: '', bigType: 'jump', bigPosition: 2
+                });
+                
+                const getTypeName = (type) => {
+                    const map = {shop: '商城页面', custom: '自定义链接', mini_program: '小程序', webview: 'H5外链', phone: '拨打电话', copy: '复制内容'};
+                    return map[type] || type;
+                };
+                
+                const saveStyle = () => {
+                    alert('样式已保存');
+                };
+                
+                const saveSort = () => {
+                    alert('排序已保存');
+                };
+                
+                const openAddModal = () => {
+                    editItem.id = null;
+                    editItem.name = '';
+                    editItem.selected = '';
+                    editItem.unselected = '';
+                    editItem.link = {type: 'shop', path: ''};
+                    editItem.isShow = true;
+                    showModal.value = true;
+                };
+                
+                const openEditModal = (item) => {
+                    Object.assign(editItem, item);
+                    showModal.value = true;
+                };
+                
+                const openBigModal = (item) => {
+                    editingBigItem.value = item;
+                    bigConfig.bigIcon = item.bigIcon || '';
+                    bigConfig.bigType = item.bigType || 'jump';
+                    bigConfig.bigPosition = item.bigPosition || 2;
+                    showBigModal.value = true;
+                };
+                
+                const cancelBig = (item) => {
+                    item.isBig = 0;
+                    item.bigIcon = null;
+                };
+                
+                const saveItem = () => {
+                    if (editItem.id) {
+                        const idx = tabList.value.findIndex(t => t.id === editItem.id);
+                        if (idx >= 0) Object.assign(tabList.value[idx], editItem);
+                    } else {
+                        tabList.value.push({...editItem, id: Date.now(), isBig: 0, bigPosition: 2});
+                    }
+                    showModal.value = false;
+                };
+                
+                const saveBig = () => {
+                    if (editingBigItem.value) {
+                        editingBigItem.value.isBig = 1;
+                        editingBigItem.value.bigIcon = bigConfig.bigIcon;
+                        editingBigItem.value.bigType = bigConfig.bigType;
+                        editingBigItem.value.bigPosition = bigConfig.bigPosition;
+                    }
+                    showBigModal.value = false;
+                };
+                
+                const deleteItem = (index) => {
+                    tabList.value.splice(index, 1);
+                };
+                
+                return { activeTab, currentTab, showModal, showBigModal, styleConfig, tabList, editItem, bigConfig, getTypeName, saveStyle, saveSort, openAddModal, openEditModal, openBigModal, cancelBig, saveItem, saveBig, deleteItem };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+1、JsonFormat与DateTimeFormat区别
+2、Mybaits
+   注解与xml可以同时存在，xml有限与注解
+
+3、校验框架（javax.validation.Valid）
+    如果传参是list
+    加@Validated注解
+    @Slf4j
+    @RestController
+    @Api(tags = "框架协议信息公共接口")
+    @Validated
+    @RequestMapping("/api/frameContract")
+    public class FrameContractApiController {
+
+        @Autowired
+        private BaseApiService baseApiService;
+
+        @ApiOperation(value = "初始化框架协议信息")
+        @PostMapping(value = "/initFrameContract")
+        public ResultMessage<Object> initFrameContract(@RequestBody @Valid FrameContractApiDTO contractApiDTO) {
+
+            return baseApiService.initFrameContract(contractApiDTO);
+
+        }
+
+        @ApiOperation(value = "框架协议退出")
+        @PostMapping(value = "/frameContractSignout")
+        public ResultMessage<Object> frameContractSignout(@RequestBody @Valid List<FrameContractSignoutApiDTO> signoutApiDTOS) {
+
+            return baseApiService.frameContractSignout(signoutApiDTOS);
+
+        }
+
+    }
+
+    如果不是list，可以不加@Validated注解

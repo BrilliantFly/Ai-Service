@@ -1,0 +1,46 @@
+参考：
+    https://blog.csdn.net/qq_38630810/article/details/107335385
+
+    https://www.5axxw.com/wiki/content/vn3nkg
+
+    https://www.aquestian.cn/article/30
+
+    https://wangsong.blog.csdn.net/article/details/121356523?spm=1001.2101.3001.6650.2&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-2.pc_relevant_aa&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-2.pc_relevant_aa&utm_relevant_index=4
+
+    RocketMQ:
+    https://www.cnblogs.com/weifeng1463/p/12889300.html
+
+1、org.springframework.amqp.rabbit.listener.BlockingQueueConsumer$DeclarationException: Failed to declare queue(s)
+    在程序启动后，如果该队列不存在
+
+2、rabbitTemplate
+
+    发送消息
+    send （自定义消息 Message）
+    Message message = new Message("hello".getBytes(),new MessageProperties());
+    // 发送消息到默认的交换器，默认的路由键
+    rabbitTemplate.send(message);
+    // 发送消息到指定的交换器，指定的路由键
+    rabbitTemplate.send("direct.exchange","key.1",message);
+    // 发送消息到指定的交换器，指定的路由键
+    rabbitTemplate.send("direct.exchange","key.1",message,new CorrelationData(UUID.randomUUID().toString()));
+    convertAndSend（自动 Java 对象包装成 Message 对象，Java 对象需要实现 Serializable 序列化接口）
+    User user = new User("linyuan");
+    // 发送消息到默认的交换器，默认的路由键
+    rabbitTemplate.convertAndSend(user);
+    // 发送消息到指定的交换器，指定的路由键，设置消息 ID
+    rabbitTemplate.convertAndSend("direct.exchange","key.1",user,new CorrelationData(UUID.randomUUID().toString()));
+    // 发送消息到指定的交换器，指定的路由键，在消息转换完成后，通过 MessagePostProcessor 来添加属性
+    rabbitTemplate.convertAndSend("direct.exchange","key.1",user,mes -> {
+        mes.getMessageProperties().setDeliveryMode(MessageDeliveryMode.NON_PERSISTENT);
+            return mes;
+    });
+
+    接收消息
+    receive（返回 Message 对象）
+    // 接收来自指定队列的消息，并设置超时时间
+    Message msg = rabbitTemplate.receive("debug",2000l);
+
+    receiveAndConvert（将返回 Message 转换成 Java 对象）
+    User user = (User) rabbitTemplate.receiveAndConvert();
+

@@ -1,0 +1,124 @@
+server:
+  port: 9002
+#  servlet:
+#    context-path: /hystrix
+
+#是否将自己注册到Eureka Server上，默认为true
+eureka:
+  client:
+    register-with-eureka: false
+#是否从Eureka Server上获取注册信息，默认为true
+    fetch-registry: false
+
+spring:
+  application:
+    name: hystrix
+
+#turbine:
+#  aggregator:
+#    # 指定聚合哪些集群，多个使用","分割，默认为default。
+#    cluster-config: default
+#  # 配置监控的服务id，多个服务以逗号分隔
+#  app-config: hystrix
+#  clusterNameExpression: new String("default")
+
+# Hystrix settings
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          # 隔离策略，THREAD, SEMAPHORE
+          # 线程池模式 和 信号量模式
+          strategy: THREAD
+          thread:
+            # 线程超时时间，线程超时15秒,调用Fallback方法
+            timeoutInMilliseconds: 15000
+            # 线程超时时，是否可被中断
+            interruptOnTimeout: true
+            # 线程取消时，是否可被中断
+            interruptOnCancel: false
+          semaphore:
+            # 最大并发信号量
+            maxConcurrentRequests: 10
+        timeout:
+          # 启用超时设置
+          enabled: true
+      fallback:
+        # 启用fallback
+        enabled: true
+        isolation:
+          semaphore:
+            # 最大并发备用信号量
+            maxConcurrentRequests: 10
+      circuitBreaker:
+        # 启用断路器
+        enabled: true
+        # 在一个时间窗口内触发断路器的最小请求量
+        # 10秒内出现3个以上请求(已临近阀值),并且出错率在50%以上,开启断路器.断开服务,调用Fallback方法
+        # 默认值20。含义是一段时间内至少有20个请求才进行errorThresholdPercentage计算。
+        # 比如一段时间了有19个请求，且这些请求全部失败了，错误率是100%，但熔断器不会打开，总请求数不满足20。
+        requestVolumeThreshold: 3
+        # 触发断路器时，服务休眠时间
+        # 半开状态试探睡眠时间，默认值5000ms。如：当熔断器开启5000ms之后，会尝试放过去一部分流量进行试探，确定依赖服务是否恢复。
+        sleepWindowInMilliseconds: 10000
+        # 触发断路器时，最小错误比率
+        # 错误率，默认值50%，例如一段时间（10s）内有100个请求，其中有54个超时或者异常，那么这段时间内的错误率是54%，大于了默认值50%，这种情况下会触发熔断器打开
+        errorThresholdPercentage: 50
+        # 强制打开断路器
+        forceOpen: false
+        # 强制关闭断路器
+        forceClosed: false
+      metrics:
+        rollingStats:
+          # 数据采集时间段
+          timeInMilliseconds: 15000
+          # 采集数据份，必须能被timeInMilliseconds整除
+          numBuckets: 10
+        rollingPercentile:
+          # 开启采集滚动百分比
+          enabled: true
+          # 滚动百分收集时间段
+          timeInMilliseconds: 60000
+          # 滚动百分比收集份数，必须能被timeInMilliseconds整除
+          numBuckets: 6
+          # 每份数据的最大统计请求量
+          bucketSize: 100
+        healthSnapshot:
+          # 健康检查间隔时间
+          intervalInMilliseconds: 500
+      requestCache:
+        # 开启请求缓存，HystrixRequestCache
+        enabled: true
+      requestLog:
+        # 开启请求日志，记录在HystrixRequestLog
+        enabled: true
+  collapser:
+    default:
+      # 单批次最大请求量
+      maxRequestsInBatch: Integer.MAX_VALUE
+      # 批次请求延迟启动时间
+      timerDelayInMilliseconds: 10
+      requestCache:
+        # 开启批次请求缓存, HystrixCollapser.execute(), HystrixCollapser.queue()
+        enabled: true
+  threadpool:
+    default:
+      # 核心线程数
+      coreSize: 10
+      # 最大线程数
+      maximumSize: 10
+      # 最大阻塞线程队列
+      maxQueueSize: -1
+      # 队列上限，超过会拒绝请求
+      queueSizeRejectionThreshold: 5
+      # 线程保持活跃时间（分钟）
+      keepAliveTimeMinutes: 1
+      # 启用maximumSize参数
+      allowMaximumSizeToDivergeFromCoreSize: false
+      metrics:
+        rollingStats:
+          # 线程池数据采集时间段
+          timeInMilliseconds: 10000
+          # 线程池数据采集份数
+          numBuckets: 10

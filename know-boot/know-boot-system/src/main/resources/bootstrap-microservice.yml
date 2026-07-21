@@ -1,0 +1,44 @@
+server:
+  port: 9001
+  servlet:
+    context-path: /system
+
+spring:
+  application:
+    name: system
+  main:
+    allow-circular-references: true
+  profiles:
+    active: microservice
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${discovery.server-addr:39.98.108.121:10006}
+      config:
+        server-addr: ${config.server-addr:39.98.108.121:10006}
+        namespace: ${config.namespace:ab16776b-dae9-474e-8943-7bbbc627b637}
+        group: ${config.group:DEFAULT_GROUP}
+        file-extension: yaml
+        prefix: ${spring.application.name}-${spring.profiles.active}
+        refresh: true
+
+seata:
+  enabled: true
+  tx-service-group: my_test_tx_group
+  service:
+    vgroupMapping:
+      my_test_tx_group: default
+    disable-global-transaction: false
+  registry:
+    type: nacos
+    nacos:
+      application: seata-server
+      server-addr: ${config.server-addr:39.98.108.121:10006}
+      group: SEATA_GROUP
+      namespace: 35f21db9-107d-4ecf-93f7-e5165847232e
+  config:
+    type: nacos
+    nacos:
+      serverAddr: ${config.server-addr:39.98.108.121:10006}
+      group: SEATA_GROUP
+      namespace: 35f21db9-107d-4ecf-93f7-e5165847232e

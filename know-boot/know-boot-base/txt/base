@@ -1,0 +1,163 @@
+1、Object转成JSONObject
+    JSONObject json = JSONObject.parseObject(o.toString()); 报错，强制转换也报错，把object转成JSONObject 这种要怎么用的?
+    JSONObject json = (JSONObject) JSON.toJSON(o);
+
+    然后通过JSONObject.toJavaObject(json,UploadFileVo.class)转对象
+
+2、	SrpingBoot文件上传报错 the request was rejected because its size (16030696) exceeds the configured maximum (10485760)
+  	错误原因：
+  		上传文件的大小超过了应用默认文件大小的限制。springboot 默认 multipart.max-file-size大小是1M，max-request-size默认大小是10M
+
+  	解决方法
+  		如果是springboot1.x，使用如下配置：
+  		spring.http.multipart.max-file-size=100MB
+  		spring.http.multipart.max-request-size=100MB
+
+  		如果是springboot2.x, 使用如下配置：
+  		spring.servlet.multipart.max-file-size=100MB
+  		spring.servlet.multipart.max-request-size=100MB
+
+3、请求：
+  		Resolved [org.springframework.web.HttpMediaTypeNotSupportedException:
+  		Content type 'multipart/form-data;boundary=651351952406143342340005;charset=UTF-8' not supported]
+  	解决方法：
+  		请求不对，去掉@RequestBody或者换前端请求类型
+
+4、获取文件Md5（MultipartFile）
+     /**
+         * 获取上传文件的md5
+         * @param file
+         * @return
+         */
+        public static String getMd5(MultipartFile file) {
+            try {
+                //获取文件的byte信息
+                byte[] uploadBytes = file.getBytes();
+                // 拿到一个MD5转换器
+                MessageDigest md5 = MessageDigest.getInstance("MD5");
+                byte[] digest = md5.digest(uploadBytes);
+                //转换为16进制
+                return new BigInteger(1, digest).toString(16);
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+            return null;
+        }
+
+        /**
+         * 获取上传文件的md5
+         * @param file
+         * @return
+         */
+        public static String getMd5Info(MultipartFile file) {
+            try {
+                byte[] uploadBytes = file.getBytes();
+                //file->byte[],生成md5
+                String md5Hex = DigestUtils.md5Hex(uploadBytes);
+                //file->InputStream,生成md5
+                String md5Hex1 = DigestUtils.md5Hex(file.getInputStream());
+                //对字符串生成md5
+                String s = DigestUtils.md5Hex("字符串");
+                return md5Hex ;
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+            return null;
+        }
+
+5、HttpServletRequest转MultipartHttpServletRequest
+     MultipartHttpServletRequest mulReq = (MultipartHttpServletRequest) request;
+
+     // 获取上传文件对象
+     MultipartFile mf = mulReq.getFile("file");
+     // 获取文件名
+     String orgName = mf.getOriginalFilename();
+
+6、InputStream转MultipartFile
+    MultipartFile multipartFile = new MockMultipartFile(
+    					"File", attaName,
+    					"text/plain",
+    					responseGet.body().asInputStream());
+
+7、InputStream转MultipartFile
+     //调用放
+        MultipartFile multipartFile = getMultipartFile(inputStream, originalFilename);
+
+     /**
+         * 获取封装得MultipartFile
+         *
+         * @param inputStream inputStream
+         * @param fileName    fileName
+         * @return MultipartFile
+         */
+        public MultipartFile getMultipartFile(InputStream inputStream, String fileName) {
+            FileItem fileItem = createFileItem(inputStream, fileName);
+            //CommonsMultipartFile是feign对multipartFile的封装，但是要FileItem类对象
+            return new CommonsMultipartFile(fileItem);
+        }
+
+
+        /**
+         * FileItem类对象创建
+         *
+         * @param inputStream inputStream
+         * @param fileName    fileName
+         * @return FileItem
+         */
+        public FileItem createFileItem(InputStream inputStream, String fileName) {
+            FileItemFactory factory = new DiskFileItemFactory(16, null);
+            String textFieldName = "file";
+            FileItem item = factory.createItem(textFieldName, MediaType.MULTIPART_FORM_DATA_VALUE, true, fileName);
+            int bytesRead = 0;
+            byte[] buffer = new byte[8192];
+            OutputStream os = null;
+            //使用输出流输出输入流的字节
+            try {
+                os = item.getOutputStream();
+                while ((bytesRead = inputStream.read(buffer, 0, 8192)) != -1) {
+                    os.write(buffer, 0, bytesRead);
+                }
+                inputStream.close();
+            } catch (IOException e) {
+                log.error("Stream copy exception", e);
+                throw new IllegalArgumentException("文件上传失败");
+            } finally {
+                if (os != null) {
+                    try {
+                        os.close();
+                    } catch (IOException e) {
+                        log.error("Stream close exception", e);
+
+                    }
+                }
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        log.error("Stream close exception", e);
+                    }
+                }
+            }
+
+            return item;
+        }
+
+8、下载本地文件
+      // 下载本地文件
+                String fileName = "286d0db2-3fc1-4897-a602-987b88e1d859.jpeg".toString(); // 文件的默认保存名
+                // 读到流中
+                InputStream inStream = new FileInputStream("D:/xypj/attach/20220620/286d0db2-3fc1-4897-a602-987b88e1d859.jpeg");// 文件的存放路径
+                // 设置输出的格式
+                response.reset();
+                response.setContentType("bin");
+                response.addHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+                // 循环取出流中的数据
+                byte[] b = new byte[100];
+                int len;
+                try {
+                    while ((len = inStream.read(b)) > 0)
+                        response.getOutputStream().write(b, 0, len);
+                    inStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }

@@ -1,0 +1,12 @@
+1、tio-websocket-server
+
+        <dependency>
+                <groupId>org.t-io</groupId>
+                <artifactId>tio-websocket-server</artifactId>
+                <version>3.7.0.v20201010-RELEASE</version>
+        </dependency>
+
+
+   启动后测试：
+   在线测试地址：http://coolaf.com/tool/chattest
+                ws://127.0.0.1:6789/?id=1

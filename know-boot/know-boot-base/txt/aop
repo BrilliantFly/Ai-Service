@@ -1,0 +1,29 @@
+1、java自定义注解的使用范围
+  一般我们可以通过注解来实现一些重复的逻辑，就像封装了的一个方法，可以用在一些权限校验、字段校验、字段属性注入、保存日志、缓存
+2、自定义注解@Around必须有返回值，不能返回null，不然controller接口调用不通（调用不到）
+  @Around(value = "token_point_cut()")
+    public Object doAroundAdvice(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+        log.info("自定义注解参数 -> {}","doAroundAdvice");
+        Object obj = proceedingJoinPoint.proceed();
+       return obj;
+    }
+
+3、自定义校验，必须使用下面maven，否则无效
+    <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-validation</artifactId>
+     </dependency>
+
+4、范围
+   权限校验注解（校验token）
+   角色校验注解（springsecurity中的角色校验）
+   字段属性注入注解
+   对象的属性校验注解
+   接口的操作日志注解
+   缓存注解
+   防刷新注解
+   动态切换数据源注解
+        原理：Spring提供了AbstractRoutingDataSource用于动态路由数据源，继承AbstractRoutingDataSource类并覆写其protected abstract Object determineCurrentLookupKey()即可
+
+5、防止重复提交
+   进入方法，判断锁是否存，存在即重复，不存在，加锁继续执行方法，方法执行结束后释放锁。

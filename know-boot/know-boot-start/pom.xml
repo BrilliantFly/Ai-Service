@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.know</groupId>
+    <artifactId>know-boot-start</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>know-boot-start</name>
+    <description>Demo project for Spring Boot</description>
+
+    <!--父工程必须声明-->
+    <packaging>pom</packaging>
+
+    <!--声明依赖的父工程-->
+    <parent>
+        <groupId>com.know</groupId>
+        <artifactId>know-boot</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <!--        <relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;-->
+    </parent>
+
+    <!--声明子模块-->
+    <modules>
+        <!--工作流模块-->
+        <module>workflow-know-boot-starter</module>
+        <!--微服务模块-->
+        <module>cloud-know-boot-starter</module>
+        <!--gateway模块-->
+        <module>gateway-know-boot-starter</module>
+    </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

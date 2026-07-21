@@ -1,0 +1,57 @@
+server:
+  port: 9002
+  max-http-header-size: 2MB
+
+spring:
+  cloud:
+    # 前端路径请求geteway，getway由predicates匹配成功后，替换请求uri
+    # http://127.0.0.1:9002/mybatis/sys/userInfo/queryAll
+    # 替换：
+    #  http://127.0.0.1:9001/mybatis/sys/userInfo/queryAll
+    # http://127.0.0.1:9002/get
+    # 替换
+    # http://httpbin.org/get
+    # httpbin.org 这个网站能测试 HTTP 请求和响应的各种信息，比如 cookie、ip、headers 和登录验证等，且支持 GET、POST 等多种方法
+    gateway:
+      discovery:
+        locator:
+          # 是否与服务发现组件结合，通过serviceId转发到具体的实例。默认为false,设为true开始根据serviceId创建路由功能
+          enabled: true
+          # 是将请求路径上的服务名配置为小写（因为服务注册的时候，向注册中心注册时将服务名转成大写的了）
+          lowerCaseServiceId: true
+      routes:
+#        - id: after_route
+#          uri: http://127.0.0.1:9001
+#          predicates:
+#            - After=2017-01-20T17:42:47.789-07:00[America/Denver]
+##            - Header=X-Request-Id, \d+
+##            - Cookie=name, forezp
+##            - Host=**.fangzhipeng.com
+##            - Method=GET
+##            - Query=foo, ba.
+        - id: get_route
+          uri: http://httpbin.org
+          predicates:
+            - Method=GET
+          filters:
+            - AddRequestHeader=X-Request-Foo, Bar
+            # StripPrefix参数表示在将请求发送到下游之前从请求中剥离的路径个数
+            # 当通过网关向/api/bar/foo发出请求时，对nameservice的请求将类似于http://httpbin.org/bar/foo
+            - StripPrefix=1
+            # filter名称必须是RequestRateLimiter
+            - name: RequestRateLimiter
+              args:
+                # 允许用户每秒处理多少个请求（牌桶每秒填充平均速率）
+                redis-rate-limiter.replenishRate: 2
+                # 令牌桶的容量，允许在一秒钟内完成的最大请求数
+                redis-rate-limiter.burstCapacity: 5
+                # 使用SpEL按名称引用bean
+                key-resolver: "#{@ipKeyResolver}"
+
+  redis:
+    #redis数据库索引(默认为0)
+    database: 0
+    #redis服务器地址
+    host: 182.92.116.199
+    #redis服务器连接端口
+    port: 6379

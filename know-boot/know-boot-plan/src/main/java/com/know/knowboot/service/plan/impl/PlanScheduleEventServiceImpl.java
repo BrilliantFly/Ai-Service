@@ -1,0 +1,196 @@
+package com.know.knowboot.service.plan.impl;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.know.knowboot.entity.plan.PlanScheduleEvent;
+import com.know.knowboot.mapper.plan.PlanScheduleEventMapper;
+import com.know.knowboot.service.plan.IPlanScheduleEventService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * 日程事件服务实现
+ */
+@Service
+public class PlanScheduleEventServiceImpl extends ServiceImpl<PlanScheduleEventMapper, PlanScheduleEvent> implements IPlanScheduleEventService {
+
+    @Autowired
+    private PlanScheduleEventMapper planScheduleEventMapper;
+
+    @Override
+    public IPage<PlanScheduleEvent> page(PlanScheduleEvent query, Long userId, Integer pageNum, Integer pageSize) {
+        LambdaQueryWrapper<PlanScheduleEvent> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(PlanScheduleEvent::getUserId, userId)
+                .eq(query.getQuadrant() != null, PlanScheduleEvent::getQuadrant, query.getQuadrant())
+                .eq(query.getStatus() != null, PlanScheduleEvent::getStatus, query.getStatus())
+                .eq(query.getCategoryId() != null, PlanScheduleEvent::getCategoryId, query.getCategoryId())
+                .eq(query.getEventType() != null, PlanScheduleEvent::getEventType, query.getEventType())
+                .like(query.getTitle() != null, PlanScheduleEvent::getTitle, query.getTitle())
+                .orderByDesc(PlanScheduleEvent::getStartTime);
+        return page(new Page<>(pageNum, pageSize), wrapper);
+    }
+
+    @Override
+    public List<PlanScheduleEvent> listByDateRange(Long userId, Long startTime, Long endTime) {
+        return list(new LambdaQueryWrapper<PlanScheduleEvent>()
+                .eq(PlanScheduleEvent::getUserId, userId)
+                .ge(PlanScheduleEvent::getStartTime, startTime)
+                .le(PlanScheduleEvent::getStartTime, endTime)
+                .orderByAsc(PlanScheduleEvent::getStartTime));
+    }
+
+    @Override
+    public List<PlanScheduleEvent> listByDate(Long userId, Long date) {
+        // 某一天：从 00:00:00 到 23:59:59
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(date);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        long dayStart = cal.getTimeInMillis();
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+        long dayEnd = cal.getTimeInMillis() - 1;
+
+        return listByDateRange(userId, dayStart, dayEnd);
+    }
+
+    @Override
+    public List<PlanScheduleEvent> listByWeek(Long userId, Long weekStart, Long weekEnd) {
+        return listByDateRange(userId, weekStart, weekEnd);
+    }
+
+    @Override
+    public List<PlanScheduleEvent> listByMonth(Long userId, Integer year, Integer month) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month - 1);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        long monthStart = cal.getTimeInMillis();
+
+        cal.add(Calendar.MONTH, 1);
+        long monthEnd = cal.getTimeInMillis() - 1;
+
+        return listByDateRange(userId, monthStart, monthEnd);
+    }
+
+    @Override
+    public List<PlanScheduleEvent> listByQuadrant(Long userId, Integer quadrant) {
+        return list(new LambdaQueryWrapper<PlanScheduleEvent>()
+                .eq(PlanScheduleEvent::getUserId, userId)
+                .eq(PlanScheduleEvent::getQuadrant, quadrant)
+                .orderByAsc(PlanScheduleEvent::getStartTime));
+    }
+
+    @Override
+    public List<PlanScheduleEvent> listByPlanId(Long planId) {
+        return list(new LambdaQueryWrapper<PlanScheduleEvent>()
+                .eq(PlanScheduleEvent::getPlanId, planId)
+                .orderByAsc(PlanScheduleEvent::getStartTime));
+    }
+
+    @Override
+    public Map<String, Object> getTodayStats(Long userId) {
+        // 计算今日时间范围
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        long todayStart = cal.getTimeInMillis();
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+        long todayEnd = cal.getTimeInMillis() - 1;
+
+        // 今日所有日程
+        List<PlanScheduleEvent> todayEvents = listByDateRange(userId, todayStart, todayEnd);
+        long totalCount = todayEvents.size();
+        long completedCount = todayEvents.stream().filter(e -> e.getStatus() == 1).count();
+        long todoCount = totalCount - completedCount;
+
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("totalCount", totalCount);
+        stats.put("completedCount", completedCount);
+        stats.put("todoCount", todoCount);
+        stats.put("date", todayStart);
+        return stats;
+    }
+
+    @Override
+    public PlanScheduleEvent getById(Long id) {
+        return planScheduleEventMapper.selectById(id);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean add(PlanScheduleEvent event, Long userId) {
+        event.setUserId(userId);
+        event.setCreateBy(userId);
+        event.setCreateTime(System.currentTimeMillis());
+        if (event.getStatus() == null) {
+            event.setStatus(0);
+        }
+        if (event.getProgress() == null) {
+            event.setProgress(0);
+        }
+        return save(event);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean update(PlanScheduleEvent event) {
+        event.setUpdateTime(System.currentTimeMillis());
+        return updateById(event);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean complete(Long id) {
+        PlanScheduleEvent event = planScheduleEventMapper.selectById(id);
+        if (event == null) {
+            return false;
+        }
+        event.setStatus(1);
+        event.setCompletedTime(System.currentTimeMillis());
+        event.setProgress(100);
+        return updateById(event);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean uncomplete(Long id) {
+        PlanScheduleEvent event = planScheduleEventMapper.selectById(id);
+        if (event == null) {
+            return false;
+        }
+        event.setStatus(0);
+        Integer progress = event.getProgress();
+        if (progress == null || progress >= 100) {
+            progress = 0;
+        }
+        return update(new LambdaUpdateWrapper<PlanScheduleEvent>()
+                .eq(PlanScheduleEvent::getId, id)
+                .set(PlanScheduleEvent::getStatus, 0)
+                .set(PlanScheduleEvent::getCompletedTime, null)
+                .set(PlanScheduleEvent::getProgress, progress)
+                .set(PlanScheduleEvent::getUpdateTime, System.currentTimeMillis()));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean delete(Long id) {
+        return removeById(id);
+    }
+}

@@ -1,0 +1,117 @@
+package com.know.knowboot.entity.plan;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+import java.io.Serializable;
+
+/**
+ * 日程事件实体
+ */
+@Data
+@TableName("plan_schedule_event")
+@ApiModel("日程事件实体")
+public class PlanScheduleEvent implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
+    @ApiModelProperty("主键")
+    private Long id;
+
+    @ApiModelProperty("日程标题")
+    private String title;
+
+    @ApiModelProperty("日程内容")
+    private String content;
+
+    @ApiModelProperty("标签，逗号分隔")
+    private String tags;
+
+    @ApiModelProperty("子任务 JSON")
+    private String subtasks;
+
+    @ApiModelProperty("备注")
+    private String note;
+
+    @ApiModelProperty("完成进度(0-100)")
+    private Integer progress;
+
+    @ApiModelProperty("日程类型(1:日程 2:待办 3:提醒)")
+    private Integer eventType;
+
+    @ApiModelProperty("四象限(1:重要紧急 2:重要不紧急 3:紧急不重要 4:不紧急不重要)")
+    private Integer quadrant;
+
+    @ApiModelProperty("优先级(1:低 2:中 3:高)")
+    private Integer priority;
+
+    @ApiModelProperty("分类ID")
+    private Long categoryId;
+
+    @ApiModelProperty("关联计划ID")
+    private Long planId;
+
+    @ApiModelProperty("开始时间")
+    private Long startTime;
+
+    @ApiModelProperty("结束时间")
+    private Long endTime;
+
+    @ApiModelProperty("是否全天(0:否 1:是)")
+    private Integer isAllDay;
+
+    @ApiModelProperty("是否重复(0:否 1:是)")
+    private Integer isRepeat;
+
+    @ApiModelProperty("重复类型(1:每日 2:每周 3:每月 4:每年)")
+    private Integer repeatType;
+
+    @ApiModelProperty("重复规则JSON")
+    private String repeatRule;
+
+    @ApiModelProperty("提醒时间(逗号分隔多个)")
+    private String remindTime;
+
+    @ApiModelProperty("提前提醒分钟数")
+    private Integer remindMinutes;
+
+    @ApiModelProperty("地点")
+    private String location;
+
+    @ApiModelProperty("状态(0:未完成 1:已完成)")
+    private Integer status;
+
+    @ApiModelProperty("完成时间")
+    private Long completedTime;
+
+    @ApiModelProperty("自定义颜色")
+    private String color;
+
+    @ApiModelProperty("用户ID")
+    private Long userId;
+
+    @ApiModelProperty("创建人")
+    private Long createBy;
+
+    @ApiModelProperty("创建时间")
+    private Long createTime;
+
+    @ApiModelProperty("更新人")
+    private Long updateBy;
+
+    @ApiModelProperty("更新时间")
+    private Long updateTime;
+
+    @TableLogic(value = "0", delval = "1")
+    @ApiModelProperty("删除标记")
+    private Integer delFlag;
+
+    @ApiModelProperty("删除时间")
+    private Long deleteTime;
+}

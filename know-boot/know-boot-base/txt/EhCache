@@ -1,0 +1,11 @@
+1、springboot 整合ehcache，注入CacheManager时提示 required a bean of type 'org.springframework.cache.CacheManager' that could not be found
+    <dependency>
+         <groupId>net.sf.ehcache</groupId>
+         <artifactId>ehcache</artifactId>
+         <version>2.10.6</version>
+    </dependency>
+    还需依赖：
+    <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-cache</artifactId>
+    </dependency>

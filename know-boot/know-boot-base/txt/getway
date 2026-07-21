@@ -1,0 +1,71 @@
+1、Parameter 0 of method modifyRequestBodyGatewayFilterFactory in org.springframework.cloud.gateway.config.GatewayAutoConfiguration
+   required a bean of type 'org.springframework.http.codec.ServerCodecConfigurer' that could not be found.
+   将pom.xml中关于spring-boot-start-web模块的jar依赖去掉。
+   出现该错误是因为Spring Cloud Gateway依赖了spring-boot-starter-web包
+   因为spring cloud gateway是基于webflux的，如果非要web支持的话需要导入spring-boot-starter-webflux而不是spring-boot-start-web。
+   <dependency>
+               <groupId>org.springframework.cloud</groupId>
+               <artifactId>spring-cloud-starter-gateway</artifactId>
+               <version>2.2.3.RELEASE</version>
+               <exclusions>
+                   <exclusion>
+                       <groupId>org.springframework.boot</groupId>
+                       <artifactId>spring-boot-starter-web</artifactId>
+                   </exclusion>
+               </exclusions>
+           </dependency>
+
+   因为这里spring-boot-starter-web是依赖的parent，上面没有效果，所有用下面方式：
+     <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-gateway</artifactId>
+                <version>2.2.3.RELEASE</version>
+    <!--            <exclusions>-->
+    <!--                <exclusion>-->
+    <!--                    <groupId>org.springframework.boot</groupId>-->
+    <!--                    <artifactId>spring-boot-starter-web</artifactId>-->
+    <!--                </exclusion>-->
+    <!--            </exclusions>-->
+            </dependency>
+
+4、springcloud gateway出现 413Request Entity Too Large
+    springboot项目在yml中添加
+    server:
+    	max-http-header-size: 2MB
+
+    springcloud项目在gateway里添加
+    @Component
+    public class NettyConfiguration implements WebServerFactoryCustomizer<NettyReactiveWebServerFactory> {
+
+        @Override
+        public void customize(NettyReactiveWebServerFactory container) {
+            container.addServerCustomizers(
+                    httpServer -> httpServer.httpRequestDecoder(
+                            httpRequestDecoderSpec -> httpRequestDecoderSpec.maxHeaderSize(1000485760)
+                    )
+            );
+        }
+
+    }
+
+5、Caused by: org.yaml.snakeyaml.scanner.ScannerException: mapping values are not allowed here
+    yml配置文件对其方式不对
+
+6、关于重试
+   1、如果远程服务在启动，但是报错，比如mybatis服务，可以在mybatis的日志看到除了第一次错误之外，还有重试的几次
+   2、如果远程服务没有启动，gateway直接报错，连接拒绝
+   3、如果mybatis只是报错，不走断路（Hystrix处理服务不可用），可以重试
+
+7、sentinel没有请求链路、API管理
+ <!--sentinel整合gatway,依赖必须在gateway，这样gateway会出现请求链路、API管理-->
+ <dependency>
+     <groupId>com.alibaba.cloud</groupId>
+     <artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>
+ </dependency>
+

@@ -39,4 +39,9 @@ public interface IKbDocumentService {
      * 获取知识库下的文档列表
      */
     List<KbDocument> listByKnowledgeBase(Long knowledgeBaseId);
+
+    /**
+     * 获取最近编辑的文档
+     */
+    IPage<KbDocument> recent(Long userId, Integer pageNum, Integer pageSize);
 }

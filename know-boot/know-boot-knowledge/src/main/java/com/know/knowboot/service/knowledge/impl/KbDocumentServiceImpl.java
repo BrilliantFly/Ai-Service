@@ -73,4 +73,12 @@ public class KbDocumentServiceImpl extends ServiceImpl<KbDocumentMapper, KbDocum
                 .orderByAsc(KbDocument::getSort)
                 .orderByDesc(KbDocument::getCreateTime));
     }
+
+    @Override
+    public IPage<KbDocument> recent(Long userId, Integer pageNum, Integer pageSize) {
+        LambdaQueryWrapper<KbDocument> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(KbDocument::getStatus, 1)
+                .orderByDesc(KbDocument::getUpdateTime);
+        return page(new Page<>(pageNum, pageSize), wrapper);
+    }
 }

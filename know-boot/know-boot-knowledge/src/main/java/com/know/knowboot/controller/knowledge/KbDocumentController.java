@@ -62,4 +62,13 @@ public class KbDocumentController {
     public AjaxResult<List<KbDocument>> listByKnowledgeBase(@RequestParam Long knowledgeBaseId) {
         return AjaxResult.success(kbDocumentService.listByKnowledgeBase(knowledgeBaseId));
     }
+
+    @ApiOperation("获取最近编辑的文档")
+    @GetMapping("/recent")
+    public AjaxResult<IPage<KbDocument>> recent(
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize) {
+        Long userId = 1L;
+        return AjaxResult.success(kbDocumentService.recent(userId, pageNum, pageSize));
+    }
 }

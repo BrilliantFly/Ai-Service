@@ -39,6 +39,18 @@ public class KbDocument implements Serializable {
     @ApiModelProperty("浏览次数")
     private Integer viewCount;
 
+    @ApiModelProperty("点赞数")
+    private Integer likeCount;
+
+    @ApiModelProperty("收藏数")
+    private Integer favoriteCount;
+
+    @ApiModelProperty("评论数")
+    private Integer commentCount;
+
+    @ApiModelProperty("当前版本号")
+    private Integer version;
+
     @ApiModelProperty("排序")
     private Integer sort;
 

@@ -1,11 +1,14 @@
 package com.know.knowboot.entity.knowledge;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 目录实体
@@ -48,5 +51,6 @@ public class KbDirectory implements Serializable {
 
     @TableField(exist = false)
     @ApiModelProperty("子目录列表")
-    private List<KbDirectory> children;
+    @JsonInclude(JsonInclude.Include.ALWAYS)
+    private List<KbDirectory> children = new ArrayList<>();
 }

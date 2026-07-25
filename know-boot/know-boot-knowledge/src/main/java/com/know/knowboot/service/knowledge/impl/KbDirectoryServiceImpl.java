@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 目录服务实现
@@ -68,16 +67,30 @@ public class KbDirectoryServiceImpl extends ServiceImpl<KbDirectoryMapper, KbDir
                 .orderByDesc(KbDirectory::getCreateTime));
 
         // 构建树形结构
-        return buildTree(allDirs, 0L);
-    }
+        Map<Long, KbDirectory> map = new LinkedHashMap<>();
+        List<KbDirectory> roots = new ArrayList<>();
 
-    /**
-     * 递归构建目录树
-     */
-    private List<KbDirectory> buildTree(List<KbDirectory> allDirs, Long parentId) {
-        return allDirs.stream()
-                .filter(d -> Objects.equals(d.getParentId(), parentId))
-                .peek(d -> d.setChildren(buildTree(allDirs, d.getId())))
-                .collect(Collectors.toList());
+        // 先放入 map
+        for (KbDirectory dir : allDirs) {
+            dir.setChildren(new ArrayList<>());
+            map.put(dir.getId(), dir);
+        }
+
+        // 建立父子关系
+        for (KbDirectory dir : allDirs) {
+            Long pid = dir.getParentId();
+            if (pid == null || pid == 0L) {
+                roots.add(dir);
+            } else {
+                KbDirectory parent = map.get(pid);
+                if (parent != null) {
+                    parent.getChildren().add(dir);
+                } else {
+                    roots.add(dir);
+                }
+            }
+        }
+
+        return roots;
     }
 }

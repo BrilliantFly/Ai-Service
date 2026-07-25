@@ -32,11 +32,11 @@ spring:
       matching-strategy: ant_path_matcher
   # 数据源配置
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/know_boot_v1?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://101.37.83.88:3306/know_boot_v1?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai
     type: com.zaxxer.hikari.HikariDataSource # 数据源类型
     driver-class-name: com.mysql.jdbc.Driver # MySql的驱动
     username: root # 数据库账号
-    password: 123456aA@ # 数据库密码
+    password: Wanglei!@#123 # 数据库密码
     hikari:
       connection-timeout: 30000     # 等待连接分配连接的最大时长(毫秒),超出时长还没可用连接则发送SQLException,默认30秒
       minimum-idle: 5               # 最小连接数
@@ -106,9 +106,9 @@ know:
   mode: standalone  # standalone=单机模式, microservice=分布式模式
   generator:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    jdbc-url: jdbc:mysql://127.0.0.1:3306/flyp_dev?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+    jdbc-url: jdbc:mysql://101.37.83.88:3306/flyp_dev?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
     user-name: root
-    password: 123456aA@
+    password: Wanglei!@#123
     ignore-table: test
     ignore-table-prefix: test_
     ignore-table-suffix: _test

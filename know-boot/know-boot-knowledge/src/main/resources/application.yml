@@ -1,11 +1,15 @@
 server:
-  port: 8085
-  
+  port: 8086
+
 spring:
   main:
     allow-circular-references: true
+    allow-bean-definition-overriding: true
   application:
-    name: know-boot-camera
+    name: know-boot-knowledge
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   datasource:
     url: jdbc:mysql://101.37.83.88:3306/know_boot_v1?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.jdbc.Driver
@@ -22,7 +26,7 @@ spring:
         max-idle: 20
         min-idle: 0
         max-wait: 30000
-    
+
 # MyBatis Plus
 mybatis-plus:
   mapper-locations: classpath*:mapper/**/*Mapper.xml
@@ -31,22 +35,6 @@ mybatis-plus:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
-# Camera ONVIF 配置
-camera:
-  onvif:
-    discovery:
-      port: 3702
-      timeout: 5000
-  rtsp:
-    default-port: 554
-    timeout: 10000
-    
-# 录像存储配置
-record:
-  storage:
-    path: ./records/
-    max-size: 1073741824
-    
 # 日志配置
 logging:
   level:

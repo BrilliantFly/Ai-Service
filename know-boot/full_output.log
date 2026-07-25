@@ -1,0 +1,210 @@
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.6.6)
+
+2026-07-25 14:12:43.309  INFO 13252 --- [           main] c.k.knowboot.KnowBootSystemApplication   : Starting KnowBootSystemApplication v0.0.1-SNAPSHOT using Java 1.8.0_171 on DESKTOP-OVO8MTF with PID 13252 (E:\Ai-Project\Ai-Service\know-boot\know-boot-system\target\know-boot-system-0.0.1-SNAPSHOT.jar started by 29490 in E:\Ai-Project\Ai-Service\know-boot)
+2026-07-25 14:12:43.330  INFO 13252 --- [           main] c.k.knowboot.KnowBootSystemApplication   : The following 1 profile is active: "dev"
+2026-07-25 14:12:43.372  INFO 13252 --- [kground-preinit] o.h.validator.internal.util.Version      : HV000001: Hibernate Validator 6.2.3.Final
+2026-07-25 14:12:47.384  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysTenantRoleMapper' and 'com.know.knowboot.mapper.tenant.SysTenantRoleMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.387  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysTenantUserMapper' and 'com.know.knowboot.mapper.tenant.SysTenantUserMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.387  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'adminMapper' and 'com.know.knowboot.mapper.AdminMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.387  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'aiUpdateMonitorMapper' and 'com.know.knowboot.mapper.AiUpdateMonitorMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.387  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'fileCateMapper' and 'com.know.knowboot.mapper.album.FileCateMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.387  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'fileMapper' and 'com.know.knowboot.mapper.album.FileMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.389  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'configMapper' and 'com.know.knowboot.mapper.ConfigMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.389  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'decoratePageMapper' and 'com.know.knowboot.mapper.decorate.DecoratePageMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.389  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'decorateTabbarMapper' and 'com.know.knowboot.mapper.decorate.DecorateTabbarMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.389  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'devCrontabMapper' and 'com.know.knowboot.mapper.DevCrontabMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.389  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'noticeRecordMapper' and 'com.know.knowboot.mapper.notice.NoticeRecordMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.389  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'noticeSettingMapper' and 'com.know.knowboot.mapper.notice.NoticeSettingMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.391  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'officialAccountReplyMapper' and 'com.know.knowboot.mapper.OfficialAccountReplyMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.391  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'rechargeOrderMapper' and 'com.know.knowboot.mapper.RechargeOrderMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.392  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'refundLogMapper' and 'com.know.knowboot.mapper.RefundLogMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.392  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'refundRecordMapper' and 'com.know.knowboot.mapper.RefundRecordMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.394  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'devPayConfigMapper' and 'com.know.knowboot.mapper.setting.DevPayConfigMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.396  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'devPayWayMapper' and 'com.know.knowboot.mapper.setting.DevPayWayMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.396  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'dictDataMapper' and 'com.know.knowboot.mapper.setting.DictDataMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.396  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'dictTypeMapper' and 'com.know.knowboot.mapper.setting.DictTypeMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.396  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'hotSearchMapper' and 'com.know.knowboot.mapper.setting.HotSearchMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.396  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'smsLogMapper' and 'com.know.knowboot.mapper.smsLog.SmsLogMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.398  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'systemLogLoginMapper' and 'com.know.knowboot.mapper.system.SystemLogLoginMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.398  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'systemLogOperateMapper' and 'com.know.knowboot.mapper.system.SystemLogOperateMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.398  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'systemLogOperationMapper' and 'com.know.knowboot.mapper.system.SystemLogOperationMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.398  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'systemMenuMapper' and 'com.know.knowboot.mapper.system.SystemMenuMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.400  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'systemRoleMapper' and 'com.know.knowboot.mapper.system.SystemRoleMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.400  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'systemRoleMenuMapper' and 'com.know.knowboot.mapper.system.SystemRoleMenuMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.400  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysDeptJobMapper' and 'com.know.knowboot.mapper.tenant.SysDeptJobMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.400  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysDeptMapper' and 'com.know.knowboot.mapper.tenant.SysDeptMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.400  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysDictMapper' and 'com.know.knowboot.mapper.tenant.SysDictMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.400  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysDictTypeMapper' and 'com.know.knowboot.mapper.tenant.SysDictTypeMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.400  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysJobMapper' and 'com.know.knowboot.mapper.tenant.SysJobMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.402  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysLoginLogMapper' and 'com.know.knowboot.mapper.tenant.SysLoginLogMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.402  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysMenuConfigMapper' and 'com.know.knowboot.mapper.tenant.SysMenuConfigMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.402  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysMenuMapper' and 'com.know.knowboot.mapper.tenant.SysMenuMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.404  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysOperLogMapper' and 'com.know.knowboot.mapper.tenant.SysOperLogMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.404  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysPermissionMapper' and 'com.know.knowboot.mapper.tenant.SysPermissionMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.404  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysRoleDataScopeMapper' and 'com.know.knowboot.mapper.tenant.SysRoleDataScopeMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.404  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysRoleMapper' and 'com.know.knowboot.mapper.tenant.SysRoleMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.404  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysRoleMenuMapper' and 'com.know.knowboot.mapper.tenant.SysRoleMenuMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.404  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysRolePermissionMapper' and 'com.know.knowboot.mapper.tenant.SysRolePermissionMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.404  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysTabbarMapper' and 'com.know.knowboot.mapper.tenant.SysTabbarMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.404  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysTenantMapper' and 'com.know.knowboot.mapper.tenant.SysTenantMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.406  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysUserDeptMapper' and 'com.know.knowboot.mapper.tenant.SysUserDeptMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.406  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysUserJobMapper' and 'com.know.knowboot.mapper.tenant.SysUserJobMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.406  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysUserMapper' and 'com.know.knowboot.mapper.tenant.SysUserMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.406  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysUserRoleMapper' and 'com.know.knowboot.mapper.tenant.SysUserRoleMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.406  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysUserTenantMapper' and 'com.know.knowboot.mapper.tenant.SysUserTenantMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.406  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'userAuthMapper' and 'com.know.knowboot.mapper.user.UserAuthMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.408  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'userMapper' and 'com.know.knowboot.mapper.user.UserMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.408  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'userSessionMapper' and 'com.know.knowboot.mapper.user.UserSessionMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.408  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'planFocusSessionMapper' and 'com.know.knowboot.mapper.plan.PlanFocusSessionMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.410  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'planHabitMapper' and 'com.know.knowboot.mapper.plan.PlanHabitMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.410  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'planHabitRecordMapper' and 'com.know.knowboot.mapper.plan.PlanHabitRecordMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.410  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'planHomeConfigMapper' and 'com.know.knowboot.mapper.plan.PlanHomeConfigMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.410  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'planInfoMapper' and 'com.know.knowboot.mapper.plan.PlanInfoMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.410  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'planScheduleCategoryMapper' and 'com.know.knowboot.mapper.plan.PlanScheduleCategoryMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.410  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'planScheduleEventMapper' and 'com.know.knowboot.mapper.plan.PlanScheduleEventMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.412  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[com.know.knowboot.mapper]' package. Please check your configuration.
+2026-07-25 14:12:47.418  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysTenantRoleMapper' and 'com.know.knowboot.mapper.tenant.SysTenantRoleMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.420  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysTenantUserMapper' and 'com.know.knowboot.mapper.tenant.SysTenantUserMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.420  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'adminMapper' and 'com.know.knowboot.mapper.AdminMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.420  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'aiUpdateMonitorMapper' and 'com.know.knowboot.mapper.AiUpdateMonitorMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.420  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'fileCateMapper' and 'com.know.knowboot.mapper.album.FileCateMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.420  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'fileMapper' and 'com.know.knowboot.mapper.album.FileMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.420  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'configMapper' and 'com.know.knowboot.mapper.ConfigMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.420  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'decoratePageMapper' and 'com.know.knowboot.mapper.decorate.DecoratePageMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.420  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'decorateTabbarMapper' and 'com.know.knowboot.mapper.decorate.DecorateTabbarMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.420  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'devCrontabMapper' and 'com.know.knowboot.mapper.DevCrontabMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.422  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'noticeRecordMapper' and 'com.know.knowboot.mapper.notice.NoticeRecordMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.422  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'noticeSettingMapper' and 'com.know.knowboot.mapper.notice.NoticeSettingMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.422  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'officialAccountReplyMapper' and 'com.know.knowboot.mapper.OfficialAccountReplyMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.422  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'rechargeOrderMapper' and 'com.know.knowboot.mapper.RechargeOrderMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.422  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'refundLogMapper' and 'com.know.knowboot.mapper.RefundLogMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.424  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'refundRecordMapper' and 'com.know.knowboot.mapper.RefundRecordMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.424  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'devPayConfigMapper' and 'com.know.knowboot.mapper.setting.DevPayConfigMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.427  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'devPayWayMapper' and 'com.know.knowboot.mapper.setting.DevPayWayMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.427  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'dictDataMapper' and 'com.know.knowboot.mapper.setting.DictDataMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.427  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'dictTypeMapper' and 'com.know.knowboot.mapper.setting.DictTypeMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.427  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'hotSearchMapper' and 'com.know.knowboot.mapper.setting.HotSearchMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.427  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'smsLogMapper' and 'com.know.knowboot.mapper.smsLog.SmsLogMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.429  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'systemLogLoginMapper' and 'com.know.knowboot.mapper.system.SystemLogLoginMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.429  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'systemLogOperateMapper' and 'com.know.knowboot.mapper.system.SystemLogOperateMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.429  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'systemLogOperationMapper' and 'com.know.knowboot.mapper.system.SystemLogOperationMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.429  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'systemMenuMapper' and 'com.know.knowboot.mapper.system.SystemMenuMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.429  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'systemRoleMapper' and 'com.know.knowboot.mapper.system.SystemRoleMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.431  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'systemRoleMenuMapper' and 'com.know.knowboot.mapper.system.SystemRoleMenuMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.431  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysDeptJobMapper' and 'com.know.knowboot.mapper.tenant.SysDeptJobMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.431  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysDeptMapper' and 'com.know.knowboot.mapper.tenant.SysDeptMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.431  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysDictMapper' and 'com.know.knowboot.mapper.tenant.SysDictMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.431  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysDictTypeMapper' and 'com.know.knowboot.mapper.tenant.SysDictTypeMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.431  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysJobMapper' and 'com.know.knowboot.mapper.tenant.SysJobMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.433  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysLoginLogMapper' and 'com.know.knowboot.mapper.tenant.SysLoginLogMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.433  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysMenuConfigMapper' and 'com.know.knowboot.mapper.tenant.SysMenuConfigMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.433  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysMenuMapper' and 'com.know.knowboot.mapper.tenant.SysMenuMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.433  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysOperLogMapper' and 'com.know.knowboot.mapper.tenant.SysOperLogMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.433  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysPermissionMapper' and 'com.know.knowboot.mapper.tenant.SysPermissionMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.433  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysRoleDataScopeMapper' and 'com.know.knowboot.mapper.tenant.SysRoleDataScopeMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.435  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysRoleMapper' and 'com.know.knowboot.mapper.tenant.SysRoleMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.435  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysRoleMenuMapper' and 'com.know.knowboot.mapper.tenant.SysRoleMenuMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.435  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysRolePermissionMapper' and 'com.know.knowboot.mapper.tenant.SysRolePermissionMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.435  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysTabbarMapper' and 'com.know.knowboot.mapper.tenant.SysTabbarMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.435  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysTenantMapper' and 'com.know.knowboot.mapper.tenant.SysTenantMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.435  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysUserDeptMapper' and 'com.know.knowboot.mapper.tenant.SysUserDeptMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.435  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysUserJobMapper' and 'com.know.knowboot.mapper.tenant.SysUserJobMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.435  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysUserMapper' and 'com.know.knowboot.mapper.tenant.SysUserMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.435  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysUserRoleMapper' and 'com.know.knowboot.mapper.tenant.SysUserRoleMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.437  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'sysUserTenantMapper' and 'com.know.knowboot.mapper.tenant.SysUserTenantMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.437  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'userAuthMapper' and 'com.know.knowboot.mapper.user.UserAuthMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.437  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'userMapper' and 'com.know.knowboot.mapper.user.UserMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.437  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'userSessionMapper' and 'com.know.knowboot.mapper.user.UserSessionMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.437  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'planFocusSessionMapper' and 'com.know.knowboot.mapper.plan.PlanFocusSessionMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.437  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'planHabitMapper' and 'com.know.knowboot.mapper.plan.PlanHabitMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.437  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'planHabitRecordMapper' and 'com.know.knowboot.mapper.plan.PlanHabitRecordMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.439  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'planHomeConfigMapper' and 'com.know.knowboot.mapper.plan.PlanHomeConfigMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.439  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'planInfoMapper' and 'com.know.knowboot.mapper.plan.PlanInfoMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.439  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'planScheduleCategoryMapper' and 'com.know.knowboot.mapper.plan.PlanScheduleCategoryMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.440  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : Skipping MapperFactoryBean with name 'planScheduleEventMapper' and 'com.know.knowboot.mapper.plan.PlanScheduleEventMapper' mapperInterface. Bean already defined with the same name!
+2026-07-25 14:12:47.440  WARN 13252 --- [           main] o.m.s.mapper.ClassPathMapperScanner      : No MyBatis mapper was found in '[com.know.*.mapper]' package. Please check your configuration.
+2026-07-25 14:12:47.650  INFO 13252 --- [           main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=295e9e7b-6e15-3ba6-9496-3635ad9ed962
+2026-07-25 14:12:49.570  INFO 13252 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'com.alicp.jetcache.anno.config.JetCacheProxyConfiguration' of type [com.alicp.jetcache.anno.config.JetCacheProxyConfiguration$$EnhancerBySpringCGLIB$$52f69c5e] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-07-25 14:12:49.604  INFO 13252 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'com.alicp.jetcache.anno.config.CommonConfiguration' of type [com.alicp.jetcache.anno.config.CommonConfiguration$$EnhancerBySpringCGLIB$$d1fce1d6] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2026-07-25 14:12:50.883  INFO 13252 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8082 (http)
+2026-07-25 14:12:50.901  INFO 13252 --- [           main] o.a.coyote.http11.Http11NioProtocol      : Initializing ProtocolHandler ["http-nio-8082"]
+2026-07-25 14:12:50.904  INFO 13252 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-07-25 14:12:50.906  INFO 13252 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.60]
+2026-07-25 14:12:51.121  INFO 13252 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-07-25 14:12:51.123  INFO 13252 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 7655 ms
+2026-07-25 14:12:51.739  INFO 13252 --- [           main] c.a.d.s.b.a.DruidDataSourceAutoConfigure : Init DruidDataSource
+2026-07-25 14:12:52.089  INFO 13252 --- [           main] com.alibaba.druid.pool.DruidDataSource   : {dataSource-1} inited
+2026-07-25 14:13:01.644 ERROR 13252 --- [eate-2035381640] com.alibaba.druid.pool.DruidDataSource   : create connection SQLException, url: jdbc:mysql://101.37.83.88:3306/know_boot_v1?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai, errorCode 0, state 08001
+
+java.sql.SQLNonTransientConnectionException: Could not create connection to database server. Attempted reconnect 3 times. Giving up.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:110)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:89)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:63)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:73)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectWithRetries(ConnectionImpl.java:906)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:831)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:456)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:246)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:198)
+	at com.alibaba.druid.pool.DruidAbstractDataSource.createPhysicalConnection(DruidAbstractDataSource.java:1644)
+	at com.alibaba.druid.pool.DruidAbstractDataSource.createPhysicalConnection(DruidAbstractDataSource.java:1710)
+	at com.alibaba.druid.pool.DruidDataSource$CreateConnectionThread.run(DruidDataSource.java:2779)
+Caused by: com.mysql.cj.exceptions.CJException: null,  message from server: "Host '120.211.21.76' is blocked because of many connection errors; unblock with 'mysqladmin flush-hosts'"
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Unknown Source)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:105)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:151)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:129)
+	at com.mysql.cj.protocol.a.NativeProtocol.rejectProtocol(NativeProtocol.java:371)
+	at com.mysql.cj.protocol.a.NativeProtocol.readServerCapabilities(NativeProtocol.java:500)
+	at com.mysql.cj.protocol.a.NativeProtocol.beforeHandshake(NativeProtocol.java:383)
+	at com.mysql.cj.protocol.a.NativeProtocol.connect(NativeProtocol.java:1346)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:157)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectWithRetries(ConnectionImpl.java:850)
+	... 7 common frames omitted
+
+2026-07-25 14:13:05.871 ERROR 13252 --- [eate-2035381640] com.alibaba.druid.pool.DruidDataSource   : create connection SQLException, url: jdbc:mysql://101.37.83.88:3306/know_boot_v1?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai, errorCode 0, state 08001
+
+java.sql.SQLNonTransientConnectionException: Could not create connection to database server. Attempted reconnect 3 times. Giving up.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:110)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:97)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:89)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:63)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:73)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectWithRetries(ConnectionImpl.java:906)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:831)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:456)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:246)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:198)
+	at com.alibaba.druid.pool.DruidAbstractDataSource.createPhysicalConnection(DruidAbstractDataSource.java:1644)
+	at com.alibaba.druid.pool.DruidAbstractDataSource.createPhysicalConnection(DruidAbstractDataSource.java:1710)
+	at com.alibaba.druid.pool.DruidDataSource$CreateConnectionThread.run(DruidDataSource.java:2779)
+Caused by: com.mysql.cj.exceptions.CJException: null,  message from server: "Host '120.211.21.76' is blocked because of many connection errors; unblock with 'mysqladmin flush-hosts'"
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Unknown Source)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:105)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:151)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:129)
+	at com.mysql.cj.protocol.a.NativeProtocol.rejectProtocol(NativeProtocol.java:371)
+	at com.mysql.cj.protocol.a.NativeProtocol.readServerCapabilities(NativeProtocol.java:500)
+	at com.mysql.cj.protocol.a.NativeProtocol.beforeHandshake(NativeProtocol.java:383)
+	at com.mysql.cj.protocol.a.NativeProtocol.connect(NativeProtocol.java:1346)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:157)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectWithRetries(ConnectionImpl.java:850)
+	... 7 common frames omitted
+
+2026-07-25 14:13:05.875  INFO 13252 --- [eate-2035381640] c.a.druid.pool.DruidAbstractDataSource   : {dataSource-1} failContinuous is true

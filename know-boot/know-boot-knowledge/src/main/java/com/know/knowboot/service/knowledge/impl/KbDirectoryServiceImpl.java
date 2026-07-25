@@ -11,7 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 目录服务实现
@@ -60,9 +61,23 @@ public class KbDirectoryServiceImpl extends ServiceImpl<KbDirectoryMapper, KbDir
 
     @Override
     public List<KbDirectory> treeByKnowledgeBase(Long knowledgeBaseId) {
-        return list(new LambdaQueryWrapper<KbDirectory>()
+        // 查询所有目录（扁平）
+        List<KbDirectory> allDirs = list(new LambdaQueryWrapper<KbDirectory>()
                 .eq(KbDirectory::getKnowledgeBaseId, knowledgeBaseId)
                 .orderByAsc(KbDirectory::getSort)
                 .orderByDesc(KbDirectory::getCreateTime));
+
+        // 构建树形结构
+        return buildTree(allDirs, 0L);
+    }
+
+    /**
+     * 递归构建目录树
+     */
+    private List<KbDirectory> buildTree(List<KbDirectory> allDirs, Long parentId) {
+        return allDirs.stream()
+                .filter(d -> Objects.equals(d.getParentId(), parentId))
+                .peek(d -> d.setChildren(buildTree(allDirs, d.getId())))
+                .collect(Collectors.toList());
     }
 }

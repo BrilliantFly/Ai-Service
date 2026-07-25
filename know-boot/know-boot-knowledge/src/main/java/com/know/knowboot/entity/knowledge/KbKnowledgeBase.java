@@ -33,8 +33,8 @@ public class KbKnowledgeBase implements Serializable {
     @ApiModelProperty("描述")
     private String description;
 
-    @ApiModelProperty("可见性: public/private")
-    private String visibility;
+    @ApiModelProperty("可见性: 0私密/1公开")
+    private Integer visibility;
 
     @ApiModelProperty("文档数")
     private Integer docCount;

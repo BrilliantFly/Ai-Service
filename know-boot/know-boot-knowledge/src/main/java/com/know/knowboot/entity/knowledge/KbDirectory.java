@@ -45,4 +45,8 @@ public class KbDirectory implements Serializable {
     @TableLogic(value = "0", delval = "1")
     @ApiModelProperty("删除时间")
     private Long deleteTime = 0L;
+
+    @TableField(exist = false)
+    @ApiModelProperty("子目录列表")
+    private List<KbDirectory> children;
 }

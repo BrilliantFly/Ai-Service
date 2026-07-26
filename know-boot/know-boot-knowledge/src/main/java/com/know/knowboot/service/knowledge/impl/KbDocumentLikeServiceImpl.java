@@ -36,7 +36,7 @@ public class KbDocumentLikeServiceImpl extends ServiceImpl<KbDocumentLikeMapper,
 
         if (existing != null) {
             // 取消点赞
-            removeById(existing.getId);
+            removeById(existing.getId());
             doc.setLikeCount(Math.max(0, (doc.getLikeCount() == null ? 0 : doc.getLikeCount()) - 1));
         } else {
             // 添加点赞

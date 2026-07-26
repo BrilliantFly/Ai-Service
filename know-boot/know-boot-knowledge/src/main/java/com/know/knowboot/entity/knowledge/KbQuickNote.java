@@ -27,6 +27,10 @@ public class KbQuickNote implements Serializable {
     @ApiModelProperty("标签IDs(逗号分隔)")
     private String tags;
 
+    @ApiModelProperty("是否归档(0否/1是)")
+    @TableField("is_archived")
+    private Integer isArchived = 0;
+
     @ApiModelProperty("创建人")
     private Long createBy;
 

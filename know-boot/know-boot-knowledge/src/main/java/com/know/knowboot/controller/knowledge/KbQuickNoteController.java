@@ -49,6 +49,12 @@ public class KbQuickNoteController {
         return AjaxResult.success(kbQuickNoteService.update(entity));
     }
 
+    @ApiOperation("切换归档状态")
+    @PutMapping("/{id}/archive")
+    public AjaxResult<Boolean> toggleArchive(@PathVariable Long id) {
+        return AjaxResult.success(kbQuickNoteService.toggleArchive(id));
+    }
+
     @ApiOperation("删除")
     @DeleteMapping("/{id}")
     public AjaxResult<Boolean> delete(@PathVariable Long id) {

@@ -39,7 +39,7 @@ public class KbImageController {
             );
             return AjaxResult.success(image);
         } catch (IOException e) {
-            return AjaxResult.error("上传失败: " + e.getMessage());
+            return (AjaxResult<KbImage>) (AjaxResult<?>) AjaxResult.failed("上传失败: " + e.getMessage());
         }
     }
 
@@ -54,8 +54,8 @@ public class KbImageController {
     public AjaxResult<String> getUrl(@PathVariable Long id) {
         KbImage image = kbImageService.getById(id);
         if (image == null) {
-            return AjaxResult.error("图片不存在");
+            return (AjaxResult<String>) (AjaxResult<?>) AjaxResult.failed("图片不存在");
         }
-        return AjaxResult.success("/uploads/" + image.getFilePath());
+        return (AjaxResult<String>) (AjaxResult<?>) AjaxResult.success(0, "/uploads/" + image.getFilePath(), 0);
     }
 }

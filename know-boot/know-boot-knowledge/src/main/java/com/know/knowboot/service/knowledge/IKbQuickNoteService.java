@@ -29,6 +29,11 @@ public interface IKbQuickNoteService {
     boolean update(KbQuickNote entity);
 
     /**
+     * 切换归档状态
+     */
+    boolean toggleArchive(Long id);
+
+    /**
      * 删除
      */
     boolean delete(Long id);

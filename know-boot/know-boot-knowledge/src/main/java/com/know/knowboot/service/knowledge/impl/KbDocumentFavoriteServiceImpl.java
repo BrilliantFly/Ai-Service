@@ -29,7 +29,7 @@ public class KbDocumentFavoriteServiceImpl extends ServiceImpl<KbDocumentFavorit
         KbDocumentFavorite existing = getOne(wrapper);
 
         if (existing != null) {
-            return removeById(existing.getId);
+            return removeById(existing.getId());
         } else {
             KbDocumentFavorite fav = new KbDocumentFavorite();
             fav.setDocumentId(documentId);

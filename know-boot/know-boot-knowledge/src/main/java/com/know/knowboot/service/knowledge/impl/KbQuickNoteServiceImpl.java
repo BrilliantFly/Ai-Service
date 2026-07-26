@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.know.knowboot.entity.knowledge.KbQuickNote;
+import com.know.knowboot.entity.knowledge.KbTag;
 import com.know.knowboot.mapper.knowledge.KbQuickNoteMapper;
+import com.know.knowboot.mapper.knowledge.KbTagMapper;
 import com.know.knowboot.service.knowledge.IKbQuickNoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,9 @@ public class KbQuickNoteServiceImpl extends ServiceImpl<KbQuickNoteMapper, KbQui
 
     @Autowired
     private KbQuickNoteMapper kbQuickNoteMapper;
+
+    @Autowired
+    private KbTagMapper kbTagMapper;
 
     @Override
     public IPage<KbQuickNote> page(KbQuickNote query, Long userId, Integer pageNum, Integer pageSize) {
@@ -39,12 +44,54 @@ public class KbQuickNoteServiceImpl extends ServiceImpl<KbQuickNoteMapper, KbQui
     public boolean add(KbQuickNote entity, Long userId) {
         entity.setCreateBy(userId);
         entity.setCreateTime(System.currentTimeMillis());
-        return save(entity);
+        boolean result = save(entity);
+        if (result) {
+            syncTagsToTagTable(entity.getTags());
+        }
+        return result;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean update(KbQuickNote entity) {
+        entity.setUpdateTime(System.currentTimeMillis());
+        boolean result = updateById(entity);
+        if (result) {
+            syncTagsToTagTable(entity.getTags());
+        }
+        return result;
+    }
+
+    /**
+     * 将小记中的标签名称同步到kb_tag表，不存在则自动创建
+     */
+    private void syncTagsToTagTable(String tags) {
+        if (tags == null || tags.trim().isEmpty()) return;
+        String[] tagNames = tags.replace("，", ",").split(",");
+        for (String name : tagNames) {
+            name = name.trim();
+            if (name.isEmpty()) continue;
+            LambdaQueryWrapper<KbTag> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(KbTag::getName, name);
+            KbTag existing = kbTagMapper.selectOne(wrapper);
+            if (existing == null) {
+                KbTag tag = new KbTag();
+                tag.setName(name);
+                tag.setColor("#25B864");
+                tag.setSort(0);
+                tag.setCreateTime(System.currentTimeMillis());
+                tag.setDeleteTime(0L);
+                kbTagMapper.insert(tag);
+            }
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean toggleArchive(Long id) {
+        KbQuickNote entity = kbQuickNoteMapper.selectById(id);
+        if (entity == null) return false;
+        entity.setIsArchived(entity.getIsArchived() == 1 ? 0 : 1);
         entity.setUpdateTime(System.currentTimeMillis());
         return updateById(entity);
     }

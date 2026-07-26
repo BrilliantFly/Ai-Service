@@ -33,10 +33,11 @@ public class KbDocumentShareController {
 
     @ApiOperation("通过令牌获取分享信息")
     @GetMapping("/info")
+    @SuppressWarnings("unchecked")
     public AjaxResult<Map<String, Object>> getByToken(@RequestParam String token) {
         Map<String, Object> result = kbDocumentShareService.getByToken(token);
         if (result == null) {
-            return AjaxResult.error("分享链接不存在或已过期");
+            return (AjaxResult<Map<String, Object>>) (AjaxResult<?>) AjaxResult.failed("分享链接不存在或已过期");
         }
         return AjaxResult.success(result);
     }

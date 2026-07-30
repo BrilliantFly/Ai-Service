@@ -1,6 +1,7 @@
 package com.know.knowboot.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.know.knowboot.auth.CameraAuthContext;
 import com.know.knowboot.core.AjaxResult;
 import com.know.knowboot.entity.CameraSnapshot;
 import com.know.knowboot.service.ICameraSnapshotService;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 @Api(tags = "截图记录管理")
 @RestController
-@RequestMapping("/camera/snapshot")
+@RequestMapping("/api/camera/snapshot")
 public class CameraSnapshotController {
 
     @Autowired
@@ -51,7 +52,7 @@ public class CameraSnapshotController {
             @ApiParam("设备ID") @RequestParam Long deviceId,
             @ApiParam("文件路径") @RequestParam String filePath,
             @ApiParam("缩略图路径") @RequestParam(required = false) String thumbnail) {
-        Long userId = 1L;
+        Long userId = CameraAuthContext.getUserId();
         return AjaxResult.success(cameraSnapshotService.saveSnapshot(deviceId, userId, filePath, thumbnail));
     }
 

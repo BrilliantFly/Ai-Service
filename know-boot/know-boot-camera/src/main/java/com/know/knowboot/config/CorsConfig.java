@@ -8,7 +8,8 @@ import org.springframework.web.filter.CorsFilter;
 
 /**
  * 跨域配置
- * 摄像头后端独立运行在 8085 端口，需允许来自 H5 开发服务器 (localhost:8991) 的跨域请求
+ * 摄像头后端独立运行（默认 8088 端口），经 Nginx 代理访问
+ * H5 开发服务器需配置 Vite 代理转发 /camera/ 到后端
  */
 @Configuration
 public class CorsConfig {

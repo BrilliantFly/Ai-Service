@@ -1,6 +1,7 @@
 package com.know.knowboot.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.know.knowboot.auth.CameraAuthContext;
 import com.know.knowboot.core.AjaxResult;
 import com.know.knowboot.entity.CameraDevice;
 import com.know.knowboot.service.ICameraDeviceService;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 @Api(tags = "摄像头设备管理")
 @RestController
-@RequestMapping("/camera/device")
+@RequestMapping("/api/camera/device")
 public class CameraDeviceController {
 
     @Autowired
@@ -29,22 +30,21 @@ public class CameraDeviceController {
             CameraDevice query,
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "10") Integer pageSize) {
-        // TODO: 从Token获取用户ID
-        Long userId = 1L;
+        Long userId = CameraAuthContext.getUserId();
         return AjaxResult.success(cameraDeviceService.page(query, userId, pageNum, pageSize));
     }
 
     @ApiOperation("获取所有设备")
     @GetMapping("/list")
     public AjaxResult<List<CameraDevice>> list() {
-        Long userId = 1L;
+        Long userId = CameraAuthContext.getUserId();
         return AjaxResult.success(cameraDeviceService.listByUserId(userId));
     }
 
     @ApiOperation("获取收藏设备")
     @GetMapping("/favorites")
     public AjaxResult<List<CameraDevice>> favorites() {
-        Long userId = 1L;
+        Long userId = CameraAuthContext.getUserId();
         return AjaxResult.success(cameraDeviceService.listFavorites(userId));
     }
 
@@ -57,7 +57,7 @@ public class CameraDeviceController {
     @ApiOperation("新增设备")
     @PostMapping
     public AjaxResult<Boolean> add(@RequestBody CameraDevice device) {
-        Long userId = 1L;
+        Long userId = CameraAuthContext.getUserId();
         return AjaxResult.success(cameraDeviceService.add(device, userId));
     }
 

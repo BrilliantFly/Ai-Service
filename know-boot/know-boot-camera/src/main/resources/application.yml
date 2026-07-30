@@ -1,16 +1,20 @@
 server:
-  port: 8085
-  
+  port: 8088
+  servlet:
+    context-path: /know-boot
+
 spring:
   main:
     allow-circular-references: true
   application:
     name: know-boot-camera
+  profiles:
+    active: standalone
   datasource:
     url: jdbc:mysql://101.37.83.88:3306/know_boot_v1?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.jdbc.Driver
     username: root
-    password: Wanglei!@#123
+    password: 123456aA@
   redis:
     host: localhost
     port: 6379
@@ -22,7 +26,7 @@ spring:
         max-idle: 20
         min-idle: 0
         max-wait: 30000
-    
+
 # MyBatis Plus
 mybatis-plus:
   mapper-locations: classpath*:mapper/**/*Mapper.xml
@@ -40,13 +44,13 @@ camera:
   rtsp:
     default-port: 554
     timeout: 10000
-    
+
 # 录像存储配置
 record:
   storage:
     path: ./records/
     max-size: 1073741824
-    
+
 # 日志配置
 logging:
   level:
@@ -54,6 +58,7 @@ logging:
 
 # 限流配置
 know:
+  mode: standalone  # standalone=单机模式, microservice=分布式模式
   rateLimiter:
     all:
       permitsPerSecond: 100

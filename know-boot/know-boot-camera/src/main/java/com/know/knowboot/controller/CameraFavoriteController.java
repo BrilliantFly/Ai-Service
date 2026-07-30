@@ -1,5 +1,6 @@
 package com.know.knowboot.controller;
 
+import com.know.knowboot.auth.CameraAuthContext;
 import com.know.knowboot.core.AjaxResult;
 import com.know.knowboot.entity.CameraFavorite;
 import com.know.knowboot.service.ICameraFavoriteService;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 @Api(tags = "设备收藏管理")
 @RestController
-@RequestMapping("/camera/favorite")
+@RequestMapping("/api/camera/favorite")
 public class CameraFavoriteController {
 
     @Autowired
@@ -24,39 +25,40 @@ public class CameraFavoriteController {
 
     @ApiOperation("获取收藏列表")
     @GetMapping("/list")
-    public AjaxResult<List<CameraFavorite>> list(@ApiParam("用户ID") @RequestParam(defaultValue = "1") Long userId) {
+    public AjaxResult<List<CameraFavorite>> list() {
+        Long userId = CameraAuthContext.getUserId();
         return AjaxResult.success(cameraFavoriteService.listByUser(userId));
     }
 
     @ApiOperation("检查是否已收藏")
     @GetMapping("/check")
     public AjaxResult<Boolean> check(
-            @ApiParam("设备ID") @RequestParam Long deviceId,
-            @ApiParam("用户ID") @RequestParam(defaultValue = "1") Long userId) {
+            @ApiParam("设备ID") @RequestParam Long deviceId) {
+        Long userId = CameraAuthContext.getUserId();
         return AjaxResult.success(cameraFavoriteService.isFavorited(deviceId, userId));
     }
 
     @ApiOperation("添加收藏")
     @PostMapping
     public AjaxResult<CameraFavorite> add(
-            @ApiParam("设备ID") @RequestParam Long deviceId,
-            @ApiParam("用户ID") @RequestParam(defaultValue = "1") Long userId) {
+            @ApiParam("设备ID") @RequestParam Long deviceId) {
+        Long userId = CameraAuthContext.getUserId();
         return AjaxResult.success(cameraFavoriteService.add(deviceId, userId));
     }
 
     @ApiOperation("取消收藏")
     @DeleteMapping
     public AjaxResult<Boolean> remove(
-            @ApiParam("设备ID") @RequestParam Long deviceId,
-            @ApiParam("用户ID") @RequestParam(defaultValue = "1") Long userId) {
+            @ApiParam("设备ID") @RequestParam Long deviceId) {
+        Long userId = CameraAuthContext.getUserId();
         return AjaxResult.success(cameraFavoriteService.remove(deviceId, userId));
     }
 
     @ApiOperation("切换收藏状态")
     @PostMapping("/toggle")
     public AjaxResult<Boolean> toggle(
-            @ApiParam("设备ID") @RequestParam Long deviceId,
-            @ApiParam("用户ID") @RequestParam(defaultValue = "1") Long userId) {
+            @ApiParam("设备ID") @RequestParam Long deviceId) {
+        Long userId = CameraAuthContext.getUserId();
         return AjaxResult.success(cameraFavoriteService.toggle(deviceId, userId));
     }
 }

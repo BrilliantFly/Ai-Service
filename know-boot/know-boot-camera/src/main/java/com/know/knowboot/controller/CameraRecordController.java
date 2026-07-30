@@ -1,6 +1,7 @@
 package com.know.knowboot.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.know.knowboot.auth.CameraAuthContext;
 import com.know.knowboot.core.AjaxResult;
 import com.know.knowboot.entity.CameraRecord;
 import com.know.knowboot.service.ICameraRecordService;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 @Api(tags = "录像记录管理")
 @RestController
-@RequestMapping("/camera/record")
+@RequestMapping("/api/camera/record")
 public class CameraRecordController {
 
     @Autowired
@@ -44,7 +45,7 @@ public class CameraRecordController {
     public AjaxResult<CameraRecord> start(
             @ApiParam("设备ID") @RequestParam Long deviceId,
             @ApiParam("录制类型") @RequestParam(required = false, defaultValue = "1") Integer recordType) {
-        Long userId = 1L;
+        Long userId = CameraAuthContext.getUserId();
         return AjaxResult.success(cameraRecordService.startRecord(deviceId, userId, recordType));
     }
 

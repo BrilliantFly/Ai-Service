@@ -1,0 +1,27 @@
+# =============================================
+# 微服务模式配置 (Microservice Mode)
+# 激活方式: spring.profiles.active=microservice
+# 需要先启动 Nacos 服务
+# =============================================
+know:
+  mode: microservice
+
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 39.98.108.121:10006
+      config:
+        server-addr: 39.98.108.121:10006
+        namespace: ab16776b-dae9-474e-8943-7bbbc627b637
+        group: DEFAULT_GROUP
+        file-extension: yaml
+
+seata:
+  enabled: true
+
+feign:
+  circuitbreaker:
+    enabled: true
+  loadbalancer:
+    enabled: true

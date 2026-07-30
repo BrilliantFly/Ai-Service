@@ -1,0 +1,27 @@
+# =============================================
+# 单机模式配置 (Standalone Mode)
+# 激活方式: spring.profiles.active=standalone
+# =============================================
+know:
+  mode: standalone
+
+seata:
+  enabled: false
+
+feign:
+  circuitbreaker:
+    enabled: false
+  loadbalancer:
+    enabled: false
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/know_boot_v1?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456aA@
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    database: 6

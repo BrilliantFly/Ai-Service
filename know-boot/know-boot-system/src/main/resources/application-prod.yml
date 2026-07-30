@@ -1,6 +1,6 @@
 # 项目配置
 like:
-  upload-directory: /opt/project/knowboot/data/ # 上传目录
+  upload-directory: /opt/ai-agent/apps/backend/uploads/ # 上传目录
   # 验证码配置
   captcha:
     # 是否开启验证码
@@ -37,7 +37,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource # 数据源类型
     driver-class-name: com.mysql.jdbc.Driver # MySql的驱动
     username: root # 数据库账号
-    password: Wanglei!@#123 # 数据库密码
+    password: 123456aA@ # 数据库密码
     hikari:
       connection-timeout: 30000     # 等待连接分配连接的最大时长(毫秒),超出时长还没可用连接则发送SQLException,默认30秒
       minimum-idle: 5               # 最小连接数
@@ -96,7 +96,7 @@ logging:
   config:
     classpath: logback-spring.xml
   logback-spring:
-    path: /opt/project/knowboot/logs
+    path: /opt/ai-agent/apps/logs/system
     filename: system
     max-history: 100
   # mybatis的sql语句是debug下打印（mybatisplus日志、logging日志可以选择一个）
@@ -108,7 +108,7 @@ know:
     driver-class-name: com.mysql.cj.jdbc.Driver
     jdbc-url: jdbc:mysql://101.37.83.88:3306/flyp_dev?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
     user-name: root
-    password: Wanglei!@#123
+    password: 123456aA@
     ignore-table: test
     ignore-table-prefix: test_
     ignore-table-suffix: _test

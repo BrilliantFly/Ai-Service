@@ -14,7 +14,7 @@ spring:
     url: jdbc:mysql://101.37.83.88:3306/know_boot_v1?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.jdbc.Driver
     username: root
-    password: Wanglei!@#123
+    password: 123456aA@
   redis:
     host: localhost
     port: 6379

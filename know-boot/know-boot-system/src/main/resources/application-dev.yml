@@ -1,6 +1,6 @@
 # 项目配置
 like:
-  upload-directory: /opt/project/knowboot/data/  # 上传目录
+  upload-directory: /opt/ai-agent/apps/backend/uploads/  # 上传目录
   unique-identification: know_boot_salt_v1  # 密码加密盐
   # 验证码配置
   captcha:

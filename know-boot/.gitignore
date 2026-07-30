@@ -14,3 +14,7 @@ rebel.xml
 /settings.xml
 /sql/
 /start-*.bat
+# Build outputs
+full_*.log
+system_*.log
+standalone/node_modules/

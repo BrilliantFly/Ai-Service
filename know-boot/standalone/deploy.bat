@@ -12,11 +12,15 @@ echo   1. Stop all existing services
 echo   2. Deploy know-boot-system.jar to server
 echo   3. Configure systemd service (standalone mode)
 echo   4. Configure Nginx routing
-echo   5. Start the service
+echo   5. Upload H5 mobile frontend (know-uniapp)
+echo   6. Start the service
+echo   7. Verify deployment
 echo.
 echo Prerequisites:
 echo   - node.js installed
 echo   - ssh2 package (npm install ssh2)
+echo   - know-uniapp H5 built (npm run build:h5)
+echo     (auto-build coming soon)
 echo.
 pause
 

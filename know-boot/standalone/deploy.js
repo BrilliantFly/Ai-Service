@@ -27,6 +27,11 @@ const DEPLOY = {
   wrapperScript: '/opt/ai-agent/apps/backend/start-system.sh',
   serviceUnit: '/etc/systemd/system/know-boot-system.service',
   nginxConfig: '/etc/nginx/conf.d/default.conf',
+  // Frontend
+  mobileLocal: __dirname + '\\..\\..\\..\\Ai-Front\\server\\public\\mobile',
+  mobileRemote: '/opt/ai-agent/apps/know-mobile',
+  adminLocal: __dirname + '\\..\\..\\..\\Ai-Front\\know-vue\\dist',
+  adminRemote: '/opt/ai-agent/apps/know-vue',
 };
 
 const JVM = {
@@ -85,6 +90,22 @@ function sftpUpload(conn, localPath, remotePath) {
       fs.createReadStream(localPath).pipe(ws);
     });
   });
+}
+
+async function sftpUploadDir(conn, localDir, remoteDir) {
+  const fs = require('fs');
+  const path = require('path');
+  const entries = fs.readdirSync(localDir, { withFileTypes: true });
+  await sshExec(conn, `mkdir -p ${remoteDir}`);
+  for (const entry of entries) {
+    const localPath = path.join(localDir, entry.name);
+    const remotePath = remoteDir + '/' + entry.name;
+    if (entry.isDirectory()) {
+      await sftpUploadDir(conn, localPath, remotePath);
+    } else if (entry.isFile()) {
+      await sftpUpload(conn, localPath, remotePath);
+    }
+  }
 }
 
 const WRAPPER_SCRIPT = `#!/bin/bash
@@ -191,6 +212,19 @@ const NGINX_CONFIG = `server {
     }
 }`;
 
+function getDirSize(dir) {
+  const fs = require('fs');
+  const path = require('path');
+  let count = 0;
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const e of entries) {
+    const p = path.join(dir, e.name);
+    if (e.isDirectory()) count += getDirSize(p);
+    else count++;
+  }
+  return count;
+}
+
 async function main() {
   const fs = require('fs');
   const conn = new Client();
@@ -212,31 +246,56 @@ async function main() {
   console.log('Connected.\n');
 
   // Step 1: Stop all services
-  console.log('=== [1/7] Stop existing services ===');
+  console.log('=== [1/9] Stop existing services ===');
   await sshExec(conn, 'systemctl stop know-boot-system know-boot-plan know-boot-camera know-boot-knowledge 2>&1; pkill -f "know-boot" 2>&1 || true; sleep 2; echo "Stopped"');
 
   // Step 2: Upload JAR
-  console.log('\n=== [2/7] Upload JAR ===');
+  console.log('\n=== [2/9] Upload JAR ===');
   await sftpUpload(conn, DEPLOY.jarLocal, DEPLOY.jarRemote);
   console.log('JAR uploaded to', DEPLOY.jarRemote);
 
   // Step 3: Write wrapper script
-  console.log('\n=== [3/7] Write wrapper script ===');
+  console.log('\n=== [3/9] Write wrapper script ===');
   await sftpWrite(conn, DEPLOY.wrapperScript, WRAPPER_SCRIPT);
   await sshExec(conn, 'chmod +x ' + DEPLOY.wrapperScript + '; echo "OK"');
 
   // Step 4: Write systemd unit
-  console.log('\n=== [4/7] Write systemd unit ===');
+  console.log('\n=== [4/9] Write systemd unit ===');
   await sftpWrite(conn, DEPLOY.serviceUnit, SERVICE_UNIT);
   await sshExec(conn, 'systemctl daemon-reload; echo "OK"');
 
   // Step 5: Write nginx config
-  console.log('\n=== [5/7] Write nginx config ===');
+  console.log('\n=== [5/9] Write nginx config ===');
   await sftpWrite(conn, DEPLOY.nginxConfig, NGINX_CONFIG);
   await sshExec(conn, 'nginx -t 2>&1 && nginx -s reload 2>&1 && echo "Nginx OK" || echo "Nginx FAILED"');
 
-  // Step 6: Start service
-  console.log('\n=== [6/7] Start service ===');
+  // Step 6: Upload mobile H5 frontend (via tar archive to avoid channel limits)
+  console.log('\n=== [6/9] Upload mobile H5 frontend ===');
+  const os = require('os');
+  const tmpTar = os.tmpdir() + '\\know-mobile.tar.gz';
+  if (fs.existsSync(DEPLOY.mobileLocal)) {
+    const size = getDirSize(DEPLOY.mobileLocal);
+    console.log(`Mobile H5 found (${size} files), archiving ...`);
+    await new Promise((resolve, reject) => {
+      const cp = require('child_process');
+      const tar = cp.spawn('tar', ['-czf', tmpTar, '-C', DEPLOY.mobileLocal, '.']);
+      let errOut = '';
+      tar.on('close', code => code === 0 ? resolve() : reject(new Error('tar failed: ' + code + '\n' + errOut)));
+      tar.stderr.on('data', d => errOut += d.toString());
+    });
+    const stat = fs.statSync(tmpTar);
+    console.log(`Archive created (${(stat.size / 1024).toFixed(0)}KB), uploading ...`);
+    await sftpUpload(conn, tmpTar, '/tmp/know-mobile.tar.gz');
+    console.log('Archive uploaded, extracting on server ...');
+    await sshExec(conn, `rm -rf ${DEPLOY.mobileRemote} && mkdir -p ${DEPLOY.mobileRemote} && tar -xzf /tmp/know-mobile.tar.gz -C ${DEPLOY.mobileRemote} && rm /tmp/know-mobile.tar.gz && echo "H5 deployed"`);
+    fs.unlinkSync(tmpTar);
+    console.log('Mobile H5 deployed.');
+  } else {
+    console.log('Mobile H5 build not found at', DEPLOY.mobileLocal + ', skipping.');
+  }
+
+  // Step 7: Start service
+  console.log('\n=== [7/9] Start service ===');
   await sshExec(conn, 'systemctl start know-boot-system 2>&1; echo "Started. Waiting for port 8082..."');
 
   let found = false;
@@ -251,15 +310,18 @@ async function main() {
     if (i % 10 === 0) console.log('  ...waiting (' + (i * 2) + 's)');
   }
 
-  // Step 7: Verify
-  console.log('\n=== [7/7] Verify ===');
+  // Step 8: Verify
+  console.log('\n=== [8/9] Verify ===');
   await sshExec(conn, 'systemctl is-active know-boot-system');
   await sshExec(conn, 'curl -s -w "\\nHTTP %{http_code}" http://127.0.0.1:8082/api/login/account -X POST -H "Content-Type: application/json" -d \'{"username":"admin","password":"123456"}\' 2>&1 | tail -3');
   await sshExec(conn, 'curl -s -w "\\nHTTP %{http_code}" http://127.0.0.1:80/ 2>&1 | head -3');
   await sshExec(conn, 'free -m; uptime');
 
+  console.log('\n=== [9/9] Update done ===');
+
   console.log('\n=== DEPLOYMENT COMPLETE ===');
   console.log('Vue Admin:  http://101.37.83.88/');
+  console.log('Mobile H5:  http://101.37.83.88/mobile/');
   console.log('Login:      POST http://101.37.83.88/api/login/account');
   console.log('API Docs:   http://101.37.83.88/api/ (Swagger if enabled)');
   console.log('Note: In standalone mode, only know-boot-system runs on port 8082.');

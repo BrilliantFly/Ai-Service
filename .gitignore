@@ -1,0 +1,3 @@
+# Runtime logs
+know-boot/standalone/*.log
+know-boot/standalone/*.err

@@ -14,7 +14,7 @@ import java.util.List;
 
 @Api(tags = "角色数据权限管理")
 @RestController
-@RequestMapping("/system/role/data-scope")
+@RequestMapping("/api/system/role/data-scope")
 @RequiredArgsConstructor
 public class SysRoleDataScopeController {
 

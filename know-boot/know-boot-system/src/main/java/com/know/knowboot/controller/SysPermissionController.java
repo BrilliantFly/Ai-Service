@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Api(tags = "权限管理")
 @RestController
-@RequestMapping("/system/permission")
+@RequestMapping("/api/system/permission")
 public class SysPermissionController {
 
     @Autowired

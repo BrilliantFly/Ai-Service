@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Api(tags = "日志管理")
 @RestController
-@RequestMapping("/system/log")
+@RequestMapping("/api/system/log")
 public class SysLogController {
 
     @Autowired

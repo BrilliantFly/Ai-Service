@@ -14,7 +14,7 @@ import java.util.List;
 
 @Api(tags = "底部导航管理")
 @RestController
-@RequestMapping("/system/tabbar")
+@RequestMapping("/api/system/tabbar")
 public class SysTabbarController {
 
     @Autowired

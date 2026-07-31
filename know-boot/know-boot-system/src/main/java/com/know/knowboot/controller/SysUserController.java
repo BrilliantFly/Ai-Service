@@ -28,7 +28,7 @@ import java.util.List;
  */
 @Api(tags = "用户管理")
 @RestController
-@RequestMapping("/system/user")
+@RequestMapping("/api/system/user")
 public class SysUserController {
 
     @Autowired

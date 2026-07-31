@@ -17,7 +17,7 @@ import java.util.List;
  */
 @Api(tags = "岗位管理")
 @RestController
-@RequestMapping("/system/job")
+@RequestMapping("/api/system/job")
 public class SysJobController {
 
     @Autowired

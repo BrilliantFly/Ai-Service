@@ -3,15 +3,14 @@ package com.know.knowboot;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.exception.NotLoginException;
 import com.alibaba.fastjson2.JSON;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.know.knowboot.service.IAdminRoleService;
 import com.know.knowboot.aop.NotLogin;
 import com.know.knowboot.aop.NotPower;
 import com.know.knowboot.core.AjaxResult;
-import com.know.knowboot.entity.Admin;
+import com.know.knowboot.entity.tenant.SysUser;
 import com.know.knowboot.enums.ErrorEnum;
 import com.know.knowboot.exception.LoginException;
-import com.know.knowboot.mapper.AdminMapper;
+import com.know.knowboot.service.ISysUserService;
 import com.know.knowboot.util.StringUtils;
 import com.know.knowboot.common.YmlUtils;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +32,7 @@ import java.util.List;
 public class KnowBootSystemInterceptor implements HandlerInterceptor {
 
     @Resource
-    AdminMapper systemAuthAdminMapper;
+    private ISysUserService sysUserService;
 
     @Resource
     IAdminRoleService iAdminRoleService;
@@ -165,23 +164,16 @@ public class KnowBootSystemInterceptor implements HandlerInterceptor {
                 throw new LoginException(errCode, errMsg);
             }
 
-            // 用户校验
-            Admin adminUser = systemAuthAdminMapper.selectOne(
-                    new QueryWrapper<Admin>()
-                        .select("id,name,disable")
-                        .eq("id", Integer.parseInt(id.toString()))
-                            .isNull("delete_time")
-                        .last("limit 1"));
-
-            // 删除校验
-            if (StringUtils.isNull(adminUser)) {
+            // 用户校验 (使用新版 sys_user 表)
+            SysUser sysUser = sysUserService.getById(Long.parseLong(id.toString()));
+            if (StringUtils.isNull(sysUser)) {
                 Integer errCode = ErrorEnum.TOKEN_INVALID.getCode();
                 String errMsg = ErrorEnum.TOKEN_INVALID.getMsg();
                 throw new LoginException(errCode, errMsg);
             }
 
-            // 禁用校验
-            if (adminUser.getDisable().equals(1)) {
+            // 禁用校验 (status: 1=正常, 2=冻结)
+            if (sysUser.getStatus() != null && sysUser.getStatus().equals(2)) {
                 Integer errCode = ErrorEnum.LOGIN_DISABLE_ERROR.getCode();
                 String errMsg = ErrorEnum.LOGIN_DISABLE_ERROR.getMsg();
                 throw new LoginException(errCode, errMsg);
@@ -189,12 +181,12 @@ public class KnowBootSystemInterceptor implements HandlerInterceptor {
 
             // 写入线程
             KnowBootSystemThreadLocal.put("adminId", id);
-            KnowBootSystemThreadLocal.put("username", adminUser.getName());
+            KnowBootSystemThreadLocal.put("username", sysUser.getRealname());
             String roleIds = StringUtils.join(iAdminRoleService.getRoleIdAttr(Integer.parseInt(String.valueOf(id))), ",");
             KnowBootSystemThreadLocal.put("roleIds", roleIds);
 
             // 权限校验
-            if (!adminUser.getId().equals(1)) {
+            if (!sysUser.getId().equals(1L)) {
                 this.checkAuth(method, reqUri);
             }
         }

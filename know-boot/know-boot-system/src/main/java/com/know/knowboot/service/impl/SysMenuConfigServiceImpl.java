@@ -134,7 +134,8 @@ public class SysMenuConfigServiceImpl extends ServiceImpl<SysMenuConfigMapper, S
 
     @Override
     public List<SysMenuConfig> listTabBar() {
-        return listByMenuType(MENU_TYPE_TABBAR);
+        // 客户端接口：仅返回可见菜单（is_show = 1）
+        return normalizeConfigs(sysMenuConfigMapper.selectVisibleByMenuType(MENU_TYPE_TABBAR), MENU_TYPE_TABBAR);
     }
 
     @Override
@@ -144,7 +145,8 @@ public class SysMenuConfigServiceImpl extends ServiceImpl<SysMenuConfigMapper, S
 
     @Override
     public List<SysMenuConfig> listHomeMenu() {
-        return listByMenuType(MENU_TYPE_HOME);
+        // 客户端接口：仅返回可见菜单（is_show = 1）
+        return normalizeConfigs(sysMenuConfigMapper.selectVisibleByMenuType(MENU_TYPE_HOME), MENU_TYPE_HOME);
     }
 
     @Override
@@ -182,11 +184,8 @@ public class SysMenuConfigServiceImpl extends ServiceImpl<SysMenuConfigMapper, S
 
     @Override
     public boolean deleteConfig(Long id) {
-        // 逻辑删除
-        SysMenuConfig config = new SysMenuConfig();
-        config.setId(id);
-        config.setDelFlag(1);
-        return updateById(config);
+        // 逻辑删除（@TableLogic 字段由 MyBatis-Plus 自动处理）
+        return removeById(id);
     }
 
     /**

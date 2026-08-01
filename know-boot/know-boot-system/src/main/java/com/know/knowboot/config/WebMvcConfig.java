@@ -40,7 +40,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/api/system/menu/config/user",
                         "/api/system/menu/config/type/**", "/api/system/menu/config/list",
                         "/api/system/menu/config/page",
-                        "/api/system/dict/type/list", "/api/system/dict/list");
+                        "/api/system/dict/type/list", "/api/system/dict/list",
+                        "/adminapi/static/**");
 
         // 权限拦截器 - 在登录拦截器之后
         registry.addInterceptor(jwtPermissionFilter)
@@ -54,7 +55,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/api/system/menu/config/user",
                         "/api/system/menu/config/type/**", "/api/system/menu/config/list",
                         "/api/system/menu/config/page",
-                        "/api/system/dict/type/list", "/api/system/dict/list");
+                        "/api/system/dict/type/list", "/api/system/dict/list",
+                        "/adminapi/static/**");
     }
 
     /**

@@ -6,6 +6,7 @@ import com.know.knowboot.core.basics.IBaseMapper;
 import com.know.knowboot.entity.CameraDevice;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 /**
  * 摄像头设备Mapper
@@ -26,5 +27,6 @@ public interface CameraDeviceMapper extends IBaseMapper<CameraDevice> {
     /**
      * 更新设备状态
      */
+    @Update("UPDATE camera_device SET status = #{status} WHERE id = #{id} AND delete_time IS NULL")
     int updateStatus(@Param("id") Long id, @Param("status") Integer status);
 }

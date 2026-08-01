@@ -78,7 +78,9 @@ public class CameraDevice implements Serializable {
     @ApiModelProperty("更新时间")
     private Long updateTime;
 
-    @TableLogic
+    @ApiModelProperty("删除标记: 0-正常, 1-已删除")
+    private Integer deleted;
+
     @ApiModelProperty("删除时间")
     private Long deleteTime;
 }

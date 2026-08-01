@@ -36,6 +36,9 @@ public class CameraRecord implements Serializable {
     @ApiModelProperty("时长(秒)")
     private Integer duration;
 
+    @ApiModelProperty("文件名")
+    private String fileName;
+
     @ApiModelProperty("文件路径")
     private String filePath;
 

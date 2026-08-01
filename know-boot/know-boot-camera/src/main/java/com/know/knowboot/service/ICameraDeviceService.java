@@ -2,6 +2,7 @@ package com.know.knowboot.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.know.knowboot.entity.CameraDevice;
+import com.know.knowboot.entity.CameraDiscoveredDevice;
 
 import java.util.List;
 
@@ -54,4 +55,9 @@ public interface ICameraDeviceService {
      * 更新设备状态
      */
     boolean updateStatus(Long id, Integer status);
+
+    /**
+     * 局域网发现设备（真实 TCP 端口探测）
+     */
+    List<CameraDiscoveredDevice> discover(Long userId);
 }

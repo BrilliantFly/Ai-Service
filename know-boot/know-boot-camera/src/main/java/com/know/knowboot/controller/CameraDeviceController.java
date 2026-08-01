@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.know.knowboot.auth.CameraAuthContext;
 import com.know.knowboot.core.AjaxResult;
 import com.know.knowboot.entity.CameraDevice;
+import com.know.knowboot.entity.CameraDiscoveredDevice;
 import com.know.knowboot.service.ICameraDeviceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -46,6 +47,13 @@ public class CameraDeviceController {
     public AjaxResult<List<CameraDevice>> favorites() {
         Long userId = CameraAuthContext.getUserId();
         return AjaxResult.success(cameraDeviceService.listFavorites(userId));
+    }
+
+    @ApiOperation("局域网发现设备")
+    @GetMapping("/discover")
+    public AjaxResult<List<CameraDiscoveredDevice>> discover() {
+        Long userId = CameraAuthContext.getUserId();
+        return AjaxResult.success(cameraDeviceService.discover(userId));
     }
 
     @ApiOperation("获取详情")

@@ -43,9 +43,13 @@ public class CameraRecordServiceImpl extends ServiceImpl<CameraRecordMapper, Cam
         CameraRecord record = new CameraRecord();
         record.setDeviceId(deviceId);
         record.setRecordType(recordType != null ? recordType : 1); // 默认手动录制
-        record.setStartTime(System.currentTimeMillis());
+        long now = System.currentTimeMillis();
+        record.setStartTime(now);
         record.setStatus(0); // 录制中
         record.setCreateBy(userId);
+        // 生成录像文件名与路径（实际录制由设备端/前端完成，这里约定统一命名规范）
+        record.setFileName("record_" + deviceId + "_" + now + ".mp4");
+        record.setFilePath("records/" + deviceId + "/" + now + ".mp4");
         save(record);
         return record;
     }

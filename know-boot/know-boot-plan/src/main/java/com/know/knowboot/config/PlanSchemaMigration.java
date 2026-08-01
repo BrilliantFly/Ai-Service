@@ -36,6 +36,7 @@ public class PlanSchemaMigration {
             createPlanHabitRecord();
             createPlanFocusSession();
             createPlanHomeConfig();
+            createPlanHomeSlogan();
 
             // 修复已有表可能缺失的列（兼容初始版本建表）
             ensureColumnExists("plan_schedule_event", "event_type", "tinyint DEFAULT 1 COMMENT '日程类型(1:日程 2:待办 3:提醒)' AFTER `content`");
@@ -81,6 +82,7 @@ public class PlanSchemaMigration {
             seedQuadrantData();
             seedPlanTypeData();
             seedScheduleCategoryData();
+            seedHomeSloganData();
 
             System.out.println("[PlanSchemaMigrate] 计划模块表结构检查完成");
         } catch (Exception e) {
@@ -376,6 +378,32 @@ public class PlanSchemaMigration {
         }
     }
 
+    private void createPlanHomeSlogan() {
+        if (!tableExists("plan_home_slogan")) {
+            jdbcTemplate.execute(
+                "CREATE TABLE `plan_home_slogan` (" +
+                "  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键'," +
+                "  `content` varchar(200) NOT NULL COMMENT '标语内容'," +
+                "  `emoji` varchar(50) DEFAULT NULL COMMENT '表情/符号'," +
+                "  `start_time` bigint DEFAULT NULL COMMENT '开始时间(时间戳, null表示不限)'," +
+                "  `end_time` bigint DEFAULT NULL COMMENT '结束时间(时间戳, null表示不限)'," +
+                "  `sort` int DEFAULT 0 COMMENT '排序'," +
+                "  `status` tinyint DEFAULT 1 COMMENT '状态(0:禁用 1:启用)'," +
+                "  `del_flag` tinyint DEFAULT 0 COMMENT '删除标志(0:正常 1:删除)'," +
+                "  `create_by` bigint DEFAULT NULL COMMENT '创建人'," +
+                "  `create_time` bigint DEFAULT NULL COMMENT '创建时间'," +
+                "  `update_by` bigint DEFAULT NULL COMMENT '更新人'," +
+                "  `update_time` bigint DEFAULT NULL COMMENT '更新时间'," +
+                "  PRIMARY KEY (`id`)," +
+                "  KEY `idx_status` (`status`)," +
+                "  KEY `idx_sort` (`sort`)," +
+                "  KEY `idx_time_range` (`start_time`,`end_time`)" +
+                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='首页标语表'"
+            );
+            System.out.println("[PlanSchemaMigrate] 已创建 plan_home_slogan 表");
+        }
+    }
+
     // ============================
     // 种子数据
     // ============================
@@ -432,6 +460,23 @@ public class PlanSchemaMigration {
             }
         } catch (Exception e) {
             System.out.println("[PlanSchemaMigrate] 初始化日程分类数据: " + e.getMessage());
+        }
+    }
+
+    private void seedHomeSloganData() {
+        try {
+            Integer count = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM plan_home_slogan", Integer.class);
+            if (count != null && count == 0) {
+                long now = System.currentTimeMillis();
+                jdbcTemplate.execute("INSERT INTO plan_home_slogan (content, emoji, sort, status, del_flag, create_time, update_time) VALUES " +
+                    "('努力是光，坚持是路', '✨', 1, 1, 0, " + now + ", " + now + "), " +
+                    "('日拱一卒，功不唐捐', '🌱', 2, 1, 0, " + now + ", " + now + "), " +
+                    "('星光不负赶路人', '⭐', 3, 1, 0, " + now + ", " + now + ")");
+                System.out.println("[PlanSchemaMigrate] 已初始化首页标语种子数据");
+            }
+        } catch (Exception e) {
+            System.out.println("[PlanSchemaMigrate] 初始化首页标语数据: " + e.getMessage());
         }
     }
 

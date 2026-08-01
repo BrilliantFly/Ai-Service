@@ -116,9 +116,10 @@ public class DecorateController {
 
         // 网站信息
         Map<String, Object> website = new HashMap<>();
-        website.put("shop_name", "Know Boot");
-        website.put("shop_logo", "");
+        website.put("shop_name", "喵百科");
+        website.put("shop_logo", "/adminapi/static/shop_logo.png");
         website.put("shop_desc", "");
+        website.put("h5_favicon", "/adminapi/static/web_favicon.ico");
         config.put("website", website);
 
         // 登录配置
@@ -134,7 +135,7 @@ public class DecorateController {
 
         // H5配置
         Map<String, Object> webPage = new HashMap<>();
-        webPage.put("title", "Know-Boot");
+        webPage.put("title", "喵百科");
         config.put("webPage", webPage);
 
         // 其他

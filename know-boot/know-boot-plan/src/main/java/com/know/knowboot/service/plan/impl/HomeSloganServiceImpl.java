@@ -82,6 +82,7 @@ public class HomeSloganServiceImpl extends ServiceImpl<HomeSloganMapper, HomeSlo
     public HomeSlogan getCurrent() {
         long now = System.currentTimeMillis();
         // 1. 优先返回当前时间窗内生效的定时标语（支持定时切换）
+        // getOne(wrapper, false)：多条命中时取第一条而非抛 TooManyResultsException，配合 LIMIT 1 双保险
         HomeSlogan timed = getOne(new LambdaQueryWrapper<HomeSlogan>()
                 .eq(HomeSlogan::getStatus, 1)
                 .isNotNull(HomeSlogan::getStartTime)
@@ -89,7 +90,8 @@ public class HomeSloganServiceImpl extends ServiceImpl<HomeSloganMapper, HomeSlo
                 .le(HomeSlogan::getStartTime, now)
                 .ge(HomeSlogan::getEndTime, now)
                 .orderByAsc(HomeSlogan::getSort)
-                .last("LIMIT 1"));
+                .orderByAsc(HomeSlogan::getId)
+                .last("LIMIT 1"), false);
         if (timed != null) {
             return timed;
         }
@@ -99,6 +101,7 @@ public class HomeSloganServiceImpl extends ServiceImpl<HomeSloganMapper, HomeSlo
                 .isNull(HomeSlogan::getStartTime)
                 .isNull(HomeSlogan::getEndTime)
                 .orderByAsc(HomeSlogan::getSort)
-                .last("LIMIT 1"));
+                .orderByAsc(HomeSlogan::getId)
+                .last("LIMIT 1"), false);
     }
 }

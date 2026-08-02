@@ -29,7 +29,7 @@ public class SysMenuConfigController {
      */
     @ApiOperation("分页查询菜单配置")
     @GetMapping("/page")
-    public AjaxResult<List<SysMenuConfig>> page(
+    public AjaxResult<IPage<SysMenuConfig>> page(
             SysMenuConfig query,
             @ApiParam("页码") @RequestParam(defaultValue = "1") Integer pageNum,
             @ApiParam("每页条数") @RequestParam(defaultValue = "10") Integer pageSize) {

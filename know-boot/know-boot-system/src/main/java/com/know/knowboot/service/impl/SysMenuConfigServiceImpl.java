@@ -104,9 +104,9 @@ public class SysMenuConfigServiceImpl extends ServiceImpl<SysMenuConfigMapper, S
     }
 
     @Override
-    public List<SysMenuConfig> listConfig(SysMenuConfig query, Integer pageNum, Integer pageSize) {
+    public IPage<SysMenuConfig> listConfig(SysMenuConfig query, Integer pageNum, Integer pageSize) {
         LambdaQueryWrapper<SysMenuConfig> wrapper = buildQueryWrapper(query);
-        return page(new Page<>(pageNum, pageSize), wrapper).getRecords();
+        return page(new Page<>(pageNum, pageSize), wrapper);
     }
 
     @Override

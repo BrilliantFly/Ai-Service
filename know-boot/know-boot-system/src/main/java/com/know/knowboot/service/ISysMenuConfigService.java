@@ -1,5 +1,6 @@
 package com.know.knowboot.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.know.knowboot.entity.tenant.SysMenuConfig;
 
@@ -13,7 +14,7 @@ public interface ISysMenuConfigService extends IService<SysMenuConfig> {
     /**
      * 分页查询菜单配置
      */
-    List<SysMenuConfig> listConfig(SysMenuConfig query, Integer pageNum, Integer pageSize);
+    IPage<SysMenuConfig> listConfig(SysMenuConfig query, Integer pageNum, Integer pageSize);
 
     /**
      * 获取菜单配置列表

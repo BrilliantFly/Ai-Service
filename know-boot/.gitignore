@@ -18,3 +18,5 @@ rebel.xml
 full_*.log
 system_*.log
 standalone/node_modules/
+# 服务器排查用一次性调试脚本（含 SSH 连接信息，不入库）
+standalone/chk-*.js

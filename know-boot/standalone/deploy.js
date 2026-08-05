@@ -20,11 +20,13 @@
 const { Client } = require('ssh2');
 
 // ============ CONFIG ============
+const KEY_PATH = process.env.SSH_PRIVATE_KEY || (process.env.USERPROFILE + '\\.ssh\\id_rsa');
 const SERVER = {
   host: '101.37.83.88',
   port: 22,
   username: 'root',
-  password: 'Wanglei!@#123',
+  // Authentication via local private key (server rejects password auth).
+  privateKey: require('fs').readFileSync(KEY_PATH),
 };
 
 const DEPLOY = {

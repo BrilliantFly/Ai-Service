@@ -63,6 +63,9 @@ public class PlanScheduleEvent implements Serializable {
     @ApiModelProperty("结束时间")
     private Long endTime;
 
+    @ApiModelProperty("重复结束日期(毫秒时间戳, null=无限重复)")
+    private Long repeatEndDate;
+
     @ApiModelProperty("是否全天(0:否 1:是)")
     private Integer isAllDay;
 

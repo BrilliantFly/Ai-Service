@@ -41,6 +41,7 @@ CREATE TABLE `plan_schedule_event` (
   `is_repeat` tinyint DEFAULT 0 COMMENT '是否重复(0:否 1:是)',
   `repeat_type` tinyint DEFAULT NULL COMMENT '重复类型(1:每日 2:每周 3:每月 4:每年)',
   `repeat_rule` varchar(100) DEFAULT NULL COMMENT '重复规则JSON',
+  `repeat_end_date` bigint DEFAULT NULL COMMENT '重复结束日期(毫秒时间戳, NULL=无限重复)',
   `remind_time` varchar(200) DEFAULT NULL COMMENT '提醒时间(多个逗号分隔)',
   `location` varchar(200) DEFAULT NULL COMMENT '地点',
   `status` tinyint DEFAULT 0 COMMENT '状态(0:未完成 1:已完成)',

@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,11 +43,106 @@ public class PlanScheduleEventServiceImpl extends ServiceImpl<PlanScheduleEventM
 
     @Override
     public List<PlanScheduleEvent> listByDateRange(Long userId, Long startTime, Long endTime) {
-        return list(new LambdaQueryWrapper<PlanScheduleEvent>()
+        // 先查询：在期望区间内(原始 startTime 命中)的，以及重复日程的母事件(startTime 在区间之前，但重复可能延伸到区间内)
+        List<PlanScheduleEvent> events = list(new LambdaQueryWrapper<PlanScheduleEvent>()
                 .eq(PlanScheduleEvent::getUserId, userId)
-                .ge(PlanScheduleEvent::getStartTime, startTime)
                 .le(PlanScheduleEvent::getStartTime, endTime)
                 .orderByAsc(PlanScheduleEvent::getStartTime));
+
+        // 过滤出落在区间内的实例（对重复日程做展开）
+        List<PlanScheduleEvent> result = new ArrayList<>();
+        for (PlanScheduleEvent event : events) {
+            boolean isRepeat = event.getIsRepeat() != null && event.getIsRepeat() == 1;
+            if (isRepeat) {
+                result.addAll(expandRepeatInRange(event, startTime, endTime));
+            } else if (event.getStartTime() != null && event.getStartTime() >= startTime && event.getStartTime() <= endTime) {
+                result.add(event);
+            }
+        }
+        // 结果再按开始时间排序，保证日历展示有序
+        result.sort(Comparator.comparing(PlanScheduleEvent::getStartTime, Comparator.nullsLast(Comparator.naturalOrder())));
+        return result;
+    }
+
+    /**
+     * 将重复日程按 repeatType 在 [start, end] 区间内展开为多个实例。
+     * 动态实例共享母事件 id，startTime 替换为各发生日期，便于前端区分归属。
+     */
+    private List<PlanScheduleEvent> expandRepeatInRange(PlanScheduleEvent event, Long start, Long end) {
+        List<PlanScheduleEvent> list = new ArrayList<>();
+        Long originalStart = event.getStartTime();
+        if (originalStart == null) {
+            return list;
+        }
+        // 重复结束日期：若未设置则视为无限（由查询区间 end 兜底）
+        long repeatEnd = event.getRepeatEndDate() != null ? event.getRepeatEndDate() : end;
+        // 遍历次数上限，防止异常数据导致死循环
+        int maxOccurrences = 1000;
+        int type = event.getRepeatType() != null ? event.getRepeatType() : 1;
+
+        long cursor = originalStart;
+        Calendar cal = Calendar.getInstance();
+        while (cursor <= repeatEnd && cursor <= end && list.size() < maxOccurrences) {
+            if (cursor >= start) {
+                PlanScheduleEvent copy = new PlanScheduleEvent();
+                copyBaseFields(event, copy);
+                copy.setStartTime(cursor);
+                list.add(copy);
+            }
+            cal.setTimeInMillis(cursor);
+            switch (type) {
+                case 2: // 每周
+                    cal.add(Calendar.DAY_OF_MONTH, 7);
+                    break;
+                case 3: // 每月
+                    cal.add(Calendar.MONTH, 1);
+                    break;
+                case 4: // 每年
+                    cal.add(Calendar.YEAR, 1);
+                    break;
+                default: // 每日
+                    cal.add(Calendar.DAY_OF_MONTH, 1);
+                    break;
+            }
+            long next = cal.getTimeInMillis();
+            // 防止推进失败导致死循环
+            if (next <= cursor) {
+                break;
+            }
+            cursor = next;
+        }
+        return list;
+    }
+
+    /** 复制事件基础字段，便于动态展开实例复用展示字段 */
+    private void copyBaseFields(PlanScheduleEvent src, PlanScheduleEvent dst) {
+        dst.setId(src.getId());
+        dst.setTitle(src.getTitle());
+        dst.setContent(src.getContent());
+        dst.setTags(src.getTags());
+        dst.setSubtasks(src.getSubtasks());
+        dst.setNote(src.getNote());
+        dst.setProgress(src.getProgress());
+        dst.setEventType(src.getEventType());
+        dst.setQuadrant(src.getQuadrant());
+        dst.setPriority(src.getPriority());
+        dst.setCategoryId(src.getCategoryId());
+        dst.setPlanId(src.getPlanId());
+        dst.setEndTime(src.getEndTime());
+        dst.setIsAllDay(src.getIsAllDay());
+        dst.setIsRepeat(src.getIsRepeat());
+        dst.setRepeatType(src.getRepeatType());
+        dst.setRepeatRule(src.getRepeatRule());
+        dst.setRepeatEndDate(src.getRepeatEndDate());
+        dst.setRemindTime(src.getRemindTime());
+        dst.setRemindMinutes(src.getRemindMinutes());
+        dst.setLocation(src.getLocation());
+        dst.setStatus(src.getStatus());
+        dst.setCompletedTime(src.getCompletedTime());
+        dst.setColor(src.getColor());
+        dst.setUserId(src.getUserId());
+        dst.setCreateBy(src.getCreateBy());
+        dst.setCreateTime(src.getCreateTime());
     }
 
     @Override

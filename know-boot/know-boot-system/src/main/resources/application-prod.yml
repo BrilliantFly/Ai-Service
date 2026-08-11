@@ -57,7 +57,7 @@ spring:
   # Redis配置
   redis:
     host: localhost   # Redis服务地址
-    port: 3309        # Redis端口
+    port: 16379       # Redis端口
     password:         # Redis密码
     database: 1       # 数据库索引
     timeout: 5000     # 连接超时

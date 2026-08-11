@@ -15,7 +15,7 @@ $DB_URL = "jdbc:mysql://101.37.83.88:3306/know_boot_v1?useUnicode=true&character
 $DB_USER = "root"
 $DB_PASS = "123456aA@"
 $REDIS_HOST = "127.0.0.1"
-$REDIS_PORT = "6379"
+$REDIS_PORT = "16379"
 $REDIS_DB = "6"
 
 Write-Host ""

@@ -66,7 +66,7 @@ const DB = {
 
 const REDIS = {
   host: '127.0.0.1',
-  port: 6379,
+  port: 16379,
   database: 1,
 };
 // ============ END CONFIG ============
@@ -99,11 +99,11 @@ function sftpUpload(conn, localPath, remotePath) {
   return new Promise((resolve, reject) => {
     conn.sftp((err, sftp) => {
       if (err) return reject(err);
-      const ws = sftp.createWriteStream(remotePath);
-      ws.on('close', resolve);
-      ws.on('error', reject);
-      const fs = require('fs');
-      fs.createReadStream(localPath).pipe(ws);
+      // fastPut with high concurrency + large chunk for big jars (462MB)
+      sftp.fastPut(localPath, remotePath, { concurrency: 16, chunkSize: 256 * 1024 }, (err2) => {
+        if (err2) return reject(err2);
+        resolve();
+      });
     });
   });
 }
@@ -150,7 +150,7 @@ SuccessExitStatus=143
 WantedBy=multi-user.target`;
 
 const NGINX_CONFIG = `server {
-    listen 80;
+    listen 9191;
     server_name _;
 
     client_max_body_size 100M;
@@ -294,31 +294,35 @@ async function main() {
 
   if (want.system) {
     // Step 1: Stop existing services
-    console.log('=== [' + (step++) + '/9] Stop existing services ===');
+    console.log('=== [' + (step++) + '/10] Stop existing services ===');
     await sshExec(conn, 'systemctl stop know-boot-system know-boot-plan know-boot-camera know-boot-knowledge 2>&1; pkill -f "know-boot" 2>&1 || true; sleep 2; echo "Stopped"');
 
-    // Step 2: Upload JAR
-    console.log('\n=== [' + (step++) + '/9] Upload JAR ===');
+    // Step 2: Ensure Redis 16379 is running (/opt/software/redis-4.0.6)
+    console.log('\n=== [' + (step++) + '/10] Ensure Redis 16379 ===');
+    await sshExec(conn, 'ss -tlnp 2>/dev/null | grep -q ":16379 " || (cd /opt/software/redis-4.0.6 && ./src/redis-server ./redis.conf; sleep 1); ss -tlnp 2>/dev/null | grep ":16379 " && echo "Redis OK on 16379" || echo "Redis FAILED on 16379"');
+
+    // Step 3: Upload JAR
+    console.log('\n=== [' + (step++) + '/10] Upload JAR ===');
     await sftpUpload(conn, DEPLOY.jarLocal, DEPLOY.jarRemote);
     console.log('JAR uploaded to', DEPLOY.jarRemote);
 
-    // Step 3: Write wrapper script
-    console.log('\n=== [' + (step++) + '/9] Write wrapper script ===');
+    // Step 4: Write wrapper script
+    console.log('\n=== [' + (step++) + '/10] Write wrapper script ===');
     await sftpWrite(conn, DEPLOY.wrapperScript, WRAPPER_SCRIPT);
     await sshExec(conn, 'chmod +x ' + DEPLOY.wrapperScript + '; echo "OK"');
 
-    // Step 4: Write systemd unit
-    console.log('\n=== [' + (step++) + '/9] Write systemd unit ===');
+    // Step 5: Write systemd unit
+    console.log('\n=== [' + (step++) + '/10] Write systemd unit ===');
     await sftpWrite(conn, DEPLOY.serviceUnit, SERVICE_UNIT);
     await sshExec(conn, 'systemctl daemon-reload; echo "OK"');
 
-    // Step 5: Write nginx config
-    console.log('\n=== [' + (step++) + '/9] Write nginx config ===');
+    // Step 6: Write nginx config
+    console.log('\n=== [' + (step++) + '/10] Write nginx config ===');
     await sftpWrite(conn, DEPLOY.nginxConfig, NGINX_CONFIG);
     await sshExec(conn, 'nginx -t 2>&1 && nginx -s reload 2>&1 && echo "Nginx OK" || echo "Nginx FAILED"');
 
-    // Step 6: Start service
-    console.log('\n=== [' + (step++) + '/9] Start service ===');
+    // Step 7: Start service
+    console.log('\n=== [' + (step++) + '/10] Start service ===');
     await sshExec(conn, 'systemctl start know-boot-system 2>&1; echo "Started. Waiting for port 8082..."');
 
     let found = false;
@@ -333,13 +337,13 @@ async function main() {
       if (i % 10 === 0) console.log('  ...waiting (' + (i * 2) + 's)');
     }
 
-    // Step 7: Verify
-    console.log('\n=== [' + (step++) + '/9] Verify ===');
+    // Step 8: Verify
+    console.log('\n=== [' + (step++) + '/10] Verify ===');
     await sshExec(conn, 'systemctl is-active know-boot-system');
     await sshExec(conn, 'curl -s -w "\\nHTTP %{http_code}" http://127.0.0.1:8082/api/login/account -X POST -H "Content-Type: application/json" -d \'{"username":"admin","password":"123456"}\' 2>&1 | tail -3');
     await sshExec(conn, 'curl -s -o /dev/null -w "slogan current: %{http_code}\\n" http://127.0.0.1:8082/api/plan/slogan/current');
     await sshExec(conn, 'curl -s -o /dev/null -w "camera page: %{http_code}\\n" http://127.0.0.1:8082/api/camera/device/page');
-    await sshExec(conn, 'curl -s -w "\\nHTTP %{http_code}" http://127.0.0.1:80/ 2>&1 | head -3');
+    await sshExec(conn, 'curl -s -w "\\nHTTP %{http_code}" http://127.0.0.1:9191/ 2>&1 | head -3');
   }
 
   if (want.vue) {
@@ -354,9 +358,9 @@ async function main() {
 
   if (want.system) {
     console.log('\n=== DEPLOYMENT COMPLETE ===');
-    console.log('Vue Admin:  http://101.37.83.88/');
-    console.log('Mobile H5:  http://101.37.83.88/mobile/');
-    console.log('Login:      POST http://101.37.83.88/api/login/account');
+    console.log('Vue Admin:  http://101.37.83.88:9191/');
+    console.log('Mobile H5:  http://101.37.83.88:9191/mobile/');
+    console.log('Login:      POST http://101.37.83.88:9191/api/login/account');
     console.log('Note: Standalone know-boot-system serves system+plan+camera+knowledge on port 8082.');
   } else {
     console.log('\n=== FRONTEND DEPLOY COMPLETE ===');

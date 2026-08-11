@@ -41,7 +41,7 @@ start "know-boot-system" /min java ^
     -Dspring.datasource.username=root ^
     -Dspring.datasource.password=123456aA@ ^
     -Dspring.redis.host=127.0.0.1 ^
-    -Dspring.redis.port=6379 ^
+    -Dspring.redis.port=16379 ^
     -Dspring.redis.database=6 ^
     -Dknow.mode=standalone ^
     -Dseata.enabled=false ^

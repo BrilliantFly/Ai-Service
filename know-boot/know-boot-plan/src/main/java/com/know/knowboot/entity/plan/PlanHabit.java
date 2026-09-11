@@ -93,6 +93,15 @@ public class PlanHabit implements Serializable {
     @ApiModelProperty("关联计划ID")
     private Long planId;
 
+    @ApiModelProperty("创建自计划模板ID")
+    private Long templateId;
+
+    @ApiModelProperty("创建自习惯模板ID")
+    private Long habitTemplateId;
+
+    @ApiModelProperty("执行状态(0:非执行/草稿 1:执行中)")
+    private Integer execStatus;
+
     @ApiModelProperty("用户ID")
     private Long userId;
 

@@ -37,15 +37,17 @@ public class PlanScheduleEventServiceImpl extends ServiceImpl<PlanScheduleEventM
                 .eq(query.getCategoryId() != null, PlanScheduleEvent::getCategoryId, query.getCategoryId())
                 .eq(query.getEventType() != null, PlanScheduleEvent::getEventType, query.getEventType())
                 .like(query.getTitle() != null, PlanScheduleEvent::getTitle, query.getTitle())
+                .eq(query.getExecStatus() != null, PlanScheduleEvent::getExecStatus, query.getExecStatus())
                 .orderByDesc(PlanScheduleEvent::getStartTime);
         return page(new Page<>(pageNum, pageSize), wrapper);
     }
 
     @Override
-    public List<PlanScheduleEvent> listByDateRange(Long userId, Long startTime, Long endTime) {
+    public List<PlanScheduleEvent> listByDateRange(Long userId, Long startTime, Long endTime, Integer execStatus) {
         // 先查询：在期望区间内(原始 startTime 命中)的，以及重复日程的母事件(startTime 在区间之前，但重复可能延伸到区间内)
         List<PlanScheduleEvent> events = list(new LambdaQueryWrapper<PlanScheduleEvent>()
                 .eq(PlanScheduleEvent::getUserId, userId)
+                .eq(execStatus != null, PlanScheduleEvent::getExecStatus, execStatus)
                 .le(PlanScheduleEvent::getStartTime, endTime)
                 .orderByAsc(PlanScheduleEvent::getStartTime));
 
@@ -143,10 +145,13 @@ public class PlanScheduleEventServiceImpl extends ServiceImpl<PlanScheduleEventM
         dst.setUserId(src.getUserId());
         dst.setCreateBy(src.getCreateBy());
         dst.setCreateTime(src.getCreateTime());
+        dst.setExecStatus(src.getExecStatus());
+        dst.setTemplateId(src.getTemplateId());
+        dst.setEventTemplateId(src.getEventTemplateId());
     }
 
     @Override
-    public List<PlanScheduleEvent> listByDate(Long userId, Long date) {
+    public List<PlanScheduleEvent> listByDate(Long userId, Long date, Integer execStatus) {
         // 某一天：从 00:00:00 到 23:59:59
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(date);
@@ -158,16 +163,16 @@ public class PlanScheduleEventServiceImpl extends ServiceImpl<PlanScheduleEventM
         cal.add(Calendar.DAY_OF_MONTH, 1);
         long dayEnd = cal.getTimeInMillis() - 1;
 
-        return listByDateRange(userId, dayStart, dayEnd);
+        return listByDateRange(userId, dayStart, dayEnd, execStatus);
     }
 
     @Override
-    public List<PlanScheduleEvent> listByWeek(Long userId, Long weekStart, Long weekEnd) {
-        return listByDateRange(userId, weekStart, weekEnd);
+    public List<PlanScheduleEvent> listByWeek(Long userId, Long weekStart, Long weekEnd, Integer execStatus) {
+        return listByDateRange(userId, weekStart, weekEnd, execStatus);
     }
 
     @Override
-    public List<PlanScheduleEvent> listByMonth(Long userId, Integer year, Integer month) {
+    public List<PlanScheduleEvent> listByMonth(Long userId, Integer year, Integer month, Integer execStatus) {
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, year);
         cal.set(Calendar.MONTH, month - 1);
@@ -181,14 +186,15 @@ public class PlanScheduleEventServiceImpl extends ServiceImpl<PlanScheduleEventM
         cal.add(Calendar.MONTH, 1);
         long monthEnd = cal.getTimeInMillis() - 1;
 
-        return listByDateRange(userId, monthStart, monthEnd);
+        return listByDateRange(userId, monthStart, monthEnd, execStatus);
     }
 
     @Override
-    public List<PlanScheduleEvent> listByQuadrant(Long userId, Integer quadrant) {
+    public List<PlanScheduleEvent> listByQuadrant(Long userId, Integer quadrant, Integer execStatus) {
         return list(new LambdaQueryWrapper<PlanScheduleEvent>()
                 .eq(PlanScheduleEvent::getUserId, userId)
                 .eq(PlanScheduleEvent::getQuadrant, quadrant)
+                .eq(execStatus != null, PlanScheduleEvent::getExecStatus, execStatus)
                 .orderByAsc(PlanScheduleEvent::getStartTime));
     }
 
@@ -200,7 +206,7 @@ public class PlanScheduleEventServiceImpl extends ServiceImpl<PlanScheduleEventM
     }
 
     @Override
-    public Map<String, Object> getTodayStats(Long userId) {
+    public Map<String, Object> getTodayStats(Long userId, Integer execStatus) {
         // 计算今日时间范围
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -212,7 +218,7 @@ public class PlanScheduleEventServiceImpl extends ServiceImpl<PlanScheduleEventM
         long todayEnd = cal.getTimeInMillis() - 1;
 
         // 今日所有日程
-        List<PlanScheduleEvent> todayEvents = listByDateRange(userId, todayStart, todayEnd);
+        List<PlanScheduleEvent> todayEvents = listByDateRange(userId, todayStart, todayEnd, execStatus);
         long totalCount = todayEvents.size();
         long completedCount = todayEvents.stream().filter(e -> e.getStatus() == 1).count();
         long todoCount = totalCount - completedCount;
@@ -241,6 +247,9 @@ public class PlanScheduleEventServiceImpl extends ServiceImpl<PlanScheduleEventM
         }
         if (event.getProgress() == null) {
             event.setProgress(0);
+        }
+        if (event.getExecStatus() == null) {
+            event.setExecStatus(1);
         }
         return save(event);
     }
@@ -289,5 +298,14 @@ public class PlanScheduleEventServiceImpl extends ServiceImpl<PlanScheduleEventM
     @Transactional(rollbackFor = Exception.class)
     public boolean delete(Long id) {
         return removeById(id);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean updateExecStatus(Long id, Integer execStatus, Long userId) {
+        return update(new LambdaUpdateWrapper<PlanScheduleEvent>()
+                .eq(PlanScheduleEvent::getId, id)
+                .set(PlanScheduleEvent::getExecStatus, execStatus)
+                .set(PlanScheduleEvent::getUpdateTime, System.currentTimeMillis()));
     }
 }

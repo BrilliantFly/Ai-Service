@@ -19,27 +19,27 @@ public interface IPlanScheduleEventService {
     /**
      * 按时间范围查询
      */
-    List<PlanScheduleEvent> listByDateRange(Long userId, Long startTime, Long endTime);
+    List<PlanScheduleEvent> listByDateRange(Long userId, Long startTime, Long endTime, Integer execStatus);
 
     /**
      * 按日期查询(某一天)
      */
-    List<PlanScheduleEvent> listByDate(Long userId, Long date);
+    List<PlanScheduleEvent> listByDate(Long userId, Long date, Integer execStatus);
 
     /**
      * 按周查询
      */
-    List<PlanScheduleEvent> listByWeek(Long userId, Long weekStart, Long weekEnd);
+    List<PlanScheduleEvent> listByWeek(Long userId, Long weekStart, Long weekEnd, Integer execStatus);
 
     /**
      * 按月查询
      */
-    List<PlanScheduleEvent> listByMonth(Long userId, Integer year, Integer month);
+    List<PlanScheduleEvent> listByMonth(Long userId, Integer year, Integer month, Integer execStatus);
 
     /**
      * 按象限查询
      */
-    List<PlanScheduleEvent> listByQuadrant(Long userId, Integer quadrant);
+    List<PlanScheduleEvent> listByQuadrant(Long userId, Integer quadrant, Integer execStatus);
 
     /**
      * 按计划ID查询
@@ -49,7 +49,7 @@ public interface IPlanScheduleEventService {
     /**
      * 今日统计
      */
-    Map<String, Object> getTodayStats(Long userId);
+    Map<String, Object> getTodayStats(Long userId, Integer execStatus);
 
     /**
      * 获取详情
@@ -80,4 +80,9 @@ public interface IPlanScheduleEventService {
      * 删除日程
      */
     boolean delete(Long id);
+
+    /**
+     * 切换执行状态
+     */
+    boolean updateExecStatus(Long id, Integer execStatus, Long userId);
 }

@@ -57,6 +57,15 @@ public class PlanScheduleEvent implements Serializable {
     @ApiModelProperty("关联计划ID")
     private Long planId;
 
+    @ApiModelProperty("创建自计划模板ID")
+    private Long templateId;
+
+    @ApiModelProperty("创建自日程模板ID")
+    private Long eventTemplateId;
+
+    @ApiModelProperty("执行状态(0:非执行/草稿 1:执行中)")
+    private Integer execStatus;
+
     @ApiModelProperty("开始时间")
     private Long startTime;
 

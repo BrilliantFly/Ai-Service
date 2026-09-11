@@ -1,6 +1,7 @@
 package com.know.knowboot.service.plan.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -118,5 +119,31 @@ public class PlanInfoServiceImpl extends ServiceImpl<PlanInfoMapper, PlanInfo> i
 
         scheduleEventService.add(event, plan.getCreateBy());
         return event.getId();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean updateStatus(Long id, Integer status, Long userId) {
+        LambdaUpdateWrapper<PlanInfo> wrapper = new LambdaUpdateWrapper<>();
+        wrapper.eq(PlanInfo::getId, id)
+                .set(PlanInfo::getStatus, status)
+                .set(PlanInfo::getUpdateTime, System.currentTimeMillis());
+        if (status != null && status == 2) {
+            wrapper.set(PlanInfo::getActualEndTime, System.currentTimeMillis());
+        }
+        if (status != null && status == 1) {
+            PlanInfo existing = planInfoMapper.selectById(id);
+            if (existing != null && existing.getActualStartTime() == null) {
+                wrapper.set(PlanInfo::getActualStartTime, System.currentTimeMillis());
+            }
+        }
+        return update(wrapper);
+    }
+
+    @Override
+    public List<PlanInfo> listByTemplateId(Long templateId) {
+        return list(new LambdaQueryWrapper<PlanInfo>()
+                .eq(PlanInfo::getTemplateId, templateId)
+                .orderByDesc(PlanInfo::getCreateTime));
     }
 }

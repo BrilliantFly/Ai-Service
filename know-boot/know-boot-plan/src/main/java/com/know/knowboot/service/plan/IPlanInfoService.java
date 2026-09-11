@@ -49,4 +49,14 @@ public interface IPlanInfoService {
      * 计划转日程
      */
     Long toSchedule(Long planId, Long startTime, Long endTime);
+
+    /**
+     * 更新计划状态
+     */
+    boolean updateStatus(Long id, Integer status, Long userId);
+
+    /**
+     * 按模板ID查询计划列表
+     */
+    List<PlanInfo> listByTemplateId(Long templateId);
 }

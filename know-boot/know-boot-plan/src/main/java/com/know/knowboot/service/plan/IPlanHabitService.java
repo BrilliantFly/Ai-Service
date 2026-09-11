@@ -25,7 +25,7 @@ public interface IPlanHabitService {
     /**
      * 统计
      */
-    Map<String, Object> getStats(Long userId);
+    Map<String, Object> getStats(Long userId, Integer execStatus);
 
     /**
      * 获取详情
@@ -66,4 +66,9 @@ public interface IPlanHabitService {
      * 查询打卡记录
      */
     List<PlanHabitRecord> getRecords(Long habitId);
+
+    /**
+     * 切换执行状态
+     */
+    boolean updateExecStatus(Long id, Integer execStatus, Long userId);
 }

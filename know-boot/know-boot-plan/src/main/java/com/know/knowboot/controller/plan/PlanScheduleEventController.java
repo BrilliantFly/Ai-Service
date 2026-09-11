@@ -44,32 +44,38 @@ public class PlanScheduleEventController {
 
     @ApiOperation("按日期查询")
     @GetMapping("/date")
-    public AjaxResult<List<PlanScheduleEvent>> listByDate(@RequestParam Long date) {
+    public AjaxResult<List<PlanScheduleEvent>> listByDate(
+            @RequestParam Long date,
+            @RequestParam(required = false) Integer execStatus) {
         Long userId = 1L;
-        return AjaxResult.success(planScheduleEventService.listByDate(userId, date));
+        return AjaxResult.success(planScheduleEventService.listByDate(userId, date, execStatus));
     }
 
     @ApiOperation("按周查询")
     @GetMapping("/week")
     public AjaxResult<List<PlanScheduleEvent>> listByWeek(
-            @RequestParam Long weekStart, @RequestParam Long weekEnd) {
+            @RequestParam Long weekStart, @RequestParam Long weekEnd,
+            @RequestParam(required = false) Integer execStatus) {
         Long userId = 1L;
-        return AjaxResult.success(planScheduleEventService.listByWeek(userId, weekStart, weekEnd));
+        return AjaxResult.success(planScheduleEventService.listByWeek(userId, weekStart, weekEnd, execStatus));
     }
 
     @ApiOperation("按月查询")
     @GetMapping("/month")
     public AjaxResult<List<PlanScheduleEvent>> listByMonth(
-            @RequestParam Integer year, @RequestParam Integer month) {
+            @RequestParam Integer year, @RequestParam Integer month,
+            @RequestParam(required = false) Integer execStatus) {
         Long userId = 1L;
-        return AjaxResult.success(planScheduleEventService.listByMonth(userId, year, month));
+        return AjaxResult.success(planScheduleEventService.listByMonth(userId, year, month, execStatus));
     }
 
     @ApiOperation("按象限查询")
     @GetMapping("/quadrant/{quadrant}")
-    public AjaxResult<List<PlanScheduleEvent>> listByQuadrant(@PathVariable Integer quadrant) {
+    public AjaxResult<List<PlanScheduleEvent>> listByQuadrant(
+            @PathVariable Integer quadrant,
+            @RequestParam(required = false) Integer execStatus) {
         Long userId = 1L;
-        return AjaxResult.success(planScheduleEventService.listByQuadrant(userId, quadrant));
+        return AjaxResult.success(planScheduleEventService.listByQuadrant(userId, quadrant, execStatus));
     }
 
     @ApiOperation("按计划ID查询")
@@ -80,9 +86,10 @@ public class PlanScheduleEventController {
 
     @ApiOperation("今日统计")
     @GetMapping("/today")
-    public AjaxResult<Map<String, Object>> getTodayStats() {
+    public AjaxResult<Map<String, Object>> getTodayStats(
+            @RequestParam(required = false) Integer execStatus) {
         Long userId = 1L;
-        return AjaxResult.success(planScheduleEventService.getTodayStats(userId));
+        return AjaxResult.success(planScheduleEventService.getTodayStats(userId, execStatus));
     }
 
     @ApiOperation("获取详情")
@@ -120,5 +127,16 @@ public class PlanScheduleEventController {
     @DeleteMapping("/{id}")
     public AjaxResult<Boolean> delete(@PathVariable Long id) {
         return AjaxResult.success(planScheduleEventService.delete(id));
+    }
+
+    @ApiOperation("切换执行状态")
+    @PutMapping("/{id}/exec-status")
+    public AjaxResult<Boolean> updateExecStatus(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> body) {
+        Long userId = 1L;
+        Integer execStatus = body.get("execStatus") instanceof Number
+                ? ((Number) body.get("execStatus")).intValue() : null;
+        return AjaxResult.success(planScheduleEventService.updateExecStatus(id, execStatus, userId));
     }
 }

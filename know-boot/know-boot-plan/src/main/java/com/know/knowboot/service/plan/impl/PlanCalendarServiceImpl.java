@@ -28,7 +28,7 @@ public class PlanCalendarServiceImpl implements IPlanCalendarService {
     private PlanHabitRecordMapper planHabitRecordMapper;
 
     @Override
-    public Map<String, Object> getMonthlyData(Long userId, Integer year, Integer month) {
+    public Map<String, Object> getMonthlyData(Long userId, Integer year, Integer month, Integer execStatus) {
         // 计算月份边界
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, year);
@@ -44,12 +44,13 @@ public class PlanCalendarServiceImpl implements IPlanCalendarService {
         long monthEnd = cal.getTimeInMillis() - 1;
 
         // 1. 查询月份内的日程事件
-        List<PlanScheduleEvent> events = planScheduleEventService.listByDateRange(userId, monthStart, monthEnd);
+        List<PlanScheduleEvent> events = planScheduleEventService.listByDateRange(userId, monthStart, monthEnd, execStatus);
 
         // 2. 查询用户所有习惯
         List<PlanHabit> habits = planHabitMapper.selectList(
                 new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<PlanHabit>()
-                        .eq(PlanHabit::getUserId, userId));
+                        .eq(PlanHabit::getUserId, userId)
+                        .eq(execStatus != null, PlanHabit::getExecStatus, execStatus));
 
         // 3. 查询月份内的所有习惯打卡记录
         List<PlanHabitRecord> allRecords = planHabitRecordMapper.selectList(

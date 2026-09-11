@@ -1,6 +1,7 @@
 package com.know.knowboot.service.plan.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -37,6 +38,7 @@ public class PlanHabitServiceImpl extends ServiceImpl<PlanHabitMapper, PlanHabit
         wrapper.eq(PlanHabit::getUserId, userId)
                 .eq(query.getStatus() != null, PlanHabit::getStatus, query.getStatus())
                 .like(query.getName() != null, PlanHabit::getName, query.getName())
+                .eq(query.getExecStatus() != null, PlanHabit::getExecStatus, query.getExecStatus())
                 .orderByDesc(PlanHabit::getCreateTime);
         return page(new Page<>(pageNum, pageSize), wrapper);
     }
@@ -49,8 +51,11 @@ public class PlanHabitServiceImpl extends ServiceImpl<PlanHabitMapper, PlanHabit
     }
 
     @Override
-    public Map<String, Object> getStats(Long userId) {
-        List<PlanHabit> habits = listByUserId(userId);
+    public Map<String, Object> getStats(Long userId, Integer execStatus) {
+        List<PlanHabit> habits = list(new LambdaQueryWrapper<PlanHabit>()
+                .eq(PlanHabit::getUserId, userId)
+                .eq(execStatus != null, PlanHabit::getExecStatus, execStatus)
+                .orderByDesc(PlanHabit::getCreateTime));
         long totalCount = habits.size();
         long activeCount = habits.stream().filter(h -> h.getStatus() == 0).count();
         long completedCount = habits.stream().filter(h -> h.getStatus() == 1).count();
@@ -109,6 +114,9 @@ public class PlanHabitServiceImpl extends ServiceImpl<PlanHabitMapper, PlanHabit
         }
         if (habit.getTargetDays() == null) {
             habit.setTargetDays(30);
+        }
+        if (habit.getExecStatus() == null) {
+            habit.setExecStatus(1);
         }
         return save(habit);
     }
@@ -259,5 +267,14 @@ public class PlanHabitServiceImpl extends ServiceImpl<PlanHabitMapper, PlanHabit
                 new LambdaQueryWrapper<PlanHabitRecord>()
                         .eq(PlanHabitRecord::getHabitId, habitId));
         return count == null ? 0 : count.intValue();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean updateExecStatus(Long id, Integer execStatus, Long userId) {
+        return update(new LambdaUpdateWrapper<PlanHabit>()
+                .eq(PlanHabit::getId, id)
+                .set(PlanHabit::getExecStatus, execStatus)
+                .set(PlanHabit::getUpdateTime, System.currentTimeMillis()));
     }
 }

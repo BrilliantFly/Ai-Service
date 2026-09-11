@@ -66,6 +66,9 @@ public class PlanInfo implements Serializable {
     @ApiModelProperty("父计划ID(支持WBS拆解)")
     private Long parentId;
 
+    @ApiModelProperty("创建自模板ID")
+    private Long templateId;
+
     @ApiModelProperty("备注")
     private String remark;
 

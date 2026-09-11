@@ -24,9 +24,10 @@ public class PlanCalendarController {
     @GetMapping("/monthly")
     public AjaxResult<Map<String, Object>> getMonthlyData(
             @RequestParam Integer year,
-            @RequestParam Integer month) {
+            @RequestParam Integer month,
+            @RequestParam(required = false) Integer execStatus) {
         // TODO: 从Token获取用户ID
         Long userId = 1L;
-        return AjaxResult.success(planCalendarService.getMonthlyData(userId, year, month));
+        return AjaxResult.success(planCalendarService.getMonthlyData(userId, year, month, execStatus));
     }
 }

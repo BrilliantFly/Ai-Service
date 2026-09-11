@@ -37,6 +37,9 @@ public class PlanSchemaMigration {
             createPlanFocusSession();
             createPlanHomeConfig();
             createPlanHomeSlogan();
+            createPlanInfoTemplate();
+            createPlanHabitTemplate();
+            createPlanScheduleEventTemplate();
 
             // 修复已有表可能缺失的列（兼容初始版本建表）
             ensureColumnExists("plan_schedule_event", "event_type", "tinyint DEFAULT 1 COMMENT '日程类型(1:日程 2:待办 3:提醒)' AFTER `content`");
@@ -73,6 +76,12 @@ public class PlanSchemaMigration {
             ensureColumnExists("plan_habit", "plan_id", "bigint DEFAULT NULL COMMENT '关联计划ID' AFTER `total_days`");
             ensureColumnExists("plan_habit", "delete_time", "bigint DEFAULT NULL COMMENT '删除时间' AFTER `update_time`");
             ensureColumnExists("plan_schedule_category", "delete_time", "bigint DEFAULT NULL COMMENT '删除时间' AFTER `update_time`");
+
+            ensureColumnExists("plan_info", "template_id", "bigint DEFAULT NULL COMMENT '关联模板ID' AFTER `remark`");
+            ensureColumnExists("plan_habit", "template_id", "bigint DEFAULT NULL COMMENT '关联模板ID' AFTER `plan_id`");
+            ensureColumnExists("plan_habit", "exec_status", "tinyint DEFAULT 1 COMMENT '执行状态(0:非执行/草稿 1:执行中)' AFTER `template_id`");
+            ensureColumnExists("plan_schedule_event", "template_id", "bigint DEFAULT NULL COMMENT '关联模板ID' AFTER `plan_id`");
+            ensureColumnExists("plan_schedule_event", "exec_status", "tinyint DEFAULT 1 COMMENT '执行状态(0:非执行/草稿 1:执行中)' AFTER `template_id`");
 
 
             ensureBigintTimestampColumn("plan_habit", "start_date", "bigint DEFAULT NULL COMMENT 'start date timestamp'");
@@ -477,6 +486,125 @@ public class PlanSchemaMigration {
             }
         } catch (Exception e) {
             System.out.println("[PlanSchemaMigrate] 初始化首页标语数据: " + e.getMessage());
+        }
+    }
+
+    // ============================
+    // 模板表
+    // ============================
+
+    private void createPlanInfoTemplate() {
+        if (!tableExists("plan_info_template")) {
+            jdbcTemplate.execute(
+                "CREATE TABLE `plan_info_template` (" +
+                "  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键'," +
+                "  `parent_id` bigint DEFAULT NULL COMMENT '父模板ID'," +
+                "  `template_name` varchar(100) NOT NULL COMMENT '模板名称'," +
+                "  `description` varchar(500) DEFAULT NULL COMMENT '描述'," +
+                "  `icon` varchar(100) DEFAULT NULL COMMENT '图标'," +
+                "  `color` varchar(20) DEFAULT NULL COMMENT '颜色'," +
+                "  `plan_type` varchar(50) DEFAULT NULL COMMENT '计划类型'," +
+                "  `category_id` bigint DEFAULT NULL COMMENT '分类ID'," +
+                "  `quadrant_id` bigint DEFAULT NULL COMMENT '所属象限ID'," +
+                "  `tags` varchar(500) DEFAULT NULL COMMENT '标签'," +
+                "  `default_priority` int DEFAULT 0 COMMENT '默认优先级'," +
+                "  `default_duration_days` int DEFAULT NULL COMMENT '默认持续天数'," +
+                "  `default_remind_time` varchar(50) DEFAULT NULL COMMENT '默认提醒时间'," +
+                "  `default_habits` text DEFAULT NULL COMMENT '默认习惯定义(JSON)'," +
+                "  `default_habit_ids` varchar(500) DEFAULT NULL COMMENT '默认习惯模板ID列表(JSON)'," +
+                "  `default_events` text DEFAULT NULL COMMENT '默认事件定义(JSON)'," +
+                "  `default_event_ids` varchar(500) DEFAULT NULL COMMENT '默认事件模板ID列表(JSON)'," +
+                "  `default_sub_plans` text DEFAULT NULL COMMENT '默认子计划定义(JSON)'," +
+                "  `use_count` int DEFAULT 0 COMMENT '使用次数'," +
+                "  `rating` decimal(3,1) DEFAULT NULL COMMENT '评分'," +
+                "  `visibility` tinyint DEFAULT 1 COMMENT '可见性(0:私有 1:公开)'," +
+                "  `sort` int DEFAULT 0 COMMENT '排序'," +
+                "  `create_by` bigint DEFAULT NULL COMMENT '创建人'," +
+                "  `create_time` bigint DEFAULT NULL COMMENT '创建时间'," +
+                "  `update_by` bigint DEFAULT NULL COMMENT '更新人'," +
+                "  `update_time` bigint DEFAULT NULL COMMENT '更新时间'," +
+                "  `del_flag` tinyint DEFAULT 0 COMMENT '删除标记'," +
+                "  `delete_time` bigint DEFAULT 0 COMMENT '删除时间'," +
+                "  PRIMARY KEY (`id`)," +
+                "  KEY `idx_parent_id` (`parent_id`)," +
+                "  KEY `idx_plan_type` (`plan_type`)" +
+                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='计划信息模板表'"
+            );
+            System.out.println("[PlanSchemaMigrate] 已创建 plan_info_template 表");
+        }
+    }
+
+    private void createPlanHabitTemplate() {
+        if (!tableExists("plan_habit_template")) {
+            jdbcTemplate.execute(
+                "CREATE TABLE `plan_habit_template` (" +
+                "  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键'," +
+                "  `template_name` varchar(100) NOT NULL COMMENT '模板名称'," +
+                "  `description` varchar(500) DEFAULT NULL COMMENT '描述'," +
+                "  `name` varchar(100) DEFAULT NULL COMMENT '习惯名称'," +
+                "  `icon` varchar(50) DEFAULT NULL COMMENT '图标'," +
+                "  `color` varchar(20) DEFAULT NULL COMMENT '颜色'," +
+                "  `frequency_type` tinyint DEFAULT 1 COMMENT '频率类型(1:每天 2:每周 3:自定义)'," +
+                "  `frequency_rule` varchar(100) DEFAULT NULL COMMENT '频率规则'," +
+                "  `reminder_time` varchar(50) DEFAULT NULL COMMENT '提醒时间'," +
+                "  `rest_days` varchar(50) DEFAULT NULL COMMENT '休息日'," +
+                "  `target_days` int DEFAULT 30 COMMENT '目标天数'," +
+                "  `target_value` int DEFAULT 1 COMMENT '目标值'," +
+                "  `target_unit` varchar(20) DEFAULT NULL COMMENT '目标单位'," +
+                "  `tracking_type` varchar(20) DEFAULT 'boolean' COMMENT '打卡方式'," +
+                "  `plan_type` varchar(50) DEFAULT NULL COMMENT '计划类型'," +
+                "  `tags` varchar(500) DEFAULT NULL COMMENT '标签'," +
+                "  `use_count` int DEFAULT 0 COMMENT '使用次数'," +
+                "  `visibility` tinyint DEFAULT 1 COMMENT '可见性(0:私有 1:公开)'," +
+                "  `sort` int DEFAULT 0 COMMENT '排序'," +
+                "  `create_by` bigint DEFAULT NULL COMMENT '创建人'," +
+                "  `create_time` bigint DEFAULT NULL COMMENT '创建时间'," +
+                "  `update_by` bigint DEFAULT NULL COMMENT '更新人'," +
+                "  `update_time` bigint DEFAULT NULL COMMENT '更新时间'," +
+                "  `del_flag` tinyint DEFAULT 0 COMMENT '删除标记'," +
+                "  `delete_time` bigint DEFAULT 0 COMMENT '删除时间'," +
+                "  PRIMARY KEY (`id`)" +
+                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='习惯模板表'"
+            );
+            System.out.println("[PlanSchemaMigrate] 已创建 plan_habit_template 表");
+        }
+    }
+
+    private void createPlanScheduleEventTemplate() {
+        if (!tableExists("plan_schedule_event_template")) {
+            jdbcTemplate.execute(
+                "CREATE TABLE `plan_schedule_event_template` (" +
+                "  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键'," +
+                "  `template_name` varchar(100) NOT NULL COMMENT '模板名称'," +
+                "  `description` varchar(500) DEFAULT NULL COMMENT '描述'," +
+                "  `title` varchar(200) DEFAULT NULL COMMENT '日程标题'," +
+                "  `event_type` tinyint DEFAULT 1 COMMENT '日程类型(1:日程 2:待办 3:提醒)'," +
+                "  `quadrant` tinyint DEFAULT 2 COMMENT '四象限'," +
+                "  `priority` tinyint DEFAULT 2 COMMENT '优先级'," +
+                "  `is_repeat` tinyint DEFAULT 0 COMMENT '是否重复'," +
+                "  `repeat_type` tinyint DEFAULT NULL COMMENT '重复类型'," +
+                "  `repeat_rule` varchar(100) DEFAULT NULL COMMENT '重复规则'," +
+                "  `is_all_day` tinyint DEFAULT 0 COMMENT '是否全天'," +
+                "  `start_time` bigint DEFAULT NULL COMMENT '开始时间'," +
+                "  `end_time` bigint DEFAULT NULL COMMENT '结束时间'," +
+                "  `remind_minutes` int DEFAULT 15 COMMENT '提前提醒分钟数'," +
+                "  `location` varchar(200) DEFAULT NULL COMMENT '地点'," +
+                "  `content` text DEFAULT NULL COMMENT '日程内容'," +
+                "  `plan_type` varchar(50) DEFAULT NULL COMMENT '计划类型'," +
+                "  `tags` varchar(500) DEFAULT NULL COMMENT '标签'," +
+                "  `use_count` int DEFAULT 0 COMMENT '使用次数'," +
+                "  `visibility` tinyint DEFAULT 1 COMMENT '可见性(0:私有 1:公开)'," +
+                "  `sort` int DEFAULT 0 COMMENT '排序'," +
+                "  `create_by` bigint DEFAULT NULL COMMENT '创建人'," +
+                "  `create_time` bigint DEFAULT NULL COMMENT '创建时间'," +
+                "  `update_by` bigint DEFAULT NULL COMMENT '更新人'," +
+                "  `update_time` bigint DEFAULT NULL COMMENT '更新时间'," +
+                "  `del_flag` tinyint DEFAULT 0 COMMENT '删除标记'," +
+                "  `delete_time` bigint DEFAULT 0 COMMENT '删除时间'," +
+                "  PRIMARY KEY (`id`)" +
+                ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='日程事件模板表'"
+            );
+            System.out.println("[PlanSchemaMigrate] 已创建 plan_schedule_event_template 表");
         }
     }
 

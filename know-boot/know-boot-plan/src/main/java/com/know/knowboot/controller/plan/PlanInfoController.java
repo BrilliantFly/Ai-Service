@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 计划信息控制器
@@ -78,5 +79,22 @@ public class PlanInfoController {
             @RequestParam Long startTime,
             @RequestParam Long endTime) {
         return AjaxResult.success(planInfoService.toSchedule(id, startTime, endTime));
+    }
+
+    @ApiOperation("切换计划状态")
+    @PutMapping("/{id}/status")
+    public AjaxResult<Boolean> updateStatus(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> body) {
+        Long userId = 1L;
+        Integer status = body.get("status") instanceof Number
+                ? ((Number) body.get("status")).intValue() : null;
+        return AjaxResult.success(planInfoService.updateStatus(id, status, userId));
+    }
+
+    @ApiOperation("按模板ID查询计划列表")
+    @GetMapping("/by-template/{templateId}")
+    public AjaxResult<List<PlanInfo>> listByTemplateId(@PathVariable Long templateId) {
+        return AjaxResult.success(planInfoService.listByTemplateId(templateId));
     }
 }

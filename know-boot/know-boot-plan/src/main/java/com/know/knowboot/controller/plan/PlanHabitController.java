@@ -40,16 +40,18 @@ public class PlanHabitController {
 
     @ApiOperation("查询列表")
     @GetMapping("/list")
-    public AjaxResult<List<PlanHabit>> list() {
+    public AjaxResult<List<PlanHabit>> list(PlanHabit query) {
         Long userId = 1L;
-        return AjaxResult.success(planHabitService.listByUserId(userId));
+        IPage<PlanHabit> page = planHabitService.page(query, userId, 1, 1000);
+        return AjaxResult.success(page.getRecords());
     }
 
     @ApiOperation("统计")
     @GetMapping("/stats")
-    public AjaxResult<Map<String, Object>> getStats() {
+    public AjaxResult<Map<String, Object>> getStats(
+            @RequestParam(required = false) Integer execStatus) {
         Long userId = 1L;
-        return AjaxResult.success(planHabitService.getStats(userId));
+        return AjaxResult.success(planHabitService.getStats(userId, execStatus));
     }
 
     @ApiOperation("获取详情")
@@ -101,6 +103,17 @@ public class PlanHabitController {
     @GetMapping("/{id}/records")
     public AjaxResult<List<PlanHabitRecord>> getRecords(@PathVariable Long id) {
         return AjaxResult.success(planHabitService.getRecords(id));
+    }
+
+    @ApiOperation("切换执行状态")
+    @PutMapping("/{id}/exec-status")
+    public AjaxResult<Boolean> updateExecStatus(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> body) {
+        Long userId = 1L;
+        Integer execStatus = body.get("execStatus") instanceof Number
+                ? ((Number) body.get("execStatus")).intValue() : null;
+        return AjaxResult.success(planHabitService.updateExecStatus(id, execStatus, userId));
     }
 
     @ApiOperation("按月统计打卡")

@@ -1,8 +1,0 @@
-feat(plan): 计划模板模块 + exec_status 执行状态全链路改造
-
-- 新增模板三表(PlanInfoTemplate/PlanHabitTemplate/PlanScheduleEventTemplate)实体+Mapper+Service+Controller
-- useTemplate 递归创建 WBS 计划树(根计划+多层子计划+习惯+日程)
-- 模板JSON键名双向兼容(camelCase/snake_case) + 事件时间锚点 + restDays补全
-- exec_status 过滤: habit list/stats、event date/week/month/quadrant/today、calendar/monthly 均支持
-- uniapp新建默认exec=1显示, vue新建默认exec=0隐藏
-- PlanSchemaMigration 自动建表 + 存量数据 exec_status=1 迁移

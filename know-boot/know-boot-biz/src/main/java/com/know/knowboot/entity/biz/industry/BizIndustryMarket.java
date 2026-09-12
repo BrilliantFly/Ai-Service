@@ -67,6 +67,27 @@ public class BizIndustryMarket implements Serializable {
     @ApiModelProperty("推广引流（企业/产品两个维度）")
     private String promoChannel;
 
+    @ApiModelProperty("动态信息（社会/文化/行业/市场变化；制度影响）")
+    private String dynamicInfo;
+
+    @ApiModelProperty("价值信息（市场价值/机会评估，即「价值新增」）")
+    private String valueInfo;
+
+    @ApiModelProperty("如何把握（切入策略/竞争打法）")
+    private String strategy;
+
+    @ApiModelProperty("毛利润（销售收入-销售成本）")
+    private java.math.BigDecimal grossProfit;
+
+    @ApiModelProperty("毛利率（%）")
+    private java.math.BigDecimal grossMargin;
+
+    @ApiModelProperty("净利润（总收入-总费用）")
+    private java.math.BigDecimal netProfit;
+
+    @ApiModelProperty("净利率（%）")
+    private java.math.BigDecimal netMargin;
+
     @ApiModelProperty("创建人")
     private Long createBy;
 

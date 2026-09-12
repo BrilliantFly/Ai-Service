@@ -79,6 +79,18 @@ public class BizIndustryEnterprise implements Serializable {
     @ApiModelProperty("下游营销方式")
     private String downstreamMarketing;
 
+    @ApiModelProperty("动态信息（社会/文化/行业/市场变化；制度影响）")
+    private String dynamicInfo;
+
+    @ApiModelProperty("价值信息（企业价值/机会评估，即「价值新增」）")
+    private String valueInfo;
+
+    @ApiModelProperty("行业资源（关键资源/人脉/资质）")
+    private String industryResources;
+
+    @ApiModelProperty("如何把握（切入策略/竞争打法）")
+    private String strategy;
+
     @ApiModelProperty("创建人")
     private Long createBy;
 

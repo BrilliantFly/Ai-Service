@@ -36,6 +36,38 @@ public class BizSchemaMigration {
             createBizIndustryEnterprise();
             createBizIndustryMarket();
 
+            // 补充行销分析三件套(动态信息/价值信息/如何把握)与财务指标列
+            ensureColumnExists("biz_industry_product", "dynamic_info",
+                "text DEFAULT NULL COMMENT '动态信息（社会/文化/行业/市场变化；制度影响）'");
+            ensureColumnExists("biz_industry_product", "value_info",
+                "text DEFAULT NULL COMMENT '价值信息（产品价值/机会评估，即「价值新增」）'");
+            ensureColumnExists("biz_industry_product", "strategy",
+                "text DEFAULT NULL COMMENT '如何把握（切入策略/竞争打法）'");
+
+            ensureColumnExists("biz_industry_enterprise", "dynamic_info",
+                "text DEFAULT NULL COMMENT '动态信息（社会/文化/行业/市场变化；制度影响）'");
+            ensureColumnExists("biz_industry_enterprise", "value_info",
+                "text DEFAULT NULL COMMENT '价值信息（企业价值/机会评估，即「价值新增」）'");
+            ensureColumnExists("biz_industry_enterprise", "industry_resources",
+                "varchar(1024) DEFAULT NULL COMMENT '行业资源（关键资源/人脉/资质）'");
+            ensureColumnExists("biz_industry_enterprise", "strategy",
+                "text DEFAULT NULL COMMENT '如何把握（切入策略/竞争打法）'");
+
+            ensureColumnExists("biz_industry_market", "dynamic_info",
+                "text DEFAULT NULL COMMENT '动态信息（社会/文化/行业/市场变化；制度影响）'");
+            ensureColumnExists("biz_industry_market", "value_info",
+                "text DEFAULT NULL COMMENT '价值信息（市场价值/机会评估，即「价值新增」）'");
+            ensureColumnExists("biz_industry_market", "strategy",
+                "text DEFAULT NULL COMMENT '如何把握（切入策略/竞争打法）'");
+            ensureColumnExists("biz_industry_market", "gross_profit",
+                "decimal(12,2) DEFAULT NULL COMMENT '毛利润（销售收入-销售成本）'");
+            ensureColumnExists("biz_industry_market", "gross_margin",
+                "decimal(5,2) DEFAULT NULL COMMENT '毛利率（%）'");
+            ensureColumnExists("biz_industry_market", "net_profit",
+                "decimal(12,2) DEFAULT NULL COMMENT '净利润（总收入-总费用）'");
+            ensureColumnExists("biz_industry_market", "net_margin",
+                "decimal(5,2) DEFAULT NULL COMMENT '净利率（%）'");
+
             createBizIndustryEnterpriseRel();
             createBizIndustryProductRel();
             createBizEnterpriseProductRel();
@@ -296,6 +328,9 @@ public class BizSchemaMigration {
                 "  `midstream_chain` varchar(1024) DEFAULT NULL COMMENT '中游（产品制造商）'," +
                 "  `downstream_channel` varchar(1024) DEFAULT NULL COMMENT '下游渠道'," +
                 "  `downstream_marketing` varchar(1024) DEFAULT NULL COMMENT '下游营销方式'," +
+                "  `dynamic_info` text DEFAULT NULL COMMENT '动态信息（社会/文化/行业/市场变化；制度影响）'," +
+                "  `value_info` text DEFAULT NULL COMMENT '价值信息（产品价值/机会评估，即「价值新增」）'," +
+                "  `strategy` text DEFAULT NULL COMMENT '如何把握（切入策略/竞争打法）'," +
                 "  `create_by` bigint DEFAULT NULL COMMENT '创建人'," +
                 "  `create_time` bigint DEFAULT NULL COMMENT '创建时间'," +
                 "  `update_by` bigint DEFAULT NULL COMMENT '更新人'," +
@@ -337,6 +372,10 @@ public class BizSchemaMigration {
                 "  `midstream_chain` varchar(1024) DEFAULT NULL COMMENT '中游（产品制造商）'," +
                 "  `downstream_channel` varchar(1024) DEFAULT NULL COMMENT '下游渠道'," +
                 "  `downstream_marketing` varchar(1024) DEFAULT NULL COMMENT '下游营销方式'," +
+                "  `dynamic_info` text DEFAULT NULL COMMENT '动态信息（社会/文化/行业/市场变化；制度影响）'," +
+                "  `value_info` text DEFAULT NULL COMMENT '价值信息（企业价值/机会评估，即「价值新增」）'," +
+                "  `industry_resources` varchar(1024) DEFAULT NULL COMMENT '行业资源（关键资源/人脉/资质）'," +
+                "  `strategy` text DEFAULT NULL COMMENT '如何把握（切入策略/竞争打法）'," +
                 "  `create_by` bigint DEFAULT NULL COMMENT '创建人'," +
                 "  `create_time` bigint DEFAULT NULL COMMENT '创建时间'," +
                 "  `update_by` bigint DEFAULT NULL COMMENT '更新人'," +
@@ -374,6 +413,13 @@ public class BizSchemaMigration {
                 "  `value_distribution` text DEFAULT NULL COMMENT '价值分配（产业链利润分配）'," +
                 "  `competition_method` text DEFAULT NULL COMMENT '竞争手段（行业/产品/企业三层）'," +
                 "  `promo_channel` text DEFAULT NULL COMMENT '推广引流（企业/产品两个维度）'," +
+                "  `dynamic_info` text DEFAULT NULL COMMENT '动态信息（社会/文化/行业/市场变化；制度影响）'," +
+                "  `value_info` text DEFAULT NULL COMMENT '价值信息（市场价值/机会评估，即「价值新增」）'," +
+                "  `strategy` text DEFAULT NULL COMMENT '如何把握（切入策略/竞争打法）'," +
+                "  `gross_profit` decimal(12,2) DEFAULT NULL COMMENT '毛利润（销售收入-销售成本）'," +
+                "  `gross_margin` decimal(5,2) DEFAULT NULL COMMENT '毛利率（%）'," +
+                "  `net_profit` decimal(12,2) DEFAULT NULL COMMENT '净利润（总收入-总费用）'," +
+                "  `net_margin` decimal(5,2) DEFAULT NULL COMMENT '净利率（%）'," +
                 "  `create_by` bigint DEFAULT NULL COMMENT '创建人'," +
                 "  `create_time` bigint DEFAULT NULL COMMENT '创建时间'," +
                 "  `update_by` bigint DEFAULT NULL COMMENT '更新人'," +

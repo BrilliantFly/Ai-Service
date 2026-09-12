@@ -86,6 +86,46 @@ public class PlanInfoTemplateServiceImpl extends ServiceImpl<PlanInfoTemplateMap
     }
 
     @Override
+    public List<Map<String, Object>> getTree(Long rootId) {
+        PlanInfoTemplate root = getById(rootId);
+        if (root == null) {
+            return Collections.emptyList();
+        }
+        List<Map<String, Object>> result = new ArrayList<>();
+        result.add(buildTreeNode(root));
+        return result;
+    }
+
+    private Map<String, Object> buildTreeNode(PlanInfoTemplate template) {
+        Map<String, Object> node = new LinkedHashMap<>();
+        node.put("key", template.getId());
+        node.put("id", template.getId());
+        node.put("title", template.getTemplateName());
+        node.put("templateName", template.getTemplateName());
+        node.put("description", template.getDescription());
+        node.put("icon", template.getIcon());
+        node.put("color", template.getColor());
+        node.put("planType", template.getPlanType());
+        node.put("defaultPriority", template.getDefaultPriority());
+        node.put("defaultDurationDays", template.getDefaultDurationDays());
+        node.put("visibility", template.getVisibility());
+        node.put("useCount", template.getUseCount());
+
+        List<PlanInfoTemplate> children = list(new LambdaQueryWrapper<PlanInfoTemplate>()
+                .eq(PlanInfoTemplate::getParentId, template.getId())
+                .eq(PlanInfoTemplate::getDelFlag, 0)
+                .orderByAsc(PlanInfoTemplate::getSort));
+        if (!children.isEmpty()) {
+            List<Map<String, Object>> childNodes = new ArrayList<>();
+            for (PlanInfoTemplate child : children) {
+                childNodes.add(buildTreeNode(child));
+            }
+            node.put("children", childNodes);
+        }
+        return node;
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public Long create(PlanInfoTemplate t, Long userId) {
         t.setCreateBy(userId);

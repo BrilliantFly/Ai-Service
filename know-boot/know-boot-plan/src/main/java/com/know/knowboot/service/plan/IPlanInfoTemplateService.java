@@ -8,6 +8,7 @@ import com.know.knowboot.dto.plan.UseTemplateResult;
 import com.know.knowboot.entity.plan.PlanInfoTemplate;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 计划信息模板服务接口
@@ -33,6 +34,8 @@ public interface IPlanInfoTemplateService {
      * 获取子模板列表
      */
     List<PlanInfoTemplate> getChildren(Long parentId);
+
+    List<Map<String, Object>> getTree(Long rootId);
 
     /**
      * 创建模板

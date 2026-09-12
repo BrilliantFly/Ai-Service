@@ -55,6 +55,12 @@ public class PlanInfoTemplateController {
         return AjaxResult.success(planInfoTemplateService.getChildren(id));
     }
 
+    @ApiOperation("递归获取模板树")
+    @GetMapping("/{id}/tree")
+    public AjaxResult<List<Map<String, Object>>> getTree(@PathVariable Long id) {
+        return AjaxResult.success(planInfoTemplateService.getTree(id));
+    }
+
     @ApiOperation("创建模板")
     @PostMapping
     public AjaxResult<Long> create(@RequestBody PlanInfoTemplate template) {

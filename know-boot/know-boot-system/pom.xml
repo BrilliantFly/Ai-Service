@@ -173,6 +173,18 @@
             </exclusions>
         </dependency>
 
+        <!-- Biz 模块 - 单机模式使用 -->
+        <dependency>
+            <groupId>com.know</groupId>
+            <artifactId>know-boot-biz</artifactId>
+            <version>${knowboot.version}</version>
+            <exclusions>
+                <exclusion><groupId>com.know</groupId><artifactId>cloud-know-boot-starter</artifactId></exclusion>
+                <exclusion><groupId>org.springframework.cloud</groupId><artifactId>spring-cloud-starter-loadbalancer</artifactId></exclusion>
+                <exclusion><groupId>org.springframework.cloud</groupId><artifactId>spring-cloud-commons</artifactId></exclusion>
+            </exclusions>
+        </dependency>
+
         <!-- Swagger3 -->
         <dependency>
             <groupId>io.springfox</groupId>

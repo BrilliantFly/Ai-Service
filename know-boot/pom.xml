@@ -33,6 +33,7 @@
         <module>know-boot-camera</module>
         <module>know-boot-plan</module>
         <module>know-boot-knowledge</module>
+        <module>know-boot-biz</module>
     </modules>
 
     <!--配置依赖-->

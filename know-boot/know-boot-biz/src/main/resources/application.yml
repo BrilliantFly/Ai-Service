@@ -1,0 +1,60 @@
+server:
+  port: 8089
+spring:
+  main:
+    allow-circular-references: true
+  application:
+    name: know-boot-biz
+  profiles:
+    active: standalone
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  datasource:
+    url: jdbc:mysql://101.37.83.88:3306/know_boot_v1?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456aA@
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 2
+      max-lifetime: 240000
+      keepalive-time: 120000
+      connection-timeout: 10000
+      validation-timeout: 3000
+      connection-test-query: SELECT 1
+  redis:
+    host: 127.0.0.1
+    port: 16379
+    database: 6
+    timeout: 5000
+    lettuce:
+      pool:
+        max-active: 100
+        max-idle: 20
+        min-idle: 0
+        max-wait: 30000
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
+  type-aliases-package: com.know.knowboot.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+logging:
+  level:
+    com.know.knowboot: debug
+know:
+  mode: standalone  # standalone=单机模式, microservice=分布式模式
+  rateLimiter:
+    all:
+      permitsPerSecond: 100
+      warmupPeriod: 0
+      maxConcurrent: 1000
+    resource:
+      permitsPerSecond: 100
+      warmupPeriod: 0
+      maxConcurrent: 500
+    interface:
+      permitsPerSecond: 50
+      warmupPeriod: 0
+      maxConcurrent: 200

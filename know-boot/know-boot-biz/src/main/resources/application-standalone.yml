@@ -1,0 +1,20 @@
+know:
+  mode: standalone
+seata:
+  enabled: false
+feign:
+  circuitbreaker:
+    enabled: false
+  loadbalancer:
+    enabled: false
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:mysql://101.37.83.88:3306/know_boot_v1?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456aA@
+  redis:
+    host: 127.0.0.1
+    port: 16379
+    database: 6

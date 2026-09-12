@@ -1,0 +1,19 @@
+know:
+  mode: microservice
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 39.98.108.121:10006
+      config:
+        server-addr: 39.98.108.121:10006
+        namespace: ab16776d-dae9-474e-8943-7bbbc627b637
+        group: DEFAULT_GROUP
+        file-extension: yaml
+seata:
+  enabled: true
+feign:
+  circuitbreaker:
+    enabled: true
+  loadbalancer:
+    enabled: true

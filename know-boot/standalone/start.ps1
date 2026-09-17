@@ -11,11 +11,13 @@ $KNOWBOOT_DIR = "E:\Ai-Project\Ai-Service\know-boot"
 $VUE_DIR = "E:\Ai-Project\Ai-Front\know-vue"
 $UNIAPP_DIR = "E:\Ai-Project\Ai-Front\know-uniapp"
 $SYSTEM_JAR = "$KNOWBOOT_DIR\know-boot-system\target\know-boot-system-0.0.1-SNAPSHOT.jar"
-$DB_URL = "jdbc:mysql://101.37.83.88:3306/know_boot_v1?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true"
+# [LOCAL-DB] connect to local MySQL 127.0.0.1:3306 (root/123456aA@, db know_boot_v1)
+# [REMOTE-DB] switch back: 101.37.83.88:3306 (root/Wanglei!@#123)
+$DB_URL = "jdbc:mysql://127.0.0.1:3306/know_boot_v1?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true"
 $DB_USER = "root"
 $DB_PASS = "123456aA@"
 $REDIS_HOST = "127.0.0.1"
-$REDIS_PORT = "16379"
+$REDIS_PORT = "6379"
 $REDIS_DB = "6"
 
 Write-Host ""

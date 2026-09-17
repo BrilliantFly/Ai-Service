@@ -8,7 +8,9 @@ set "UNIAPP_DIR=E:\Ai-Project\Ai-Front\know-uniapp"
 
 set "SYSTEM_JAR=%KNOWBOOT_DIR%\know-boot-system\target\know-boot-system-0.0.1-SNAPSHOT.jar"
 
-set DB_URL=jdbc:mysql://101.37.83.88:3306/know_boot_v1?useUnicode=true^&characterEncoding=UTF-8^&autoReconnect=true^&useSSL=false^&serverTimezone=Asia/Shanghai^&allowPublicKeyRetrieval=true
+REM [LOCAL-DB] connect to local MySQL 127.0.0.1:3306 (root/123456aA@, db know_boot_v1)
+REM [REMOTE-DB] switch back: 101.37.83.88:3306 (root/Wanglei!@#123)
+set DB_URL=jdbc:mysql://127.0.0.1:3306/know_boot_v1?useUnicode=true^&characterEncoding=UTF-8^&autoReconnect=true^&useSSL=false^&serverTimezone=Asia/Shanghai^&allowPublicKeyRetrieval=true
 
 echo.
 echo ============================================================
@@ -41,14 +43,14 @@ start "know-boot-system" /min java ^
     -Dspring.datasource.username=root ^
     -Dspring.datasource.password=123456aA@ ^
     -Dspring.redis.host=127.0.0.1 ^
-    -Dspring.redis.port=16379 ^
+    -Dspring.redis.port=6379 ^
     -Dspring.redis.database=6 ^
     -Dknow.mode=standalone ^
     -Dseata.enabled=false ^
     -Dfeign.circuitbreaker.enabled=false ^
     -Dfeign.loadbalancer.enabled=false ^
     "-Dspring.autoconfigure.exclude=com.alibaba.cloud.seata.feign.SeataFeignAutoConfiguration,com.alibaba.cloud.seata.feign.SeataFeignClientAutoConfiguration" ^
-    -jar "%SYSTEM_JAR%"
+    -jar "%SYSTEM_JAR%" > "%KNOWBOOT_DIR%\standalone\sys-local.log" 2>&1
 
 ping 127.0.0.1 -n 9 >nul
 echo.

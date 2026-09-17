@@ -1,5 +1,6 @@
 package com.know.knowboot.service.biz.industry;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.know.knowboot.entity.biz.industry.BizIndustryMarket;
 
 import java.util.List;
@@ -8,6 +9,16 @@ import java.util.List;
  * 行业市场服务接口
  */
 public interface IBizIndustryMarketService {
+
+    /**
+     * 分页查询行业市场(支持行业/关键字过滤)
+     */
+    IPage<BizIndustryMarket> page(Long industryId, String keyword, Integer pageNum, Integer pageSize);
+
+    /**
+     * 删除行业市场(逻辑删除+级联软删行业关联)
+     */
+    Boolean deleteMarket(Long id);
 
     /**
      * 按行业ID获取市场信息(取关联的市场列表第一个)

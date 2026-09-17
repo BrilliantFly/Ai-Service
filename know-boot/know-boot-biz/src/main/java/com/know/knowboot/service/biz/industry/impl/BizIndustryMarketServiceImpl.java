@@ -2,6 +2,8 @@ package com.know.knowboot.service.biz.industry.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.know.knowboot.entity.biz.industry.BizIndustry;
 import com.know.knowboot.entity.biz.industry.BizIndustryMarket;
@@ -15,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 行业市场服务实现
@@ -39,6 +43,84 @@ public class BizIndustryMarketServiceImpl extends ServiceImpl<BizIndustryMarketM
             return null;
         }
         return markets.get(0);
+    }
+
+    @Override
+    public IPage<BizIndustryMarket> page(Long industryId, String keyword, Integer pageNum, Integer pageSize) {
+        LambdaQueryWrapper<BizIndustryMarket> wrapper = new LambdaQueryWrapper<>();
+        if (industryId != null) {
+            List<Long> marketIds = getMarketIdsByIndustry(industryId);
+            if (marketIds.isEmpty()) {
+                return new Page<>(pageNum, pageSize);
+            }
+            wrapper.in(BizIndustryMarket::getId, marketIds);
+        }
+        // 关键字同时匹配 需求 或 机会(AND 包裹 OR),避免链式 like 生成 AND 语义
+        wrapper.and(keyword != null, w -> w
+                        .like(BizIndustryMarket::getDemand, keyword)
+                        .or()
+                        .like(BizIndustryMarket::getOpportunity, keyword))
+                .orderByDesc(BizIndustryMarket::getCreateTime);
+        IPage<BizIndustryMarket> result = page(new Page<>(pageNum, pageSize), wrapper);
+        fillIndustryRelations(result.getRecords());
+        return result;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean deleteMarket(Long id) {
+        // 市场本身逻辑删除(@TableLogic)
+        removeById(id);
+        long now = System.currentTimeMillis();
+        // 级联软删行业关联
+        bizIndustryMarketRelMapper.update(null, new LambdaUpdateWrapper<BizIndustryMarketRel>()
+                .eq(BizIndustryMarketRel::getMarketId, id)
+                .set(BizIndustryMarketRel::getDelFlag, 1)
+                .set(BizIndustryMarketRel::getDeleteTime, now));
+        return Boolean.TRUE;
+    }
+
+    // 分页结果填充关联行业(避免列表页无关联信息)
+    private void fillIndustryRelations(List<BizIndustryMarket> records) {
+        if (records == null || records.isEmpty()) {
+            return;
+        }
+        List<Long> marketIds = new ArrayList<>();
+        for (BizIndustryMarket record : records) {
+            marketIds.add(record.getId());
+        }
+        List<BizIndustryMarketRel> rels = bizIndustryMarketRelMapper.selectList(new LambdaQueryWrapper<BizIndustryMarketRel>()
+                .in(BizIndustryMarketRel::getMarketId, marketIds)
+                .eq(BizIndustryMarketRel::getDelFlag, 0));
+        Map<Long, List<Long>> marketIndustryMap = new HashMap<>();
+        if (rels != null) {
+            for (BizIndustryMarketRel rel : rels) {
+                marketIndustryMap.computeIfAbsent(rel.getMarketId(), k -> new ArrayList<>()).add(rel.getIndustryId());
+            }
+        }
+        for (BizIndustryMarket record : records) {
+            List<Long> industryIds = marketIndustryMap.getOrDefault(record.getId(), new ArrayList<>());
+            record.setIndustryIds(industryIds);
+            record.setIndustryNames(queryIndustryNames(industryIds));
+        }
+    }
+
+    private List<String> queryIndustryNames(List<Long> industryIds) {
+        List<String> industryNames = new ArrayList<>();
+        if (industryIds == null || industryIds.isEmpty()) {
+            return industryNames;
+        }
+        Map<Long, String> nameMap = new HashMap<>();
+        List<BizIndustry> industryList = bizIndustryMapper.selectBatchIds(industryIds);
+        if (industryList != null) {
+            for (BizIndustry industry : industryList) {
+                nameMap.put(industry.getId(), industry.getIndustryName());
+            }
+        }
+        for (Long industryId : industryIds) {
+            industryNames.add(nameMap.get(industryId));
+        }
+        return industryNames;
     }
 
     @Override

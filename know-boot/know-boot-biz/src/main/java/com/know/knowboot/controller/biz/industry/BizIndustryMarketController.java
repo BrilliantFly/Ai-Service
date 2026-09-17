@@ -3,6 +3,7 @@ package com.know.knowboot.controller.biz.industry;
 import com.know.knowboot.core.AjaxResult;
 import com.know.knowboot.entity.biz.industry.BizIndustryMarket;
 import com.know.knowboot.service.biz.industry.IBizIndustryMarketService;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,21 @@ public class BizIndustryMarketController {
     @GetMapping("/list")
     public AjaxResult<List<BizIndustryMarket>> list(@RequestParam(required = false) Long industryId) {
         return AjaxResult.success(bizIndustryMarketService.getListByIndustryId(industryId));
+    }
+
+    @ApiOperation("分页查询行业市场")
+    @GetMapping("/page")
+    public AjaxResult<IPage<BizIndustryMarket>> page(@RequestParam(required = false) Long industryId,
+                                                     @RequestParam(required = false) String keyword,
+                                                     @RequestParam(defaultValue = "1") Integer pageNum,
+                                                     @RequestParam(defaultValue = "10") Integer pageSize) {
+        return AjaxResult.success(bizIndustryMarketService.page(industryId, keyword, pageNum, pageSize));
+    }
+
+    @ApiOperation("删除行业市场")
+    @DeleteMapping("/{id}")
+    public AjaxResult<Boolean> delete(@PathVariable Long id) {
+        return AjaxResult.success(bizIndustryMarketService.deleteMarket(id));
     }
 
     @ApiOperation("创建行业市场")

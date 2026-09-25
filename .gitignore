@@ -1,3 +1,7 @@
 # Runtime logs
 know-boot/standalone/*.log
 know-boot/standalone/*.err
+know-boot/standalone/startup-out.txt
+
+# Local database dump backups
+db/

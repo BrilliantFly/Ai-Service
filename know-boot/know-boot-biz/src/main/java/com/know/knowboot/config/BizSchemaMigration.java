@@ -31,6 +31,28 @@ public class BizSchemaMigration {
             createBizCustomerFollowup();
             createBizCustomerIndustry();
 
+            // 客户个人资料:基础认识/详细认识扩展列(2026-09-25)
+            ensureColumnExists("biz_customer", "appearance",
+                "varchar(255) DEFAULT NULL COMMENT '外貌(体型/穿着/气质等)'");
+            ensureColumnExists("biz_customer", "earning_way",
+                "varchar(255) DEFAULT NULL COMMENT '赚钱方式(逗号分隔多选:体力层/技能层/资源层/资本层/创业层/投资层/高级管理层/专家顾问层/科技创新层/社会影响层)'");
+            ensureColumnExists("biz_customer", "social_class",
+                "varchar(255) DEFAULT NULL COMMENT '社会阶层(逗号分隔多选:思想层/投资层/创业层/生意层/打工人)'");
+            ensureColumnExists("biz_customer", "social_circle",
+                "varchar(255) DEFAULT NULL COMMENT '社交圈(人脉层次/交际范围)'");
+            ensureColumnExists("biz_customer", "family_address",
+                "varchar(255) DEFAULT NULL COMMENT '家庭住址'");
+            ensureColumnExists("biz_customer", "basic_life_skill",
+                "varchar(255) DEFAULT NULL COMMENT '基础生活技能'");
+            ensureColumnExists("biz_customer", "vocational_skill",
+                "varchar(255) DEFAULT NULL COMMENT '职业技能'");
+            ensureColumnExists("biz_customer", "sports_skill",
+                "varchar(255) DEFAULT NULL COMMENT '运动和户外技能'");
+            ensureColumnExists("biz_customer", "art_skill",
+                "varchar(255) DEFAULT NULL COMMENT '艺术和创意技能'");
+            ensureColumnExists("biz_customer", "tech_skill",
+                "varchar(255) DEFAULT NULL COMMENT '技术和数字技能'");
+
             createBizIndustry();
             createBizIndustryProduct();
             createBizIndustryEnterprise();

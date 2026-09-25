@@ -65,11 +65,41 @@ public class BizCustomer implements Serializable {
     @ApiModelProperty("价值观(核心信念/关注点)")
     private String valuesText;
 
+    @ApiModelProperty("基础生活技能")
+    private String basicLifeSkill;
+
+    @ApiModelProperty("职业技能")
+    private String vocationalSkill;
+
+    @ApiModelProperty("运动和户外技能")
+    private String sportsSkill;
+
+    @ApiModelProperty("艺术和创意技能")
+    private String artSkill;
+
+    @ApiModelProperty("技术和数字技能")
+    private String techSkill;
+
     @ApiModelProperty("衣食住行(消费习惯/生活品质信号)")
     private String lifestyle;
 
+    @ApiModelProperty("外貌(体型/穿着/气质等)")
+    private String appearance;
+
+    @ApiModelProperty("赚钱方式(逗号分隔多选:体力层/技能层/资源层/资本层/创业层/投资层/高级管理层/专家顾问层/科技创新层/社会影响层)")
+    private String earningWay;
+
+    @ApiModelProperty("社会阶层(逗号分隔多选:思想层/投资层/创业层/生意层/打工人)")
+    private String socialClass;
+
+    @ApiModelProperty("社交圈(人脉层次/交际范围)")
+    private String socialCircle;
+
     @ApiModelProperty("婚姻状况(未婚/已婚/离异/保密)")
     private String maritalStatus;
+
+    @ApiModelProperty("家庭住址")
+    private String familyAddress;
 
     @ApiModelProperty("家庭情况(成员构成/子女情况等)")
     private String familySituation;

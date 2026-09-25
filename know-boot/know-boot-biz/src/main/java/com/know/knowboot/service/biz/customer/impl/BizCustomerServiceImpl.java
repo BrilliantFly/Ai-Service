@@ -130,8 +130,13 @@ public class BizCustomerServiceImpl extends ServiceImpl<BizCustomerMapper, BizCu
             company.setCreateTime(now);
             company.setDeleted(0);
             company.setDeleteTime(0L);
+            sanitizeBlankFields(company);
             bizCustomerCompanyMapper.insert(company);
             customer.setCompanyId(company.getId());
+            // 回写客户表的 companyId, 保证详情/列表关联可追溯
+            bizCustomerMapper.update(null, new LambdaUpdateWrapper<BizCustomer>()
+                    .eq(BizCustomer::getId, customerId)
+                    .set(BizCustomer::getCompanyId, company.getId()));
         }
         if (customer.getIndustryIds() != null && !customer.getIndustryIds().isEmpty()) {
             boolean mainSet = false;
@@ -192,6 +197,7 @@ public class BizCustomerServiceImpl extends ServiceImpl<BizCustomerMapper, BizCu
                 company.setId(existing.getId());
                 company.setUpdateBy(userId);
                 company.setUpdateTime(System.currentTimeMillis());
+                sanitizeBlankFields(company);
                 bizCustomerCompanyMapper.updateById(company);
             } else {
                 company.setId(null);
@@ -199,6 +205,7 @@ public class BizCustomerServiceImpl extends ServiceImpl<BizCustomerMapper, BizCu
                 company.setCreateTime(System.currentTimeMillis());
                 company.setDeleted(0);
                 company.setDeleteTime(0L);
+                sanitizeBlankFields(company);
                 bizCustomerCompanyMapper.insert(company);
                 customer.setCompanyId(company.getId());
                 bizCustomerMapper.update(null, new LambdaUpdateWrapper<BizCustomer>()
@@ -352,5 +359,32 @@ public class BizCustomerServiceImpl extends ServiceImpl<BizCustomerMapper, BizCu
             return ((Number) value).longValue();
         }
         return Long.valueOf(value.toString());
+    }
+
+    /**
+     * 将实体中值为空字符串的 String 字段统一转为 null。
+     * <p>
+     * 前端表单未填写时提交的是空字符串 ""，而部分列是 date 等非字符类型（如
+     * biz_customer_company.established_date），空串会导致 MySQL 写入失败；
+     * 同时 MyBatis-Plus 默认 NOT_NULL 插入策略会跳过 null 字段，转为 null 后
+     * 这些列会落入 DEFAULT NULL，达到"未填写则不写入"的效果。
+     */
+    private void sanitizeBlankFields(Object entity) {
+        if (entity == null) {
+            return;
+        }
+        for (java.lang.reflect.Field fd : entity.getClass().getDeclaredFields()) {
+            if (fd.getType() == String.class) {
+                fd.setAccessible(true);
+                try {
+                    String value = (String) fd.get(entity);
+                    if (value != null && value.trim().isEmpty()) {
+                        fd.set(entity, null);
+                    }
+                } catch (IllegalAccessException e) {
+                    // 忽略单个字段的反射失败，保留原值
+                }
+            }
+        }
     }
 }

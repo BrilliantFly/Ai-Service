@@ -23,6 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -341,6 +343,17 @@ public class BizCustomerServiceImpl extends ServiceImpl<BizCustomerMapper, BizCu
             }
         }
         result.put("statusDistribution", statusDistribution);
+        // 概览统计：客户总数 / 本月新增 / 跟进中（status=2）
+        Long total = bizCustomerMapper.selectCount(new LambdaQueryWrapper<BizCustomer>());
+        Long following = bizCustomerMapper.selectCount(
+                new LambdaQueryWrapper<BizCustomer>().eq(BizCustomer::getStatus, 2));
+        long monthStartMillis = LocalDate.now().withDayOfMonth(1).atStartOfDay()
+                .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        Long monthly = bizCustomerMapper.selectCount(
+                new LambdaQueryWrapper<BizCustomer>().ge(BizCustomer::getCreateTime, monthStartMillis));
+        result.put("total", total);
+        result.put("monthly", monthly);
+        result.put("following", following);
         return result;
     }
 

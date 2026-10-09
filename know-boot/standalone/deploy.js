@@ -51,7 +51,7 @@ const want = {
 };
 
 const JVM = {
-  heap: '-Xms256m -Xmx512m',
+  heap: '-Xms64m -Xmx320m',
   metaspace: '-XX:MaxMetaspaceSize=128m',
   java: '/usr/bin/java',
 };
@@ -214,6 +214,10 @@ const NGINX_CONFIG = `server {
         alias /opt/ai-agent/apps/know-mobile/;
         index index.html;
         try_files $uri $uri/ /mobile/index.html;
+    }
+
+    location /upgrade/wgt/ {
+        alias /opt/ai-agent/upgrade/wgt/;
     }
 
     error_page 500 502 503 504 /50x.html;

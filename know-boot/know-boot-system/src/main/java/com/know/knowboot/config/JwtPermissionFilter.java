@@ -166,6 +166,10 @@ public class JwtPermissionFilter implements HandlerInterceptor {
         if (requestURI.contains("/menu/list") || requestURI.contains("/menu/tree")) {
             return true;
         }
+        // App版本检测公开API（App启动时免登录检测热更新）
+        if (requestURI.contains("/app/version")) {
+            return true;
+        }
         // 其他公开API...
         return false;
     }

@@ -40,6 +40,18 @@ public class BizIndustryEnterprise implements Serializable {
     @ApiModelProperty("企业规模(人数)")
     private String scale;
 
+    @ApiModelProperty("企业地址")
+    private String address;
+
+    @ApiModelProperty("联系人姓名")
+    private String contactName;
+
+    @ApiModelProperty("联系人手机(AES加密)")
+    private String contactPhone;
+
+    @ApiModelProperty("联系人职务")
+    private String contactPosition;
+
     @ApiModelProperty("参保人数")
     private Integer insuredCount;
 

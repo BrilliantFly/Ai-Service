@@ -38,6 +38,12 @@ public class BizIndustryController {
         return AjaxResult.success(bizIndustryService.listAll());
     }
 
+    @ApiOperation("行业树(层级: 行业 -> 下级行业)")
+    @GetMapping("/tree")
+    public AjaxResult<List<BizIndustry>> tree(BizIndustry query) {
+        return AjaxResult.success(bizIndustryService.tree(query));
+    }
+
     @ApiOperation("获取行业详情")
     @GetMapping("/{id}")
     public AjaxResult<BizIndustry> getDetail(@PathVariable Long id) {

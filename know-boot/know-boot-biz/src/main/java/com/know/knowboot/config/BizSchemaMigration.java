@@ -54,6 +54,9 @@ public class BizSchemaMigration {
                 "varchar(255) DEFAULT NULL COMMENT '技术和数字技能'");
 
             createBizIndustry();
+            // 行业层级：上级行业ID(顶级为空)
+            ensureColumnExists("biz_industry", "parent_id",
+                "bigint DEFAULT NULL COMMENT '上级行业ID(空/0为顶级)'");
             createBizIndustryProduct();
             createBizIndustryEnterprise();
             createBizIndustryMarket();
@@ -65,6 +68,15 @@ public class BizSchemaMigration {
                 "text DEFAULT NULL COMMENT '价值信息（产品价值/机会评估，即「价值新增」）'");
             ensureColumnExists("biz_industry_product", "strategy",
                 "text DEFAULT NULL COMMENT '如何把握（切入策略/竞争打法）'");
+
+            ensureColumnExists("biz_industry_enterprise", "address",
+                "varchar(255) DEFAULT NULL COMMENT '企业地址'");
+            ensureColumnExists("biz_industry_enterprise", "contact_name",
+                "varchar(64) DEFAULT NULL COMMENT '联系人姓名'");
+            ensureColumnExists("biz_industry_enterprise", "contact_phone",
+                "varchar(128) DEFAULT NULL COMMENT '联系人手机(AES加密)'");
+            ensureColumnExists("biz_industry_enterprise", "contact_position",
+                "varchar(64) DEFAULT NULL COMMENT '联系人职务'");
 
             ensureColumnExists("biz_industry_enterprise", "dynamic_info",
                 "text DEFAULT NULL COMMENT '动态信息（社会/文化/行业/市场变化；制度影响）'");
@@ -134,7 +146,7 @@ public class BizSchemaMigration {
                 "  `marital_status` varchar(16) DEFAULT NULL COMMENT '婚姻状况(未婚/已婚/离异/保密)'," +
                 "  `family_situation` varchar(512) DEFAULT NULL COMMENT '家庭情况(成员构成/子女情况等)'," +
                 "  `customer_type` tinyint DEFAULT 1 COMMENT '客户类型(1:个人 2:企业)'," +
-                "  `company_id` bigint DEFAULT NULL COMMENT '所属企业ID(biz_customer_company.id)'," +
+                "  `company_id` bigint DEFAULT NULL COMMENT '所属企业ID(biz_industry_enterprise.id)'," +
                 "  `status` tinyint DEFAULT 1 COMMENT '状态(1:潜在 2:意向 3:成交 4:流失)'," +
                 "  `source` varchar(64) DEFAULT NULL COMMENT '来源(线上推广/转介绍/展会/陌拜)'," +
                 "  `demand_level` int DEFAULT NULL COMMENT '需求层级(1-5)'," +
@@ -311,6 +323,7 @@ public class BizSchemaMigration {
                 "  `net_margin` decimal(5,2) DEFAULT NULL COMMENT '净利率（%）'," +
                 "  `visibility` tinyint DEFAULT 1 COMMENT '可见性(0:私有 1:公开 2:系统预置)'," +
                 "  `sort` int DEFAULT 0 COMMENT '排序(越小越前)'," +
+                "  `parent_id` bigint DEFAULT NULL COMMENT '上级行业ID(空/0为顶级)'," +
                 "  `create_by` bigint DEFAULT NULL COMMENT '创建人'," +
                 "  `create_time` bigint DEFAULT NULL COMMENT '创建时间'," +
                 "  `update_by` bigint DEFAULT NULL COMMENT '更新人'," +
@@ -381,6 +394,10 @@ public class BizSchemaMigration {
                 "  `registered_capital` varchar(64) DEFAULT NULL COMMENT '注册资本'," +
                 "  `paid_capital` varchar(64) DEFAULT NULL COMMENT '实缴资本'," +
                 "  `scale` varchar(50) DEFAULT NULL COMMENT '企业规模(人数)'," +
+                "  `address` varchar(255) DEFAULT NULL COMMENT '企业地址'," +
+                "  `contact_name` varchar(64) DEFAULT NULL COMMENT '联系人姓名'," +
+                "  `contact_phone` varchar(128) DEFAULT NULL COMMENT '联系人手机(AES加密)'," +
+                "  `contact_position` varchar(64) DEFAULT NULL COMMENT '联系人职务'," +
                 "  `insured_count` int DEFAULT NULL COMMENT '参保人数'," +
                 "  `is_listed` tinyint DEFAULT 0 COMMENT '是否上市(0:否 1:是)'," +
                 "  `main_business` varchar(1024) DEFAULT NULL COMMENT '主要业务'," +

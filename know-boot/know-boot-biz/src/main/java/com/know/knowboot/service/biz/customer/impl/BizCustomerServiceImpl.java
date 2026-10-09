@@ -7,16 +7,16 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.know.knowboot.entity.biz.customer.BizCustomer;
-import com.know.knowboot.entity.biz.customer.BizCustomerCompany;
 import com.know.knowboot.entity.biz.customer.BizCustomerFollowup;
 import com.know.knowboot.entity.biz.customer.BizCustomerIndustry;
 import com.know.knowboot.entity.biz.customer.BizCustomerProfile;
 import com.know.knowboot.entity.biz.industry.BizIndustry;
-import com.know.knowboot.mapper.biz.customer.BizCustomerCompanyMapper;
+import com.know.knowboot.entity.biz.industry.BizIndustryEnterprise;
 import com.know.knowboot.mapper.biz.customer.BizCustomerFollowupMapper;
 import com.know.knowboot.mapper.biz.customer.BizCustomerIndustryMapper;
 import com.know.knowboot.mapper.biz.customer.BizCustomerMapper;
 import com.know.knowboot.mapper.biz.customer.BizCustomerProfileMapper;
+import com.know.knowboot.mapper.biz.industry.BizIndustryEnterpriseMapper;
 import com.know.knowboot.mapper.biz.industry.BizIndustryMapper;
 import com.know.knowboot.service.biz.customer.IBizCustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ public class BizCustomerServiceImpl extends ServiceImpl<BizCustomerMapper, BizCu
     private BizCustomerProfileMapper bizCustomerProfileMapper;
 
     @Autowired
-    private BizCustomerCompanyMapper bizCustomerCompanyMapper;
+    private BizIndustryEnterpriseMapper bizIndustryEnterpriseMapper;
 
     @Autowired
     private BizCustomerFollowupMapper bizCustomerFollowupMapper;
@@ -60,11 +60,42 @@ public class BizCustomerServiceImpl extends ServiceImpl<BizCustomerMapper, BizCu
         LambdaQueryWrapper<BizCustomer> wrapper = new LambdaQueryWrapper<>();
         wrapper.like(query.getName() != null, BizCustomer::getName, query.getName())
                 .like(query.getPhone() != null, BizCustomer::getPhone, query.getPhone())
+                .like(query.getSource() != null, BizCustomer::getSource, query.getSource())
                 .eq(query.getCustomerType() != null, BizCustomer::getCustomerType, query.getCustomerType())
                 .eq(query.getStatus() != null, BizCustomer::getStatus, query.getStatus())
                 .eq(query.getCompanyId() != null, BizCustomer::getCompanyId, query.getCompanyId())
                 .orderByDesc(BizCustomer::getCreateTime);
-        return page(new Page<>(pageNum, pageSize), wrapper);
+        IPage<BizCustomer> result = page(new Page<>(pageNum, pageSize), wrapper);
+        fillCompanyInfo(result.getRecords());
+        return result;
+    }
+
+    // 批量填充客户所属企业信息(biz_industry_enterprise),保证列表可展示企业名称
+    private void fillCompanyInfo(List<BizCustomer> records) {
+        if (records == null || records.isEmpty()) {
+            return;
+        }
+        List<Long> companyIds = new ArrayList<>();
+        for (BizCustomer record : records) {
+            if (record.getCompanyId() != null) {
+                companyIds.add(record.getCompanyId());
+            }
+        }
+        if (companyIds.isEmpty()) {
+            return;
+        }
+        List<BizIndustryEnterprise> enterprises = bizIndustryEnterpriseMapper.selectBatchIds(companyIds);
+        Map<Long, BizIndustryEnterprise> companyMap = new HashMap<>();
+        if (enterprises != null) {
+            for (BizIndustryEnterprise enterprise : enterprises) {
+                companyMap.put(enterprise.getId(), enterprise);
+            }
+        }
+        for (BizCustomer record : records) {
+            if (record.getCompanyId() != null) {
+                record.setCompany(companyMap.get(record.getCompanyId()));
+            }
+        }
     }
 
     @Override
@@ -77,9 +108,9 @@ public class BizCustomerServiceImpl extends ServiceImpl<BizCustomerMapper, BizCu
                 .eq(BizCustomerProfile::getCustomerId, id)
                 .last("LIMIT 1"));
         customer.setProfile(profile);
-        BizCustomerCompany company = null;
+        BizIndustryEnterprise company = null;
         if (customer.getCompanyId() != null) {
-            company = bizCustomerCompanyMapper.selectById(customer.getCompanyId());
+            company = bizIndustryEnterpriseMapper.selectById(customer.getCompanyId());
         }
         customer.setCompany(company);
         List<BizCustomerIndustry> industries = bizCustomerIndustryMapper.selectList(new LambdaQueryWrapper<BizCustomerIndustry>()
@@ -124,21 +155,6 @@ public class BizCustomerServiceImpl extends ServiceImpl<BizCustomerMapper, BizCu
             profile.setDelFlag(0);
             profile.setDeleteTime(0L);
             bizCustomerProfileMapper.insert(profile);
-        }
-        if (customer.getCompany() != null) {
-            BizCustomerCompany company = customer.getCompany();
-            company.setId(null);
-            company.setCreateBy(userId);
-            company.setCreateTime(now);
-            company.setDeleted(0);
-            company.setDeleteTime(0L);
-            sanitizeBlankFields(company);
-            bizCustomerCompanyMapper.insert(company);
-            customer.setCompanyId(company.getId());
-            // 回写客户表的 companyId, 保证详情/列表关联可追溯
-            bizCustomerMapper.update(null, new LambdaUpdateWrapper<BizCustomer>()
-                    .eq(BizCustomer::getId, customerId)
-                    .set(BizCustomer::getCompanyId, company.getId()));
         }
         if (customer.getIndustryIds() != null && !customer.getIndustryIds().isEmpty()) {
             boolean mainSet = false;
@@ -189,32 +205,6 @@ public class BizCustomerServiceImpl extends ServiceImpl<BizCustomerMapper, BizCu
                 bizCustomerProfileMapper.insert(profile);
             }
         }
-        if (customer.getCompany() != null) {
-            BizCustomerCompany company = customer.getCompany();
-            BizCustomerCompany existing = null;
-            if (customer.getCompanyId() != null) {
-                existing = bizCustomerCompanyMapper.selectById(customer.getCompanyId());
-            }
-            if (existing != null) {
-                company.setId(existing.getId());
-                company.setUpdateBy(userId);
-                company.setUpdateTime(System.currentTimeMillis());
-                sanitizeBlankFields(company);
-                bizCustomerCompanyMapper.updateById(company);
-            } else {
-                company.setId(null);
-                company.setCreateBy(userId);
-                company.setCreateTime(System.currentTimeMillis());
-                company.setDeleted(0);
-                company.setDeleteTime(0L);
-                sanitizeBlankFields(company);
-                bizCustomerCompanyMapper.insert(company);
-                customer.setCompanyId(company.getId());
-                bizCustomerMapper.update(null, new LambdaUpdateWrapper<BizCustomer>()
-                        .eq(BizCustomer::getId, customer.getId())
-                        .set(BizCustomer::getCompanyId, company.getId()));
-            }
-        }
         return true;
     }
 
@@ -228,12 +218,6 @@ public class BizCustomerServiceImpl extends ServiceImpl<BizCustomerMapper, BizCu
                 .eq(BizCustomerProfile::getCustomerId, id)
                 .set(BizCustomerProfile::getDelFlag, 1)
                 .set(BizCustomerProfile::getDeleteTime, now));
-        if (existing != null && existing.getCompanyId() != null) {
-            bizCustomerCompanyMapper.update(null, new LambdaUpdateWrapper<BizCustomerCompany>()
-                    .eq(BizCustomerCompany::getId, existing.getCompanyId())
-                    .set(BizCustomerCompany::getDeleted, 1)
-                    .set(BizCustomerCompany::getDeleteTime, now));
-        }
         bizCustomerFollowupMapper.delete(new LambdaUpdateWrapper<BizCustomerFollowup>()
                 .eq(BizCustomerFollowup::getCustomerId, id));
         bizCustomerIndustryMapper.update(null, new LambdaUpdateWrapper<BizCustomerIndustry>()
@@ -351,9 +335,13 @@ public class BizCustomerServiceImpl extends ServiceImpl<BizCustomerMapper, BizCu
                 .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
         Long monthly = bizCustomerMapper.selectCount(
                 new LambdaQueryWrapper<BizCustomer>().ge(BizCustomer::getCreateTime, monthStartMillis));
+        // 关联企业数(去重统计已选择行业企业的客户)
+        Long companyCount = bizCustomerMapper.selectCount(
+                new LambdaQueryWrapper<BizCustomer>().isNotNull(BizCustomer::getCompanyId));
         result.put("total", total);
         result.put("monthly", monthly);
         result.put("following", following);
+        result.put("companyCount", companyCount);
         return result;
     }
 
@@ -372,32 +360,5 @@ public class BizCustomerServiceImpl extends ServiceImpl<BizCustomerMapper, BizCu
             return ((Number) value).longValue();
         }
         return Long.valueOf(value.toString());
-    }
-
-    /**
-     * 将实体中值为空字符串的 String 字段统一转为 null。
-     * <p>
-     * 前端表单未填写时提交的是空字符串 ""，而部分列是 date 等非字符类型（如
-     * biz_customer_company.established_date），空串会导致 MySQL 写入失败；
-     * 同时 MyBatis-Plus 默认 NOT_NULL 插入策略会跳过 null 字段，转为 null 后
-     * 这些列会落入 DEFAULT NULL，达到"未填写则不写入"的效果。
-     */
-    private void sanitizeBlankFields(Object entity) {
-        if (entity == null) {
-            return;
-        }
-        for (java.lang.reflect.Field fd : entity.getClass().getDeclaredFields()) {
-            if (fd.getType() == String.class) {
-                fd.setAccessible(true);
-                try {
-                    String value = (String) fd.get(entity);
-                    if (value != null && value.trim().isEmpty()) {
-                        fd.set(entity, null);
-                    }
-                } catch (IllegalAccessException e) {
-                    // 忽略单个字段的反射失败，保留原值
-                }
-            }
-        }
     }
 }

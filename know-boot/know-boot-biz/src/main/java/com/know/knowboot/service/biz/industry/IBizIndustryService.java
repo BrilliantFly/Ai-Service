@@ -22,6 +22,11 @@ public interface IBizIndustryService {
     List<BizIndustry> listAll();
 
     /**
+     * 行业树（层级模式：行业 -> 下级行业 -> ...）
+     */
+    List<BizIndustry> tree(BizIndustry query);
+
+    /**
      * 获取详情
      */
     BizIndustry getDetail(Long id);

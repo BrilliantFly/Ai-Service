@@ -1,6 +1,7 @@
 package com.know.knowboot.entity.biz.customer;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.know.knowboot.entity.biz.industry.BizIndustryEnterprise;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -107,7 +108,7 @@ public class BizCustomer implements Serializable {
     @ApiModelProperty("客户类型(1:个人 2:企业)")
     private Integer customerType;
 
-    @ApiModelProperty("所属企业ID(biz_customer_company.id)")
+    @ApiModelProperty("所属企业ID(biz_industry_enterprise.id)")
     private Long companyId;
 
     @ApiModelProperty("状态(1:潜在 2:意向 3:成交 4:流失)")
@@ -165,7 +166,7 @@ public class BizCustomer implements Serializable {
 
     @TableField(exist = false)
     @ApiModelProperty("关联客户企业")
-    private BizCustomerCompany company;
+    private BizIndustryEnterprise company;
 
     @TableField(exist = false)
     @ApiModelProperty("关联行业列表")

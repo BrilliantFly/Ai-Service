@@ -89,6 +89,13 @@ public class BizIndustry implements Serializable {
     @ApiModelProperty("排序(越小越前)")
     private Integer sort;
 
+    @ApiModelProperty("上级行业ID(空/0为顶级行业)")
+    private Long parentId;
+
+    @TableField(exist = false)
+    @ApiModelProperty("上级行业名称")
+    private String parentName;
+
     @ApiModelProperty("创建人")
     private Long createBy;
 
@@ -126,4 +133,8 @@ public class BizIndustry implements Serializable {
     @TableField(exist = false)
     @ApiModelProperty("关联客户数")
     private Long customerCount;
+
+    @TableField(exist = false)
+    @ApiModelProperty("下级行业列表")
+    private List<BizIndustry> children;
 }

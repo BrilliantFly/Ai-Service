@@ -30,10 +30,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 行业主体服务实现
@@ -83,8 +88,166 @@ public class BizIndustryServiceImpl extends ServiceImpl<BizIndustryMapper, BizIn
 
     @Override
     public List<BizIndustry> listAll() {
-        return list(new LambdaQueryWrapper<BizIndustry>()
+        List<BizIndustry> list = list(new LambdaQueryWrapper<BizIndustry>()
                 .orderByAsc(BizIndustry::getSort));
+        fillParentNames(list);
+        return list;
+    }
+
+    @Override
+    public List<BizIndustry> tree(BizIndustry query) {
+        List<BizIndustry> all = list(new LambdaQueryWrapper<BizIndustry>()
+                .orderByAsc(BizIndustry::getSort));
+        if (all == null || all.isEmpty()) {
+            return all;
+        }
+        Map<Long, BizIndustry> byId = new HashMap<>();
+        for (BizIndustry item : all) {
+            byId.put(item.getId(), item);
+        }
+        // 关键字/可见性过滤：保留命中节点及其祖先链，保证树形连续
+        boolean hasFilter = query != null
+                && (hasText(query.getIndustryName()) || hasText(query.getIndustryCode())
+                    || query.getVisibility() != null);
+        Set<Long> keepIds = new HashSet<>();
+        if (hasFilter) {
+            Set<Long> hit = new HashSet<>();
+            for (BizIndustry item : all) {
+                if (match(query, item)) {
+                    hit.add(item.getId());
+                }
+            }
+            // 祖先链：命中节点的上级逐级保留（保证路径连续）
+            for (Long id : hit) {
+                Long pid = byId.get(id).getParentId();
+                while (pid != null && byId.containsKey(pid)) {
+                    keepIds.add(pid);
+                    pid = byId.get(pid).getParentId();
+                }
+                keepIds.add(id);
+            }
+            // 后代：命中节点的下级逐级保留（保证子树可继续下钻）
+            for (Long id : hit) {
+                List<Long> childStack = new ArrayList<>();
+                childStack.add(id);
+                while (!childStack.isEmpty()) {
+                    Long cur = childStack.remove(childStack.size() - 1);
+                    for (BizIndustry item : all) {
+                        if (cur.equals(item.getParentId()) && keepIds.add(item.getId())) {
+                            childStack.add(item.getId());
+                        }
+                    }
+                }
+            }
+        }
+        // 组装 children 与上一级名称
+        Map<Long, List<BizIndustry>> childrenMap = new HashMap<>();
+        for (BizIndustry item : all) {
+            if (hasFilter && !keepIds.contains(item.getId())) {
+                continue;
+            }
+            if (item.getParentId() != null && byId.containsKey(item.getParentId())) {
+                childrenMap.computeIfAbsent(item.getParentId(), k -> new ArrayList<>()).add(item);
+            }
+        }
+        for (List<BizIndustry> kids : childrenMap.values()) {
+            kids.sort(Comparator.comparing(BizIndustry::getSort,
+                    Comparator.nullsLast(Comparator.naturalOrder())));
+        }
+        List<BizIndustry> roots = new ArrayList<>();
+        for (BizIndustry item : all) {
+            if (hasFilter && !keepIds.contains(item.getId())) {
+                continue;
+            }
+            item.setChildren(childrenMap.getOrDefault(item.getId(), new ArrayList<>()));
+            item.setParentName(buildParentName(byId, item));
+            if (item.getParentId() == null || !byId.containsKey(item.getParentId())) {
+                roots.add(item);
+            }
+        }
+        return roots;
+    }
+
+    /** 填充扁平列表的上级行业名称（下拉框展示用） */
+    private void fillParentNames(List<BizIndustry> list) {
+        if (list == null) {
+            return;
+        }
+        Map<Long, BizIndustry> byId = new HashMap<>();
+        for (BizIndustry item : list) {
+            byId.put(item.getId(), item);
+        }
+        for (BizIndustry item : list) {
+            item.setParentName(buildParentName(byId, item));
+        }
+    }
+
+    private String buildParentName(Map<Long, BizIndustry> byId, BizIndustry item) {
+        if (item.getParentId() == null) {
+            return null;
+        }
+        BizIndustry parent = byId.get(item.getParentId());
+        return parent == null ? null : parent.getIndustryName();
+    }
+
+    private boolean hasText(String s) {
+        return s != null && !s.trim().isEmpty();
+    }
+
+    /** parentId 为空字符串/0 视为顶级行业 */
+    private void normalizeParentId(BizIndustry industry) {
+        if (industry.getParentId() != null && industry.getParentId() == 0L) {
+            industry.setParentId(null);
+        }
+    }
+
+    /** 上级行业不能是自己，也不能是自己的下级 */
+    private void validateHierarchy(Long id, Long parentId) {
+        if (id == null || parentId == null) {
+            return;
+        }
+        if (parentId.equals(id)) {
+            throw new IllegalArgumentException("上级行业不能是自己");
+        }
+        List<BizIndustry> all = list(new LambdaQueryWrapper<BizIndustry>()
+                .eq(BizIndustry::getDelFlag, 0));
+        Map<Long, List<Long>> childrenMap = new HashMap<>();
+        for (BizIndustry item : all) {
+            if (item.getParentId() != null) {
+                childrenMap.computeIfAbsent(item.getParentId(), k -> new ArrayList<>()).add(item.getId());
+            }
+        }
+        Set<Long> visited = new HashSet<>();
+        Deque<Long> stack = new ArrayDeque<>(childrenMap.getOrDefault(id, new ArrayList<>()));
+        while (!stack.isEmpty()) {
+            Long cur = stack.pop();
+            if (cur.equals(parentId)) {
+                throw new IllegalArgumentException("上级行业不能是自己的下级行业");
+            }
+            if (visited.add(cur)) {
+                List<Long> kids = childrenMap.get(cur);
+                if (kids != null) {
+                    stack.addAll(kids);
+                }
+            }
+        }
+    }
+
+    private boolean match(BizIndustry query, BizIndustry item) {
+        if (query.getIndustryName() != null && !query.getIndustryName().trim().isEmpty()
+                && (item.getIndustryName() == null
+                    || !item.getIndustryName().contains(query.getIndustryName().trim()))) {
+            return false;
+        }
+        if (query.getIndustryCode() != null && !query.getIndustryCode().trim().isEmpty()
+                && (item.getIndustryCode() == null
+                    || !item.getIndustryCode().contains(query.getIndustryCode().trim()))) {
+            return false;
+        }
+        if (query.getVisibility() != null && !query.getVisibility().equals(item.getVisibility())) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -92,6 +255,12 @@ public class BizIndustryServiceImpl extends ServiceImpl<BizIndustryMapper, BizIn
         BizIndustry industry = bizIndustryMapper.selectById(id);
         if (industry == null) {
             return null;
+        }
+        if (industry.getParentId() != null) {
+            BizIndustry parent = bizIndustryMapper.selectById(industry.getParentId());
+            if (parent != null) {
+                industry.setParentName(parent.getIndustryName());
+            }
         }
         List<Long> marketIds = getRelMarketIds(id);
         if (!marketIds.isEmpty()) {
@@ -118,6 +287,7 @@ public class BizIndustryServiceImpl extends ServiceImpl<BizIndustryMapper, BizIn
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long create(BizIndustry industry, Long userId) {
+        normalizeParentId(industry);
         long now = System.currentTimeMillis();
         industry.setCreateBy(userId);
         industry.setCreateTime(now);
@@ -163,6 +333,8 @@ public class BizIndustryServiceImpl extends ServiceImpl<BizIndustryMapper, BizIn
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean update(BizIndustry industry, Long userId) {
+        normalizeParentId(industry);
+        validateHierarchy(industry.getId(), industry.getParentId());
         industry.setUpdateBy(userId);
         industry.setUpdateTime(System.currentTimeMillis());
         updateById(industry);
@@ -219,6 +391,13 @@ public class BizIndustryServiceImpl extends ServiceImpl<BizIndustryMapper, BizIn
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean delete(Long id) {
+        // 存在下级行业时不允许删除
+        Long childCount = bizIndustryMapper.selectCount(new LambdaQueryWrapper<BizIndustry>()
+                .eq(BizIndustry::getParentId, id)
+                .eq(BizIndustry::getDelFlag, 0));
+        if (childCount != null && childCount > 0) {
+            throw new IllegalArgumentException("存在下级行业，请先删除下级行业");
+        }
         removeById(id);
         long deleteTime = System.currentTimeMillis();
         softDeleteRel(bizIndustryProductRelMapper, new LambdaUpdateWrapper<BizIndustryProductRel>()

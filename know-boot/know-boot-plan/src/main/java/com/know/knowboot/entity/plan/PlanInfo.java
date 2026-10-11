@@ -30,6 +30,9 @@ public class PlanInfo implements Serializable {
     @ApiModelProperty("分类ID")
     private Long categoryId;
 
+    @ApiModelProperty("所属行业ID(对应biz_industry.id)")
+    private Long industryId;
+
     @ApiModelProperty("目标效果")
     private String targetEffect;
 

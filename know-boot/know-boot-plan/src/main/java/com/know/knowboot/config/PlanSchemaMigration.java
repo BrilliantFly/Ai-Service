@@ -83,6 +83,8 @@ public class PlanSchemaMigration {
             ensureColumnExists("plan_schedule_event", "template_id", "bigint DEFAULT NULL COMMENT '关联模板ID' AFTER `plan_id`");
             ensureColumnExists("plan_schedule_event", "exec_status", "tinyint DEFAULT 1 COMMENT '执行状态(0:非执行/草稿 1:执行中)' AFTER `template_id`");
 
+            ensureColumnExists("plan_info", "industry_id", "bigint DEFAULT NULL COMMENT '所属行业ID' AFTER `category_id`");
+
 
             ensureBigintTimestampColumn("plan_habit", "start_date", "bigint DEFAULT NULL COMMENT 'start date timestamp'");
             ensureBigintTimestampColumn("plan_habit", "end_date", "bigint DEFAULT NULL COMMENT 'end date timestamp'");
@@ -92,6 +94,9 @@ public class PlanSchemaMigration {
             seedPlanTypeData();
             seedScheduleCategoryData();
             seedHomeSloganData();
+
+            // 对齐历史模板中的旧计划类型编码（与级联字典 plan_type 保持一致）
+            normalizeLegacyPlanTypeData();
 
             System.out.println("[PlanSchemaMigrate] 计划模块表结构检查完成");
         } catch (Exception e) {
@@ -158,6 +163,7 @@ public class PlanSchemaMigration {
                 "  `plan_name` varchar(100) NOT NULL COMMENT '计划名称'," +
                 "  `plan_type` varchar(50) NOT NULL COMMENT '计划分类(对应plan_type.type_code)'," +
                 "  `category_id` bigint DEFAULT NULL COMMENT '分类ID'," +
+                "  `industry_id` bigint DEFAULT NULL COMMENT '所属行业ID'," +
                 "  `target_effect` varchar(500) DEFAULT NULL COMMENT '目标效果'," +
                 "  `quadrant_id` bigint DEFAULT 2 COMMENT '所属象限(默认重要不紧急)'," +
                 "  `priority` int DEFAULT 0 COMMENT '优先级 0-10'," +
@@ -451,6 +457,43 @@ public class PlanSchemaMigration {
             }
         } catch (Exception e) {
             System.out.println("[PlanSchemaMigrate] 初始化计划类型数据: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 对齐历史模板中的旧计划类型编码到标准编码（与级联字典 plan_type 一致）。
+     * <p>
+     * 早期预置/演示模板使用 fitness(健身)、reading(阅读) 等自定义编码，
+     * 不在级联字典内，会导致模板筛选命中不到、路径显示回退为原始编码。
+     * 这里统一归一化：
+     * <ul>
+     *   <li>fitness(健身) -&gt; life(生活习惯)</li>
+     *   <li>reading(阅读) -&gt; cognition(认知提升)</li>
+     * </ul>
+     * 方法幂等，重复启动无副作用。
+     */
+    private void normalizeLegacyPlanTypeData() {
+        try {
+            String[] tables = {"plan_info_template", "plan_habit_template", "plan_schedule_event_template"};
+            java.util.Map<String, String> mapping = new java.util.LinkedHashMap<>();
+            mapping.put("fitness", "life");
+            mapping.put("reading", "cognition");
+            int total = 0;
+            for (String table : tables) {
+                if (!tableExists(table)) {
+                    continue;
+                }
+                for (java.util.Map.Entry<String, String> entry : mapping.entrySet()) {
+                    total += jdbcTemplate.update(
+                        "UPDATE `" + table + "` SET plan_type = ? WHERE plan_type = ?",
+                        entry.getValue(), entry.getKey());
+                }
+            }
+            if (total > 0) {
+                System.out.println("[PlanSchemaMigrate] 已对齐历史计划类型编码 " + total + " 条");
+            }
+        } catch (Exception e) {
+            System.out.println("[PlanSchemaMigrate] 对齐历史计划类型编码: " + e.getMessage());
         }
     }
 

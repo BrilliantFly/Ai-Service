@@ -29,6 +29,9 @@ public class CustomTenantLineHandler implements TenantLineHandler {
         IGNORE_TENANT_TABLES.add("sys_tenant");
         IGNORE_TENANT_TABLES.add("sys_dict_type");
         IGNORE_TENANT_TABLES.add("sys_dict_data");
+        // 级联字典（系统级，与平铺字典一致不做租户过滤）
+        IGNORE_TENANT_TABLES.add("sys_cascade_dict_type");
+        IGNORE_TENANT_TABLES.add("sys_cascade_dict_data");
         IGNORE_TENANT_TABLES.add("sys_permission");
         IGNORE_TENANT_TABLES.add("sys_role_permission");
         IGNORE_TENANT_TABLES.add("sys_menu_permission");

@@ -32,6 +32,7 @@ public class PlanInfoServiceImpl extends ServiceImpl<PlanInfoMapper, PlanInfo> i
     public IPage<PlanInfo> page(PlanInfo query, Long userId, Integer pageNum, Integer pageSize) {
         LambdaQueryWrapper<PlanInfo> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(query.getPlanType() != null, PlanInfo::getPlanType, query.getPlanType())
+                .eq(query.getIndustryId() != null, PlanInfo::getIndustryId, query.getIndustryId())
                 .eq(query.getQuadrantId() != null, PlanInfo::getQuadrantId, query.getQuadrantId())
                 .eq(query.getStatus() != null, PlanInfo::getStatus, query.getStatus())
                 .like(query.getPlanName() != null, PlanInfo::getPlanName, query.getPlanName())

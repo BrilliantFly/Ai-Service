@@ -57,6 +57,11 @@ public class BizSchemaMigration {
             // 行业层级：上级行业ID(顶级为空)
             ensureColumnExists("biz_industry", "parent_id",
                 "bigint DEFAULT NULL COMMENT '上级行业ID(空/0为顶级)'");
+            // 行业类型（级联字典 industry_type 节点值）与行业属性
+            ensureColumnExists("biz_industry", "industry_type",
+                "varchar(64) DEFAULT NULL COMMENT '行业类型（级联字典 industry_type 节点值）'");
+            ensureColumnExists("biz_industry", "industry_attr",
+                "tinyint DEFAULT NULL COMMENT '行业属性(1:主行业 2:竞争者 3:依托者 4:共利者)'");
             createBizIndustryProduct();
             createBizIndustryEnterprise();
             createBizIndustryMarket();
@@ -305,6 +310,8 @@ public class BizSchemaMigration {
                 "  `definition` varchar(1024) DEFAULT NULL COMMENT '行业定义（边界说明）'," +
                 "  `technology` varchar(1024) DEFAULT NULL COMMENT '核心技术（行业需要的技术/设计能力）'," +
                 "  `industry_code` varchar(32) DEFAULT NULL COMMENT '行业编码（自定义，便于引用）'," +
+                "  `industry_type` varchar(64) DEFAULT NULL COMMENT '行业类型（级联字典 industry_type 节点值）'," +
+                "  `industry_attr` tinyint DEFAULT NULL COMMENT '行业属性(1:主行业 2:竞争者 3:依托者 4:共利者)'," +
                 "  `tags` varchar(256) DEFAULT NULL COMMENT '标签(逗号分隔)'," +
                 "  `upstream_chain` varchar(1024) DEFAULT NULL COMMENT '上游产业链（原材料/供应商）'," +
                 "  `midstream_chain` varchar(1024) DEFAULT NULL COMMENT '中游产业链（产品制造商/集成商）'," +

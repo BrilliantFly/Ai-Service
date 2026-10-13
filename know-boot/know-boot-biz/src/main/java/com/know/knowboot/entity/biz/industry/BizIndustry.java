@@ -35,6 +35,12 @@ public class BizIndustry implements Serializable {
     @ApiModelProperty("行业编码（自定义，便于引用）")
     private String industryCode;
 
+    @ApiModelProperty("行业类型（级联字典 industry_type 节点值）")
+    private String industryType;
+
+    @ApiModelProperty("行业属性(1:主行业 2:竞争者 3:依托者 4:共利者)")
+    private Integer industryAttr;
+
     @ApiModelProperty("标签(逗号分隔)")
     private String tags;
 

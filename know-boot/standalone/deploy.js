@@ -52,7 +52,8 @@ const want = {
 
 const JVM = {
   heap: '-Xms64m -Xmx320m',
-  metaspace: '-XX:MaxMetaspaceSize=128m',
+  // Metaspace 提升至 256m 并在 OOM 时落 dump（此前 128m 曾触发 Metaspace OOM）
+  metaspace: '-XX:MaxMetaspaceSize=256m -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/ai-agent/apps/backend/heapdump.hprof',
   java: '/usr/bin/java',
 };
 

@@ -7,6 +7,8 @@
  *    - V1_3  sys_tenant_user (CREATE TABLE IF NOT EXISTS)
  *    - V1_8  focus menu (INSERT IGNORE, only if missing)
  *    - V1_10 industry menus (INSERT IGNORE, only if missing)
+ *    - V1_12 kb_uploaded_file (CREATE TABLE IF NOT EXISTS)
+ *    - V1_13 knowledge file-upload menu/data (INSERT ... WHERE NOT EXISTS)
  * 
  * Run: node db-sync.js
  */
@@ -105,6 +107,8 @@ async function main() {
   await nameQ('sys_tenant_user', "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='know_boot_v1' AND table_name='sys_tenant_user'");
   await nameQ('menu_focus', "SELECT COUNT(*) FROM sys_menu_config WHERE menu_code='focus'");
   await nameQ('menu_industry', "SELECT COUNT(*) FROM sys_menu_config WHERE menu_code='industry'");
+  await nameQ('kb_uploaded_file', "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='know_boot_v1' AND table_name='kb_uploaded_file'");
+  await nameQ('menu_file_upload', "SELECT COUNT(*) FROM sys_menu WHERE path='/knowledge/file' AND del_flag=0");
 
   // ---- 3. Apply missing incremental scripts ----
   console.log('\n[4/4] Applying missing scripts ...');
@@ -137,9 +141,25 @@ async function main() {
     console.log('  >> Skip V1_10 (industry menus exist)');
   }
 
+  if (!exists.kb_uploaded_file) {
+    console.log('  >> Applying V1_12__kb_uploaded_file.sql ...');
+    await sshExec(conn, `${MY} < ${REMOTE_MIG_DIR}/V1_12__kb_uploaded_file.sql 2>&1 && echo "  V1_12 OK"`);
+  } else {
+    console.log('  >> Skip V1_12 (kb_uploaded_file exists)');
+  }
+
+  if (!exists.menu_file_upload) {
+    console.log('  >> Applying V1_13__sys_menu_file_upload.sql ...');
+    await sshExec(conn, `${MY} < ${REMOTE_MIG_DIR}/V1_13__sys_menu_file_upload.sql 2>&1 && echo "  V1_13 OK"`);
+  } else {
+    console.log('  >> Skip V1_13 (file-upload menu exists)');
+  }
+
   // ---- 4. Verify ----
   console.log('\n=== VERIFY ===');
-  await sshExec(conn, "mysql -uroot -p123456aA@ know_boot_v1 -e \"SELECT id,menu_name,menu_code,menu_type,path,sort FROM sys_menu_config WHERE menu_code IN ('focus','industry','industry-enterprise','industry-product','industry-market');\" 2>/dev/null");
+  await sshExec(conn, "mysql -uroot -p123456aA@ know_boot_v1 -e \"SELECT id,menu_name,menu_code,menu_type,path,sort FROM sys_menu_config WHERE menu_code IN ('focus','industry','industry-enterprise','industry-product','industry-market','file-upload');\" 2>/dev/null");
+  await sshExec(conn, "mysql -uroot -p123456aA@ know_boot_v1 -e \"SELECT id,parent_id,menu_name,path,component,perms,menu_type,sort FROM sys_menu WHERE path='/knowledge/file' OR perms LIKE 'knowledge:file:%' ORDER BY menu_type,sort;\" 2>/dev/null");
+  await sshExec(conn, "mysql -uroot -p123456aA@ know_boot_v1 -N -e \"SELECT CONCAT('kb_uploaded_file table exists: ', COUNT(*)) FROM information_schema.tables WHERE table_schema='know_boot_v1' AND table_name='kb_uploaded_file';\" 2>/dev/null");
   console.log('\n=== DB SYNC COMPLETE ===');
 
   conn.end();

@@ -143,4 +143,8 @@ public class BizIndustry implements Serializable {
     @TableField(exist = false)
     @ApiModelProperty("下级行业列表")
     private List<BizIndustry> children;
+
+    @ApiModelProperty("关联知识库ID")
+    @TableField("knowledge_base_id")
+    private Long knowledgeBaseId;
 }

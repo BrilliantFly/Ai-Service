@@ -30,7 +30,7 @@ public class KbUploadedFile implements Serializable {
     @ApiModelProperty("文件存储相对路径")
     private String filePath;
 
-    @ApiModelProperty("扩展名: html / htm / md / markdown")
+    @ApiModelProperty("扩展名: html / htm / md / markdown / pdf")
     private String fileExt;
 
     @ApiModelProperty("文件原始文本内容")

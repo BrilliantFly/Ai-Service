@@ -123,8 +123,8 @@ public class KnowledgeSchemaMigration {
         jdbcTemplate.update(
             "INSERT INTO sys_menu (parent_id, menu_name, path, component, perms, icon, menu_type, sort, status, " +
             "tenant_id, create_by, create_time, update_time, del_flag) " +
-            "VALUES (?, ?, ?, ?, ?, ?, 2, ?, 1, NULL, ?, NOW(), NOW(), 0)",
-            parentId, "文件管理", FILE_MENU_PATH, "knowledge/file/index", "knowledge:file:view", "upload", sort, "system");
+            "VALUES (?, ?, ?, ?, ?, NULL, 2, ?, 1, NULL, ?, NOW(), NOW(), 0)",
+            parentId, "文件管理", FILE_MENU_PATH, "knowledge/file/index", "knowledge:file:view", sort, "system");
 
         Long menuId = jdbcTemplate.queryForObject(
             "SELECT id FROM sys_menu WHERE path = ? AND del_flag = 0 ORDER BY id DESC LIMIT 1", Long.class, FILE_MENU_PATH);

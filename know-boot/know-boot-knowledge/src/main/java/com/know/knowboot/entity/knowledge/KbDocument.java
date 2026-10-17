@@ -33,7 +33,7 @@ public class KbDocument implements Serializable {
     @ApiModelProperty("内容")
     private String content;
 
-    @ApiModelProperty("内容类型: richtext/markdown")
+    @ApiModelProperty("内容类型: 1=富文本(HTML) 2=Markdown 3=PDF")
     private String contentType;
 
     @ApiModelProperty("浏览次数")

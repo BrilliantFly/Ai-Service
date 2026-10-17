@@ -3,6 +3,7 @@ package com.know.knowboot.controller.knowledge;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.know.knowboot.core.AjaxResult;
 import com.know.knowboot.entity.knowledge.KbDocument;
+import com.know.knowboot.entity.knowledge.vo.KbDocumentDetailVo;
 import com.know.knowboot.service.knowledge.IKbDocumentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -32,10 +33,10 @@ public class KbDocumentController {
         return AjaxResult.success(kbDocumentService.page(query, userId, pageNum, pageSize));
     }
 
-    @ApiOperation("获取详情")
+    @ApiOperation("获取详情(含关联上传文件信息)")
     @GetMapping("/{id}")
-    public AjaxResult<KbDocument> get(@PathVariable Long id) {
-        return AjaxResult.success(kbDocumentService.getById(id));
+    public AjaxResult<KbDocumentDetailVo> get(@PathVariable Long id) {
+        return AjaxResult.success(kbDocumentService.detail(id));
     }
 
     @ApiOperation("新增")

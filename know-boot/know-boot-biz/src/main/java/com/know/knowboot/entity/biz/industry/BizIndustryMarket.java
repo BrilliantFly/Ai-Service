@@ -117,4 +117,8 @@ public class BizIndustryMarket implements Serializable {
     @TableField(exist = false)
     @ApiModelProperty("关联行业名称列表")
     private List<String> industryNames;
+
+    @ApiModelProperty("关联知识库ID")
+    @TableField("knowledge_base_id")
+    private Long knowledgeBaseId;
 }

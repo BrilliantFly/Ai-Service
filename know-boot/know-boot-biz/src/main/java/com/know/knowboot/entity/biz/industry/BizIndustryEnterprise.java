@@ -140,4 +140,8 @@ public class BizIndustryEnterprise implements Serializable {
     @TableField(exist = false)
     @ApiModelProperty("关联产品名称列表")
     private List<String> productNames;
+
+    @ApiModelProperty("关联知识库ID")
+    @TableField("knowledge_base_id")
+    private Long knowledgeBaseId;
 }

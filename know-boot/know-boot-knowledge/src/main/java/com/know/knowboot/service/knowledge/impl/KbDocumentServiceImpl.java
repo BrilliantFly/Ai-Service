@@ -5,8 +5,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.know.knowboot.entity.knowledge.KbDocument;
+import com.know.knowboot.entity.knowledge.KbUploadedFile;
+import com.know.knowboot.entity.knowledge.vo.KbDocumentDetailVo;
 import com.know.knowboot.mapper.knowledge.KbDocumentMapper;
+import com.know.knowboot.mapper.knowledge.KbUploadedFileMapper;
 import com.know.knowboot.service.knowledge.IKbDocumentService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +25,9 @@ public class KbDocumentServiceImpl extends ServiceImpl<KbDocumentMapper, KbDocum
 
     @Autowired
     private KbDocumentMapper kbDocumentMapper;
+
+    @Autowired
+    private KbUploadedFileMapper kbUploadedFileMapper;
 
     @Override
     public IPage<KbDocument> page(KbDocument query, Long userId, Integer pageNum, Integer pageSize) {
@@ -37,6 +44,33 @@ public class KbDocumentServiceImpl extends ServiceImpl<KbDocumentMapper, KbDocum
     @Override
     public KbDocument getById(Long id) {
         return kbDocumentMapper.selectById(id);
+    }
+
+    @Override
+    public KbDocumentDetailVo detail(Long id) {
+        KbDocument doc = kbDocumentMapper.selectById(id);
+        if (doc == null) {
+            return null;
+        }
+        KbDocumentDetailVo vo = new KbDocumentDetailVo();
+        BeanUtils.copyProperties(doc, vo);
+
+        KbUploadedFile uf = kbUploadedFileMapper.selectOne(
+                new LambdaQueryWrapper<KbUploadedFile>()
+                        .eq(KbUploadedFile::getDocumentId, id)
+                        .last("LIMIT 1"));
+        if (uf != null) {
+            vo.setHasUploadedFile(true);
+            vo.setUploadedFileId(uf.getId());
+            vo.setFileExt(uf.getFileExt());
+            vo.setFilePath(uf.getFilePath());
+            vo.setOriginalName(uf.getOriginalName());
+            vo.setFileSize(uf.getFileSize());
+            vo.setFileUrl("/uploads/" + uf.getFilePath());
+        } else {
+            vo.setHasUploadedFile(false);
+        }
+        return vo;
     }
 
     @Override

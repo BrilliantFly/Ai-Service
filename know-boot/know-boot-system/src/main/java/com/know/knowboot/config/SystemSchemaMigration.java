@@ -230,8 +230,8 @@ public class SystemSchemaMigration {
             jdbcTemplate.update(
                 "INSERT INTO sys_menu (parent_id, menu_name, path, component, perms, icon, menu_type, sort, status, " +
                 "tenant_id, create_by, create_time, update_time, del_flag) " +
-                "VALUES (?, ?, ?, ?, ?, ?, 2, ?, 1, NULL, ?, NOW(), NOW(), 0)",
-                parentId, "级联字典", path, "CascadeDict", "", "cascade", sort, "system");
+                "VALUES (?, ?, ?, ?, ?, NULL, 2, ?, 1, NULL, ?, NOW(), NOW(), 0)",
+                parentId, "级联字典", path, "CascadeDict", "", sort, "system");
             System.out.println("[SystemSchemaMigrate] 已初始化级联字典菜单, parentId=" + parentId + ", sort=" + sort);
         } catch (Exception e) {
             System.out.println("[SystemSchemaMigrate] 初始化级联字典菜单: " + e.getMessage());

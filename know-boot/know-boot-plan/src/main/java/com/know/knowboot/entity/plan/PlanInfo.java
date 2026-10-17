@@ -33,6 +33,10 @@ public class PlanInfo implements Serializable {
     @ApiModelProperty("所属行业ID(对应biz_industry.id)")
     private Long industryId;
 
+    @ApiModelProperty("关联知识库ID(对应kb_knowledge_base.id)")
+    @TableField("knowledge_base_id")
+    private Long knowledgeBaseId;
+
     @ApiModelProperty("目标效果")
     private String targetEffect;
 

@@ -2,6 +2,7 @@ package com.know.knowboot.service.knowledge;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.know.knowboot.entity.knowledge.KbDocument;
+import com.know.knowboot.entity.knowledge.vo.KbDocumentDetailVo;
 
 import java.util.List;
 
@@ -19,6 +20,11 @@ public interface IKbDocumentService {
      * 获取详情
      */
     KbDocument getById(Long id);
+
+    /**
+     * 获取详情(含关联上传文件信息, 用于前端按内容类型选择预览入口)
+     */
+    KbDocumentDetailVo detail(Long id);
 
     /**
      * 新增

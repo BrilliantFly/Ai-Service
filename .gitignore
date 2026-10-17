@@ -3,5 +3,8 @@ know-boot/standalone/*.log
 know-boot/standalone/*.err
 know-boot/standalone/startup-out.txt
 
+# Packaged jar artifacts (do not commit)
+know-boot/standalone/*.jar
+
 # Local database dump backups
 db/
